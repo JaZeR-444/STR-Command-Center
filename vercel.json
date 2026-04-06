@@ -1,6 +1,15 @@
 {
-  "buildCommand": "cd str-command-center && npm run build",
-  "outputDirectory": "str-command-center/.next",
-  "installCommand": "cd str-command-center && npm install",
-  "framework": "nextjs"
+  "version": 2,
+  "builds": [
+    {
+      "src": "str-command-center/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "str-command-center/$1"
+    }
+  ]
 }

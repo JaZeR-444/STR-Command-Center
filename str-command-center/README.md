@@ -1,6 +1,16 @@
-# STR Launch Command Center
+# STR Launch Command Center v2.1
 
-A modern, lightweight web application for tracking short-term rental launch progress.
+A professional-grade operations dashboard for tracking short-term rental launch progress across 756 tasks and 115 documents.
+
+## ✨ New in v2.1
+
+- **⌨️ Command Palette**: Press `CMD+K` (Mac) or `CTRL+K` (Windows) to instantly search and navigate
+- **📌 Collapsible Sidebar**: Icon-only rail mode to maximize screen space
+- **📊 Bento Dashboard**: Redesigned with circular progress, critical path, and blocked items
+- **✏️ Inline Editing**: Edit tasks in slide-in drawer without losing your place
+- **🎯 Critical Path**: Automatic prioritization of blocked and urgent tasks
+- **📄 Required Docs**: Clear distinction between required and optional documentation
+- **🎨 Enhanced Design**: Professional zinc-950 dark theme with blue-500 accents
 
 ## Features
 
@@ -194,8 +204,38 @@ The state architecture is designed to easily migrate to a database:
 - ✅ Focus mode for priority items
 - ✅ Dark theme aesthetic
 
-## What's Improved
+## What's Improved in v2.1
 
+### Command & Navigation
+- ⌨️ **CMD+K Command Palette**: Instant fuzzy search across all tasks, docs, and pages
+- 📌 **Collapsible Sidebar**: Toggle between full and icon-only rail mode
+- 🎯 **Smart Navigation**: Blocked task count badge, active state indicators
+
+### Dashboard Redesign
+- 📊 **Bento Grid Layout**: Action-oriented cards focused on what's at risk
+- 🔴 **Blocked Items Card**: High-visibility treatment for blockers
+- ⏱️ **Launch Countdown**: Urgency pulse animation when < 7 days
+- 🎯 **Critical Path**: Shows next 3 highest-priority tasks automatically
+
+### Roadmap Enhancements
+- 📍 **Sticky Headers**: Category headers stay visible while scrolling
+- ✏️ **Inline Editing**: Slide-in drawer for quick updates without navigation
+- 🎨 **Status Colors**: Red (blocked), Amber (in-progress), strikethrough (N/A)
+- 📝 **Note Indicators**: Visual badges for tasks with notes
+
+### Documents Repository
+- ⚠️ **Required/Optional**: Pre-Listing docs flagged as required for launch
+- 🔔 **Missing Docs Banner**: Warning when required docs are incomplete
+- 🏷️ **Type Grouping**: Documents organized by type for better scanning
+- 📊 **Three Stats Cards**: Overall, Required, and Optional completion
+
+### Design & Performance
+- 🎨 **Professional Dark Theme**: Zinc-950 background with blue-500 accents
+- ⚡ **Optimized for Scale**: Handles 756 tasks smoothly with sticky headers
+- 💀 **Skeleton Loaders**: Match actual layout for better perceived performance
+- 🎭 **Micro-interactions**: Smooth 300ms transitions, no layout jumps
+
+### Previous v2.0 Features
 - ✨ Clean, maintainable codebase (not a single 9000+ line file)
 - ✨ TypeScript for type safety
 - ✨ React state management instead of vanilla JS
