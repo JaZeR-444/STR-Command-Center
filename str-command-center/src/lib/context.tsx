@@ -1,8 +1,9 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import type { AppState, TaskMeta, TaskStatus } from '@/types';
-import { loadState, saveState, DEFAULT_STATE, exportState, importState, clearState } from './storage';
+import type { AppState, TaskStatus } from '@/types';
+import { loadState, saveState, DEFAULT_STATE, exportState, importState, clearState, getLocalUpdatedAt } from './storage';
+import { clearRemoteState, isCloudSyncConfigured, loadRemoteState, saveRemoteState } from './supabase';
 
 interface AppContextType {
   state: AppState;
@@ -24,6 +25,8 @@ interface AppContextType {
   isCategoryCollapsed: (category: string) => boolean;
   // Loading state
   isLoaded: boolean;
+  cloudSyncStatus: 'disabled' | 'connecting' | 'online' | 'error';
+  cloudSyncMessage: string | null;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -31,19 +34,70 @@ const AppContext = createContext<AppContextType | null>(null);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(DEFAULT_STATE);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'disabled' | 'connecting' | 'online' | 'error'>(
+    isCloudSyncConfigured() ? 'connecting' : 'disabled'
+  );
+  const [cloudSyncMessage, setCloudSyncMessage] = useState<string | null>(null);
+
+  const syncRemoteState = useCallback(async (newState: AppState) => {
+    if (!isCloudSyncConfigured()) return;
+
+    const result = await saveRemoteState(newState);
+    if (!result.success) {
+      setCloudSyncStatus('error');
+      setCloudSyncMessage(result.error || 'Cloud sync failed');
+      return;
+    }
+
+    setCloudSyncStatus('online');
+    setCloudSyncMessage(result.updatedAt ? `Last cloud sync: ${new Date(result.updatedAt).toLocaleString()}` : 'Cloud sync active');
+  }, []);
 
   // Load state from localStorage on mount (client-side only)
   useEffect(() => {
-    const loaded = loadState();
-    setState(loaded);
-    setIsLoaded(true);
-  }, []);
+    const bootstrap = async () => {
+      const loaded = loadState();
+      setState(loaded);
+      setIsLoaded(true);
+
+      if (!isCloudSyncConfigured()) {
+        setCloudSyncStatus('disabled');
+        setCloudSyncMessage('Cloud sync disabled (env vars not set)');
+        return;
+      }
+
+      setCloudSyncStatus('connecting');
+      const remote = await loadRemoteState();
+
+      if (remote.error && remote.error !== 'Supabase not configured') {
+        setCloudSyncStatus('error');
+        setCloudSyncMessage(`Cloud sync unavailable: ${remote.error}`);
+        return;
+      }
+
+      const localMs = Date.parse(getLocalUpdatedAt() || '');
+      const remoteMs = Date.parse(remote.updatedAt || '');
+
+      if (remote.state && remoteMs > localMs) {
+        setState(remote.state);
+        saveState(remote.state);
+      } else {
+        void syncRemoteState(loaded);
+      }
+
+      setCloudSyncStatus('online');
+      setCloudSyncMessage(remote.updatedAt ? `Last cloud sync: ${new Date(remote.updatedAt).toLocaleString()}` : 'Cloud sync active');
+    };
+
+    void bootstrap();
+  }, [syncRemoteState]);
 
   // Persist state changes
   const persistState = useCallback((newState: AppState) => {
     setState(newState);
     saveState(newState);
-  }, []);
+    void syncRemoteState(newState);
+  }, [syncRemoteState]);
 
   // Task actions
   const toggleTask = useCallback((taskId: number) => {
@@ -69,9 +123,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       const newState = { ...prev, completedIds: newCompletedIds, taskMeta: newTaskMeta };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   const setTaskStatus = useCallback((taskId: number, status: TaskStatus) => {
     setState(prev => {
@@ -84,9 +139,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       };
       const newState = { ...prev, taskMeta: newTaskMeta };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   const setTaskNote = useCallback((taskId: number, note: string) => {
     setState(prev => {
@@ -99,9 +155,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       };
       const newState = { ...prev, taskMeta: newTaskMeta };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   const togglePin = useCallback((taskId: number) => {
     setState(prev => {
@@ -111,9 +168,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         : [...prev.pinnedIds, taskId];
       const newState = { ...prev, pinnedIds: newPinnedIds };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   // Document actions
   const toggleDoc = useCallback((docId: string) => {
@@ -124,18 +182,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         : [...prev.completedDocIds, docId];
       const newState = { ...prev, completedDocIds: newCompletedDocIds };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   // Settings
   const setLaunchDate = useCallback((date: string) => {
     setState(prev => {
       const newState = { ...prev, launchDate: date };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   // Data management
   const exportData = useCallback(() => {
@@ -154,6 +214,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const resetAll = useCallback(() => {
     clearState();
     setState(DEFAULT_STATE);
+    if (isCloudSyncConfigured()) {
+      void clearRemoteState();
+    }
   }, []);
 
   // Category collapse
@@ -165,9 +228,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         : [...prev.collapsedCategories, category];
       const newState = { ...prev, collapsedCategories: newCollapsed };
       saveState(newState);
+      void syncRemoteState(newState);
       return newState;
     });
-  }, []);
+  }, [syncRemoteState]);
 
   const isCategoryCollapsed = useCallback((category: string) => {
     return state.collapsedCategories.includes(category);
@@ -187,6 +251,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     toggleCategory,
     isCategoryCollapsed,
     isLoaded,
+    cloudSyncStatus,
+    cloudSyncMessage,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

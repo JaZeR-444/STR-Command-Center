@@ -7,13 +7,14 @@ import {
   getDocumentationStats, 
   getSectionSummaries,
   getBlockedTasks,
-  getInProgressTasks,
-  getRecentlyCompleted,
+  getCriticalPathTasks,
   getDaysUntilLaunch,
 } from '@/lib/selectors';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress';
+import { ProgressRing } from '@/components/progress-ring';
 import { Badge } from '@/components/ui/badge';
+import { CardSkeleton } from '@/components/ui/skeleton';
 import { cn, getProgressColor } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -22,8 +23,12 @@ export default function DashboardPage() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-slate-400">Loading...</div>
+      <div className="max-w-7xl mx-auto p-6 lg:p-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -33,195 +38,217 @@ export default function DashboardPage() {
   const docStats = getDocumentationStats(state);
   const sectionSummaries = getSectionSummaries(state);
   const blockedTasks = getBlockedTasks(state);
-  const inProgressTasks = getInProgressTasks(state);
-  const recentTasks = getRecentlyCompleted(state, 5);
+  const criticalPath = getCriticalPathTasks(state, 3);
   const daysUntilLaunch = getDaysUntilLaunch(state.launchDate);
 
+  const isLaunchUrgent = daysUntilLaunch <= 7 && daysUntilLaunch > 0;
+
   return (
-    <div className="max-w-6xl mx-auto p-6 lg:p-10">
+    <div className="max-w-7xl mx-auto p-6 lg:p-10">
       {/* Header */}
-      <header className="mb-10">
-        <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
-          Global Overview
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+          <span className="text-3xl">🎯</span>
+          Mission Control
         </h1>
-        <p className="text-slate-400 text-lg">
-          Cross-system launch progress & readiness score
+        <p className="text-zinc-400 text-lg">
+          Austin STR operational readiness dashboard
         </p>
       </header>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardContent className="text-center py-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Completion
-            </p>
-            <p className={cn('text-3xl font-bold', getProgressColor(overallStats.percentage))}>
-              {overallStats.percentage}%
-            </p>
-            <p className="text-xs text-slate-600 mt-1">
-              {overallStats.completed} / {overallStats.total}
-            </p>
+      {/* Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {/* Overall Progress - Large Feature */}
+        <Card className="md:col-span-2 lg:col-span-1 lg:row-span-2 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
+          <CardContent className="flex flex-col items-center justify-center h-full py-12">
+            <ProgressRing value={overallStats.percentage} size="xl" label="COMPLETE" />
+            <div className="mt-6 text-center">
+              <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
+                Overall Launch Progress
+              </p>
+              <p className="text-zinc-500 text-lg font-medium">
+                {overallStats.completed} / {overallStats.total} Tasks
+              </p>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="text-center py-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Pre-Launch Ready
-            </p>
-            <p className={cn('text-3xl font-bold', getProgressColor(preListingStats.percentage))}>
-              {preListingStats.percentage}%
-            </p>
-            <p className="text-xs text-slate-600 mt-1">
-              {preListingStats.remaining} remaining
-            </p>
-          </CardContent>
-        </Card>
+        {/* Blocked Items - High Visibility */}
+        <Link
+          href="/focus"
+          className="block group"
+        >
+          <Card className={cn(
+            'h-full transition-all hover:scale-[1.02]',
+            blockedTasks.length > 0 
+              ? 'bg-red-500/10 border-red-500/30 hover:border-red-500/50' 
+              : 'bg-zinc-900 border-zinc-800'
+          )}>
+            <CardContent className="py-8 text-center">
+              <div className={cn(
+                'text-6xl font-bold mb-2',
+                blockedTasks.length > 0 ? 'text-red-400' : 'text-emerald-400'
+              )}>
+                {blockedTasks.length}
+              </div>
+              <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
+                Blocked Items
+              </p>
+              <p className="text-xs text-zinc-600">
+                {blockedTasks.length > 0 ? 'Needs immediate attention' : 'All systems clear'}
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card>
-          <CardContent className="text-center py-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Documents
-            </p>
-            <p className={cn('text-3xl font-bold', getProgressColor(docStats.percentage))}>
-              {docStats.percentage}%
-            </p>
-            <p className="text-xs text-slate-600 mt-1">
-              {docStats.completed} / {docStats.total}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="text-center py-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Launch In
-            </p>
-            <p className="text-3xl font-bold text-purple-400">
+        {/* Launch Countdown */}
+        <Card className={cn(
+          'transition-all',
+          isLaunchUrgent && 'bg-amber-500/10 border-amber-500/30 animate-pulse-slow'
+        )}>
+          <CardContent className="py-8 text-center">
+            <div className={cn(
+              'text-6xl font-bold mb-2',
+              isLaunchUrgent ? 'text-amber-400' : daysUntilLaunch === 0 ? 'text-emerald-400' : 'text-blue-400'
+            )}>
               {daysUntilLaunch}
+            </div>
+            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
+              Days to Launch
             </p>
-            <p className="text-xs text-slate-600 mt-1">days</p>
+            <p className="text-xs text-zinc-600">
+              {isLaunchUrgent ? 'Final sprint mode' : daysUntilLaunch === 0 ? 'Launch day!' : 'Target date'}
+            </p>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Overall Progress Bar */}
-      <Card className="mb-8">
-        <CardContent className="py-5">
-          <div className="flex justify-between items-center mb-3 text-sm">
-            <span className="text-slate-400 font-medium">Overall Launch Progress</span>
-            <span className="text-slate-300 font-semibold">
-              {overallStats.completed} / {overallStats.total} Tasks
-            </span>
-          </div>
-          <ProgressBar value={overallStats.percentage} size="lg" />
-        </CardContent>
-      </Card>
+        {/* Pre-Listing Readiness */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="py-8 text-center">
+            <div className={cn('text-5xl font-bold mb-2', getProgressColor(preListingStats.percentage))}>
+              {preListingStats.percentage}%
+            </div>
+            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
+              Pre-Listing Ready
+            </p>
+            <p className="text-xs text-zinc-600">
+              {preListingStats.remaining} tasks remaining
+            </p>
+          </CardContent>
+        </Card>
 
-      {/* Two Column Layout */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        {/* Attention Items */}
-        <Card>
+        {/* Documentation Status */}
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="py-8 text-center">
+            <div className={cn('text-5xl font-bold mb-2', getProgressColor(docStats.percentage))}>
+              {docStats.percentage}%
+            </div>
+            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
+              Documentation
+            </p>
+            <p className="text-xs text-zinc-600">
+              {docStats.completed} / {docStats.total} artifacts
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Critical Path - Feature Priority */}
+        <Card className="md:col-span-2 bg-amber-500/5 border-amber-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <span className="text-amber-400">⚡</span>
-              Needs Attention
+              Critical Path — Next Actions
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {blockedTasks.length === 0 && inProgressTasks.length === 0 ? (
-              <p className="text-slate-500 text-sm">No blockers or active items</p>
+            {criticalPath.length === 0 ? (
+              <p className="text-zinc-500 text-sm py-4 text-center">
+                No critical tasks — keep momentum going!
+              </p>
             ) : (
-              <>
-                {blockedTasks.slice(0, 3).map(task => (
-                  <div key={task.id} className="flex items-start gap-3 p-3 bg-red-500/5 rounded-lg border border-red-500/20">
-                    <Badge variant="status" status="blocked">Blocked</Badge>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-300 truncate">{task.task}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{task.section.replace(' Master Checklist', '')}</p>
+              criticalPath.map((task) => {
+                const status = state.taskMeta[task.id]?.status || 'default';
+                return (
+                  <Link
+                    key={task.id}
+                    href={`/roadmap?section=${encodeURIComponent(task.section)}`}
+                    className="block group"
+                  >
+                    <div className={cn(
+                      'flex items-start gap-3 p-4 rounded-lg border transition-all group-hover:scale-[1.01]',
+                      status === 'blocked' 
+                        ? 'bg-red-500/10 border-red-500/30 group-hover:border-red-500/50' 
+                        : 'bg-amber-500/10 border-amber-500/20 group-hover:border-amber-500/40'
+                    )}>
+                      <Badge 
+                        variant="status" 
+                        status={status === 'blocked' ? 'blocked' : 'in-progress'}
+                      >
+                        {status === 'blocked' ? 'Blocked' : 'In Progress'}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-zinc-200 font-medium mb-1">{task.task}</p>
+                        <p className="text-xs text-zinc-500">
+                          {task.section.replace(' Master Checklist', '')} · {task.category}
+                        </p>
+                      </div>
+                      <svg className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
-                  </div>
-                ))}
-                {inProgressTasks.slice(0, 3).map(task => (
-                  <div key={task.id} className="flex items-start gap-3 p-3 bg-amber-500/5 rounded-lg border border-amber-500/20">
-                    <Badge variant="status" status="in-progress">Active</Badge>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-300 truncate">{task.task}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{task.section.replace(' Master Checklist', '')}</p>
-                    </div>
-                  </div>
-                ))}
-              </>
+                  </Link>
+                );
+              })
             )}
-            <Link href="/focus" className="block text-center text-sm text-indigo-400 hover:text-indigo-300 pt-2">
+            <Link 
+              href="/focus" 
+              className="block text-center text-sm text-blue-400 hover:text-blue-300 pt-2 transition-colors"
+            >
               View all focus items →
             </Link>
           </CardContent>
         </Card>
-
-        {/* Recently Completed */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="text-emerald-400">✓</span>
-              Recently Completed
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recentTasks.length === 0 ? (
-              <p className="text-slate-500 text-sm">No completed tasks yet</p>
-            ) : (
-              recentTasks.map(task => (
-                <div key={task.id} className="flex items-start gap-3 p-3 bg-emerald-500/5 rounded-lg border border-emerald-500/20">
-                  <div className="w-5 h-5 rounded bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-300 truncate">{task.task}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{task.section.replace(' Master Checklist', '')}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Section Progress Cards */}
-      <Card>
+      {/* Section Progress Grid */}
+      <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Section Progress</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <span>📊</span>
+            Section Progress Overview
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {sectionSummaries.map((section, idx) => (
               <Link
                 key={section.name}
                 href={`/roadmap?section=${encodeURIComponent(section.name)}`}
-                className="block p-4 bg-bg-surface rounded-xl border border-border-dark hover:border-border-light transition-colors"
+                className="block group"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 flex items-center justify-center rounded bg-white/5 text-xs font-bold text-slate-500">
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
-                    <span className="text-sm font-medium text-white truncate">
-                      {section.shortName}
+                <div className="p-4 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all group-hover:scale-[1.02]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-7 h-7 flex items-center justify-center rounded-lg bg-zinc-800 text-xs font-bold text-zinc-500">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="text-sm font-semibold text-white truncate">
+                        {section.shortName}
+                      </span>
+                    </div>
+                    <span className={cn('text-sm font-bold', getProgressColor(section.percentage))}>
+                      {section.percentage}%
                     </span>
                   </div>
-                  <span className={cn('text-sm font-bold', getProgressColor(section.percentage))}>
-                    {section.percentage}%
-                  </span>
-                </div>
-                <ProgressBar value={section.percentage} size="sm" />
-                <div className="flex justify-between mt-2 text-[10px] text-slate-500">
-                  <span>{section.completed} / {section.total} tasks</span>
-                  {section.blockedCount > 0 && (
-                    <span className="text-red-400">{section.blockedCount} blocked</span>
-                  )}
+                  <ProgressBar value={section.percentage} size="sm" />
+                  <div className="flex justify-between items-center mt-3 text-xs text-zinc-500">
+                    <span>{section.completed} / {section.total}</span>
+                    {section.blockedCount > 0 && (
+                      <span className="text-red-400 font-semibold">
+                        {section.blockedCount} blocked
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             ))}
@@ -230,9 +257,12 @@ export default function DashboardPage() {
       </Card>
 
       {/* Footer */}
-      <footer className="mt-16 py-6 border-t border-border-dark flex flex-col md:flex-row justify-between items-center gap-2 text-[10px] text-slate-600 uppercase tracking-widest">
+      <footer className="mt-16 py-6 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-2 text-[10px] text-zinc-600 uppercase tracking-widest">
         <span>7513 Ballydawn Dr • Austin TX</span>
-        <span>STR Command Center v2.0 • 2026</span>
+        <span className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          STR Command Center v2.1 • 2026
+        </span>
       </footer>
     </div>
   );

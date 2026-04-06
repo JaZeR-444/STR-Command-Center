@@ -3,6 +3,7 @@ import './globals.css';
 import { AppProvider } from '@/lib/context';
 import { Sidebar } from '@/components/sidebar';
 import { MobileNav } from '@/components/mobile-nav';
+import { CommandPaletteWrapper } from '@/components/command-palette-wrapper';
 
 export const metadata: Metadata = {
   title: 'STR Launch Command Center',
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <AppProvider>
+          <CommandPaletteWrapper />
           <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 flex flex-col lg:ml-0">

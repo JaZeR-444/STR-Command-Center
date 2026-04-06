@@ -8,15 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bg-dark': '#0a0a0c',
+        'bg-dark': '#09090b',
         'bg-surface': '#111118',
-        'card-dark': '#16161e',
-        'card-hover': '#1c1c26',
-        'border-dark': '#2a2a35',
-        'border-light': '#3a3a48',
+        'card-dark': '#18181b',
+        'card-hover': '#27272a',
+        'border-dark': '#27272a',
+        'border-light': '#3f3f46',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },

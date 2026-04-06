@@ -1,3 +1,15 @@
+---
+id: 00-REPO-README
+title: Completed Research Repository README
+section: 00_System
+doc_type: readme
+status: active
+authority: canonical
+version: 1.0
+updated: 2026-04-06
+summary: Repository entry point and navigation guide for Completed Research. Defines core repository rules, archive system, workflow standards, and file naming conventions.
+---
+
 # 7513 Ballydawn STR - Completed Research Repository
 
 ## Purpose

@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
   pinnedIds: `${STORAGE_PREFIX}pinnedIds`,
   launchDate: `${STORAGE_PREFIX}launchDate`,
   collapsedCategories: `${STORAGE_PREFIX}collapsedCats`,
+  updatedAt: `${STORAGE_PREFIX}updatedAt`,
 } as const;
 
 // Valid ID sets for validation
@@ -110,9 +111,16 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEYS.pinnedIds, JSON.stringify(state.pinnedIds));
     localStorage.setItem(STORAGE_KEYS.launchDate, state.launchDate);
     localStorage.setItem(STORAGE_KEYS.collapsedCategories, JSON.stringify(state.collapsedCategories));
+    localStorage.setItem(STORAGE_KEYS.updatedAt, new Date().toISOString());
   } catch (error) {
     console.error('Failed to save state to localStorage:', error);
   }
+}
+
+// Local state timestamp used for local/cloud conflict resolution
+export function getLocalUpdatedAt(): string {
+  if (typeof window === 'undefined') return '';
+  return localStorage.getItem(STORAGE_KEYS.updatedAt) || '';
 }
 
 // Export state as JSON (for backup)

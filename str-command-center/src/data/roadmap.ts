@@ -4,6 +4,9 @@ import rawData from './roadmap-raw.json';
 // Type assertion - data matches our Task interface
 export const roadmapData: Task[] = rawData as Task[];
 
+// All tasks export for command palette
+export const allTasks = roadmapData;
+
 // Derived data structures
 export const sections = [...new Set(roadmapData.map(t => t.section))].sort((a, b) => {
   const numA = parseInt(a.match(/^\d+/)?.[0] || '99');

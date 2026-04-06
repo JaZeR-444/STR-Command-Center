@@ -9,13 +9,15 @@ A modern, lightweight web application for tracking short-term rental launch prog
 - **Documents**: Artifact tracking for all documentation requirements
 - **Focus Mode**: Surface blocked, in-progress, and pinned items
 - **Settings**: Launch date configuration, data export/import, reset
+- **Optional Cloud Sync**: Free Supabase sync with localStorage fallback
 
 ## Tech Stack
 
 - **Next.js 14** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling
-- **Local Storage** for persistence (no database required)
+- **Local Storage** for persistence
+- **Supabase (optional)** for shared cloud sync
 
 ## Getting Started
 
@@ -66,7 +68,61 @@ vercel
 
 ### Environment Variables
 
-No environment variables required for basic deployment.
+No environment variables are required for local-only mode.
+
+To enable free Supabase sync across devices, create `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_STATE_KEY=family
+```
+
+`NEXT_PUBLIC_SUPABASE_STATE_KEY` lets you choose which single shared state record this app uses.
+
+### Supabase Setup (Free Tier)
+
+1. Create a free Supabase project.
+2. Open SQL Editor and run:
+
+```sql
+create table if not exists public.app_state (
+  id text primary key,
+  payload jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.app_state enable row level security;
+
+create policy "public_read_app_state"
+on public.app_state
+for select
+to anon
+using (true);
+
+create policy "public_write_app_state"
+on public.app_state
+for insert
+to anon
+with check (true);
+
+create policy "public_update_app_state"
+on public.app_state
+for update
+to anon
+using (true)
+with check (true);
+
+create policy "public_delete_app_state"
+on public.app_state
+for delete
+to anon
+using (true);
+```
+
+3. Add the env vars above and redeploy.
+
+The app always keeps localStorage as fallback, so it still works if cloud sync is unavailable.
 
 ## Project Structure
 
@@ -87,7 +143,8 @@ str-command-center/
 │   ├── data/                # Static data (roadmap, documents)
 │   ├── lib/                 # Utilities and state management
 │   │   ├── context.tsx      # React context for app state
-│   │   ├── storage.ts       # LocalStorage persistence
+│   │   ├── storage.ts       # LocalStorage persistence + timestamps
+│   │   ├── supabase.ts      # Optional cloud sync adapter
 │   │   ├── selectors.ts     # Computed values from state
 │   │   └── utils.ts         # Helper functions
 │   └── types/               # TypeScript types
@@ -98,7 +155,7 @@ str-command-center/
 
 ## Data Architecture
 
-### State (LocalStorage)
+### State (Local + Optional Cloud)
 
 ```typescript
 interface AppState {
@@ -119,9 +176,9 @@ interface AppState {
 
 The state architecture is designed to easily migrate to a database:
 
-1. Replace `storage.ts` with API calls
-2. Add server actions or API routes
-3. Swap `localStorage` for database queries
+1. Keep local state as offline fallback
+2. Sync state to `app_state.payload` in Supabase
+3. Resolve startup conflicts using `updated_at`
 
 ## Preserved from Original
 

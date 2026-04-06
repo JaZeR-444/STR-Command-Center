@@ -151,6 +151,31 @@ export function getDaysUntilLaunch(launchDate: string): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
+// Get critical path tasks (highest priority incomplete tasks)
+export function getCriticalPathTasks(state: AppState, limit: number = 3): Task[] {
+  // Priority: blocked > in-progress > pre-listing incomplete
+  const blocked = getBlockedTasks(state);
+  const inProgress = getInProgressTasks(state);
+  const preListingIncomplete = getIncompletePreListingTasks(state);
+  
+  const critical: Task[] = [];
+  
+  // Add blocked first
+  critical.push(...blocked.slice(0, limit));
+  
+  // Fill with in-progress if space
+  if (critical.length < limit) {
+    critical.push(...inProgress.slice(0, limit - critical.length));
+  }
+  
+  // Fill with pre-listing if still space
+  if (critical.length < limit) {
+    critical.push(...preListingIncomplete.slice(0, limit - critical.length));
+  }
+  
+  return critical.slice(0, limit);
+}
+
 // Filter tasks by criteria
 export function filterTasks(
   tasks: Task[],

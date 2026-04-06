@@ -8,7 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 
 export default function SettingsPage() {
-  const { state, isLoaded, setLaunchDate, exportData, importData, resetAll } = useApp();
+  const {
+    state,
+    isLoaded,
+    setLaunchDate,
+    exportData,
+    importData,
+    resetAll,
+    cloudSyncStatus,
+    cloudSyncMessage,
+  } = useApp();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState(false);
@@ -138,6 +147,37 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* Cloud Sync */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Cloud Sync</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-slate-400">
+            Optional Supabase sync keeps your progress shared across devices while local backup remains active.
+          </p>
+          <div className="flex items-center gap-2">
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                cloudSyncStatus === 'online'
+                  ? 'bg-emerald-500'
+                  : cloudSyncStatus === 'connecting'
+                    ? 'bg-amber-500 animate-pulse'
+                    : cloudSyncStatus === 'error'
+                      ? 'bg-red-500'
+                      : 'bg-slate-500'
+              }`}
+            />
+            <p className="text-sm text-slate-300 capitalize">
+              {cloudSyncStatus === 'disabled' ? 'disabled' : cloudSyncStatus}
+            </p>
+          </div>
+          {cloudSyncMessage && (
+            <p className="text-xs text-slate-500">{cloudSyncMessage}</p>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Statistics */}
       <Card className="mb-6">
         <CardHeader>
@@ -210,7 +250,11 @@ export default function SettingsPage() {
       {/* Footer Info */}
       <div className="mt-12 text-center text-xs text-slate-600">
         <p>STR Launch Command Center v2.0</p>
-        <p className="mt-1">Data stored locally in your browser</p>
+        <p className="mt-1">
+          {cloudSyncStatus === 'online'
+            ? 'Cloud sync active with local backup'
+            : 'Data stored locally in your browser'}
+        </p>
       </div>
     </div>
   );
