@@ -1,0 +1,5 @@
+period_id,period_start,period_end,booked_revenue_usd,booked_nights,adr_usd,revpar_usd,target_adr_usd,target_revpar_usd,status,owner,notes
+FIN-2026-W14,2026-03-30,2026-04-05,0,0,0,0,210,126,Baseline,Owner,Pre-launch baseline
+FIN-2026-W15,2026-04-06,2026-04-12,0,0,0,0,210,126,Planned,Owner,Set live rates and monitor first booking mix
+FIN-2026-W16,2026-04-13,2026-04-19,0,0,0,0,215,133,Planned,Owner,Launch period with promo impact expected
+FIN-2026-APR,2026-04-01,2026-04-30,0,0,0,0,212,131,Planned,Owner,Roll up weekly performance at month-end

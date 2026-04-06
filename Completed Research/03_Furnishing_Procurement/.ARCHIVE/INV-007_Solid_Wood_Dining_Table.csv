@@ -1,0 +1,2 @@
+inventory_id,room,item_name,sourcing_priority,target_price_usd,actual_price_usd,source_channel,condition_score,measurements_verified,assembly_required,status,owner,notes
+INV-007,Dining,Solid Wood Dining Table,Critical,250,,Estate Sale,TBD,No,Yes,Sourcing,Owner,"Seats 6-8; verify 36"" pull clearance"

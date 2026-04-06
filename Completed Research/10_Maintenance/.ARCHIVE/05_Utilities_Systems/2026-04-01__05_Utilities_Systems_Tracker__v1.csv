@@ -1,0 +1,5 @@
+utility_id,system,provider,account_ref,normal_monthly_range_usd,last_check_date,current_bill_or_reading,status,next_check_date,owner,notes
+UTL-001,Electricity,Austin Energy,XXX-XXX,180-320,2026-04-01,TBD,Monitor,2026-05-01,Owner,Watch for HVAC-driven summer spikes
+UTL-002,Water and Trash,City of Austin,XXX-XXX,90-170,2026-04-01,TBD,Monitor,2026-05-01,Owner,Investigate if sustained increase suggests leak
+UTL-003,Internet,Google Fiber,XXX-XXX,70-110,2026-04-01,TBD,Monitor,2026-05-01,Owner,Escalate immediately for outage before check-in
+UTL-004,Natural Gas,Texas Gas Service,XXX-XXX,25-90,2026-04-01,TBD,Monitor,2026-05-01,Owner,Seasonal fluctuation expected in cooler months

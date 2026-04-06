@@ -1,0 +1,4 @@
+item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
+BUD-002-CLE-01,"Pre-Furniture Deep Clean",cleaning,high,250.00,0.00,250.00,pending,pro_cleaner,"Full property sanitization"
+BUD-002-CLE-02,"Post-Setup White-Glove",cleaning,high,150.00,0.00,150.00,pending,pro_cleaner,"Dusting/Polish before shoot"
+BUD-002-CLE-03,"Debris/Cardboard Removal",cleaning,med,50.00,0.00,50.00,pending,self,"Off-site disposal of assembly waste"

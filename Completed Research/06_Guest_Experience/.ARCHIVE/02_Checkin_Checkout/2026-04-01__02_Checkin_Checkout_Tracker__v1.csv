@@ -1,0 +1,3 @@
+record_id,guest_name,platform,checkin_date,checkout_date,code_sent,early_ci_requested,early_ci_approved,late_co_requested,late_co_approved,status,notes
+1,Sample Guest,Airbnb,2026-04-10,2026-04-13,Yes,No,N/A,No,N/A,Upcoming,
+2,John Doe,VRBO,2026-04-15,2026-04-20,No,Yes,Yes,No,N/A,Pending Code,30" clearance confirmed for guest mobility

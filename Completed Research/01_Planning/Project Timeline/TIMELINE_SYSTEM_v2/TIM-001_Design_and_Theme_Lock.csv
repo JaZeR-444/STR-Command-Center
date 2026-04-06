@@ -1,0 +1,4 @@
+task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
+TIM-001-01,Brand Standards and Style Themes Lock,Critical,2026-04-01,2026-04-05,4,,In Progress,None,Owner,Primary styling baseline
+TIM-001-02,Room-by-Room Design Specs Map,High,2026-04-04,2026-04-10,6,,In Progress,TIM-001-01,Owner,Inventory lists for procurement
+TIM-001-03,Brand Voice and Copywriting Strategy,Medium,2026-04-06,2026-04-10,4,,Planned,TIM-001-01,Owner,Guest persona focus

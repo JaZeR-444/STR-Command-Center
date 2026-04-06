@@ -1,0 +1,166 @@
+{
+  "room_id": "primary_bedroom",
+  "room_name": "Primary Bedroom (The Owner’s Retreat)",
+  "strategic_focus": "Premium sleep experience / Organic Austin Modern",
+  "sleeps": 2,
+  "tiered_strategy": "Value Anchor / Secondhand Casegoods",
+  "inventory": [
+    {
+      "item": "King Hybrid Mattress",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 899.00,
+      "tiers": {
+        "budget": "Warehouse-club / Amazon Value ($500-$800)",
+        "value": "DreamCloud Luxury Hybrid / Leesa Original (~$899-$1400)",
+        "premium": "Nolah Evolution 15 / Saatva ($1700-$2100)"
+      },
+      "notes": "12\"+ profile; critical for premium visual perception"
+    },
+    {
+      "item": "King Bed Frame",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": false,
+      "baseline_cost": 450.00,
+      "tiers": {
+        "budget": "Local FB Marketplace Solid Wood ($120-$280)",
+        "value": "DreamCloud Platform / OrangeOne MCM ($280-$550)",
+        "premium": "Article / West Elm MCM Style ($550-$900)"
+      },
+      "notes": "MCM or Modern Rustic; Solid wood preferred for durability"
+    },
+    {
+      "item": "55\" 4K Smart TV",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 370.00,
+      "tiers": {
+        "budget": "Roku Select Series / Walmart Roku ($280-$350)",
+        "value": "TCL QM5K / Hisense U6 MiniLED ($350-$450)",
+        "premium": "Hisense CanvasTV / Samsung Frame ($450-$700)"
+      },
+      "notes": "Roku interface preferred for guest simplicity"
+    },
+    {
+      "item": "Hospitality Linens (Sets)",
+      "quantity": 2,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 200.00,
+      "tiers": {
+        "budget": "Quince Percale / Target Percale ($60-$90/set)",
+        "value": "Company Store / Casaluna 400TC ($90-$130/set)",
+        "premium": "Brooklinen / Parachute / Boll & Branch ($130-$220/set)"
+      },
+      "notes": "White 300TC+ Percale; buy 2 identical sets for rotation"
+    },
+    {
+      "item": "Solid Wood Dresser",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 250.00,
+      "tiers": {
+        "budget": "Local Marketplace / ReStore Hardwood ($140-$220)",
+        "value": "IKEA TARVA / SONGESAND ($220-$320)",
+        "premium": "Wayfair / Article Solid Wood ($320-$550)"
+      },
+      "notes": "Verify smooth drawer glide; swap hardware to Matte Black"
+    },
+    {
+      "item": "Accent Chairs",
+      "quantity": 2,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 450.00,
+      "tiers": {
+        "budget": "Local Used Cognac Leather ($140-$260/pair)",
+        "value": "Cleaven Bouclé / Wayfair Neutral ($260-$460/pair)",
+        "premium": "Brodee Bouclé / West Elm style ($460-$750/pair)"
+      },
+      "notes": "Define 'Retreat' vibe in 42\" corner pockets"
+    },
+    {
+      "item": "Nightstands",
+      "quantity": 2,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 160.00,
+      "tiers": {
+        "budget": "IKEA STORKLINTA 1-drawer / Used Wood ($100-$140/pair)",
+        "value": "STORKLINTA 2-drawer / SONGESAND ($140-$190/pair)",
+        "premium": "Slim MCM Wood / Wayfair ($190-$320/pair)"
+      },
+      "notes": "Max 30\" wide to maintain 36\" mobility paths"
+    },
+    {
+      "item": "USB/Lamp System",
+      "quantity": 2,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 100.00,
+      "tiers": {
+        "budget": "BICIK USB-A/C / Amazon Budget ($70-$90/pair)",
+        "value": "Cinkeda Dimmable USB-C/A ($90-$120/pair)",
+        "premium": "NatySwan Stepless Dimmable ($120-$180/pair)"
+      },
+      "notes": "Must include both USB-A and USB-C ports"
+    },
+    {
+      "item": "Blackout Curtains",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 50.00,
+      "tiers": {
+        "budget": "Sun Zero / Mainstays Blackout ($30-$45)",
+        "value": "IKEA MAJGULL / Better Homes ($45-$80)",
+        "premium": "Pottery Barn / West Elm Heavy Linen ($80-$180)"
+      },
+      "notes": "Floor-to-ceiling; neutral charcoal or grey"
+    },
+    {
+      "item": "Area Rug (8x10)",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 190.00,
+      "tiers": {
+        "budget": "Mojave Low-pile / Rugs.com ($120-$190)",
+        "value": "Oxford Cream / Target Washable-adj ($190-$280)",
+        "premium": "Ruggable / West Elm Wool ($280-$520)"
+      },
+      "notes": "Dampen acoustics; keep pile low for cleaning"
+    },
+    {
+      "item": "Full-Length Mirror",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 170.00,
+      "tiers": {
+        "budget": "IKEA LINDBYN / Arched Floor Mirror ($70-$100)",
+        "value": "Target Threshold Arch / IKEA HOVET ($100-$170)",
+        "premium": "CB2 Oversized / West Elm ($170-$320)"
+      },
+      "notes": "Strategic visual depth for photos"
+    },
+    {
+      "item": "Luggage Racks",
+      "quantity": 2,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 50.00,
+      "tiers": {
+        "budget": "K and B Folding / Amazon Budget ($35-$45/pair)",
+        "value": "Winsome Raya w/ shelf ($45-$70/pair)",
+        "premium": "Hotel-style Wood Racks ($70-$120/pair)"
+      },
+      "notes": "Foldable storage in closet"
+    }
+  ],
+  "total_baseline_cost": 3289.00
+}

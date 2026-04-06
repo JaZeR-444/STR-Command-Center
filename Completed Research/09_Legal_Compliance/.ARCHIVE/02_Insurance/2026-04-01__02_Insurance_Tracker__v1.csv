@@ -1,0 +1,5 @@
+policy_id,policy_type,carrier,policy_number,coverage_limit_usd,deductible_usd,effective_date,renewal_date,str_endorsement_confirmed,status,last_verified_date,owner,notes
+INS-001,Homeowners Dwelling,To Be Selected,TBD,TBD,TBD,TBD,TBD,No,Researching,2026-04-01,Owner,Confirm policy allows short-term rental activity
+INS-002,Commercial Liability or STR Liability Rider,To Be Selected,TBD,TBD,TBD,TBD,TBD,No,Researching,2026-04-01,Owner,Need liability coverage aligned to guest occupancy and usage
+INS-003,Loss of Income Coverage,To Be Selected,TBD,TBD,TBD,TBD,TBD,No,Researching,2026-04-01,Owner,Confirm business interruption language for STR operations
+INS-004,Umbrella Liability,To Be Selected,TBD,TBD,TBD,TBD,TBD,No,Optional Review,2026-04-01,Owner,Evaluate based on final risk tolerance

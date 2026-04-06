@@ -1,0 +1,6 @@
+reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
+BUD-005-ERR-01,Emergency Plumbing Call,Restoration,Critical,750.00,500.00,250.00,Active,Reserve for major leaks or clogs
+BUD-005-ERR-02,Lockout/Smart Lock Failure,Restoration,High,500.00,450.00,50.00,Active,Physical key intervention or locksmith
+BUD-005-ERR-03,Appliance Repair Fee,Restoration,High,500.00,500.00,0.00,Active,Dishwasher or Range troubleshooting
+BUD-005-ERR-04,Handyman "First-Month Friction",Restoration,Medium,500.00,500.00,0.00,Active,Addressing loose handles/hinges
+BUD-005-ERR-05,Pest Control Intervention,Restoration,Medium,250.00,250.00,0.00,Active,Immediate treatment for Austin ants/scorpions

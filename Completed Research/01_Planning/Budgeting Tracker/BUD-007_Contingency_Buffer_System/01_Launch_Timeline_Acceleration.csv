@@ -1,0 +1,4 @@
+drawdown_id,risk_id,task_name,priority,est_impact,actual_spend,status,trigger_event,notes
+BUD-007-TIM-01,RSK-001,Expedited Shipping (Primary Rug),High,200.00,0.00,Open,Vendor delay impacts photo date,Neutralize 3-day slip
+BUD-007-TIM-02,RSK-004,Handyman Overtime (Staging),High,300.00,0.00,Open,Install collision with cleaning date,Neutralize 24hr readiness slip
+BUD-007-TIM-03,RSK-002,Cleaning Deep-Dive Recovery,Medium,500.00,0.00,Open,Initial post-install dust failure,Protect 5-star sentiment

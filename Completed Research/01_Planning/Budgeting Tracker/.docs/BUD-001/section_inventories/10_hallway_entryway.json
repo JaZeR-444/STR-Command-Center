@@ -1,0 +1,100 @@
+{
+  "room_id": "hallway_entryway",
+  "room_name": "Hallway & Entryway (The Stiletto Scale)",
+  "strategic_focus": "First-impression polish / corridor scale / Frictionless entry",
+  "tiered_strategy": "Value Smart Lock / Long Runner Rug / Gallery Styling",
+  "inventory": [
+    {
+      "item": "Entry Console Table",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": false,
+      "baseline_cost": 200.00,
+      "tiers": {
+        "budget": "Local Slim Console / IKEA LACK ($120-$200)",
+        "value": "IKEA LISTERBY / Plank+Beam 66in ($200-$320)",
+        "premium": "West Elm Entry / CB2 Console ($320-$900)"
+      },
+      "notes": "Slim profile; Max 12\" depth preferred to preserve hallway width"
+    },
+    {
+      "item": "Extra-Long Runner Rug (12-14ft)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 140.00,
+      "tiers": {
+        "budget": "Safavieh Montauk / Unique Loom Warrior ($90-$120)",
+        "value": "Unique Loom Modern / Target Long Segment ($120-$200)",
+        "premium": "West Elm Premium / Ruggable Runner ($200-$550)"
+      },
+      "notes": "Defines the 158\" scale; High-contrast pattern preferred"
+    },
+    {
+      "item": "Smart Lock",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 289.00,
+      "tiers": {
+        "budget": "eufy C30 / Entry Smart Deadbolt ($80-$140)",
+        "value": "Schlage Encode / Yale Assure Lock 2 ($140-$300)",
+        "premium": "Schlage Encode Plus / August Premium ($300-$500)"
+      },
+      "notes": "Frictionless check-in; Wi-fi integrated for remote codes"
+    },
+    {
+      "item": "Gallery Wall Art",
+      "quantity": 3,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Threshold Set of 3 / Budget Fill ($80-$120)",
+        "value": "Mixed Medium Framed / local Austin Prints ($120-$180)",
+        "premium": "Custom Framed Local Set ($180-$500)"
+      },
+      "notes": "Canvas based for acoustic benefit; signals local identity"
+    },
+    {
+      "item": "Key/Mail Bowl",
+      "quantity": 1,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 20.00,
+      "tiers": {
+        "budget": "IKEA KEJSARFISK / Decorative Bowl ($8-$15)",
+        "value": "Threshold Ceramic / Neutral Tray Combo ($15-$25)",
+        "premium": "Designer Catchall Bowl ($25-$80)"
+      },
+      "notes": "Small styling detail for guest drop zone"
+    },
+    {
+      "item": "Wall-Mounted Coat Hooks",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 30.00,
+      "tiers": {
+        "budget": "Brightroom Individual / Threshold Rail ($16-$26)",
+        "value": "Accordion Rail / Umbra Flip Rail ($26-$45)",
+        "premium": "Designer Hook Rail Segment ($45-$150)"
+      },
+      "notes": "Matte black modern hardware"
+    },
+    {
+      "item": "Full-Length Mirror",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 100.00,
+      "tiers": {
+        "budget": "MyDepot Arched / 65in Entry Mirror ($70-$95)",
+        "value": "IKEA KARMSUND / IKEA LINDBYN ($95-$140)",
+        "premium": "West Elm / CB2 Oversized ($140-$350)"
+      },
+      "notes": "Visual depth for the 'Stiletto' architectural shot"
+    }
+  ],
+  "total_baseline_cost": 929.00
+}

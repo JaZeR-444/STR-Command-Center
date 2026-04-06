@@ -1,0 +1,2 @@
+budget_id,source_system_path,planned_investment,actual_spend,status,next_action,notes
+BUD-006,"..\BUD-006_Compliance_and_Insurance_System\00_MASTER_COMPLIANCE_ROLLUP.csv",6750.00,0.00,placeholder_synced,"maintain weekly sync to global dashboard","placeholder tab retained per master v2.1 requirement"

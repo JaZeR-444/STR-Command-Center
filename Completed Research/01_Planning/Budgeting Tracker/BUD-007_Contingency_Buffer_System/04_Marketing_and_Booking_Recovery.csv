@@ -1,0 +1,4 @@
+drawdown_id,risk_id,task_name,priority,est_impact,actual_spend,status,trigger_event,notes
+BUD-007-MBR-01,RSK-005,Emergency SEO/Listing Boost,Medium,200.00,0.00,Open,Booking pace < 50% target week 2,Restore lead flow
+BUD-007-MBR-02,RSK-005,Premium Welcome Amenity Add,Medium,150.00,0.00,Open,Initial occupancy lag,Increase conversion value
+BUD-007-MBR-03,RSK-005,Hero Shot Reshoot (Lighting),Medium,150.00,0.00,Open,Low CTR on first 100 views,CTR recovery

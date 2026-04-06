@@ -1,0 +1,6 @@
+rule_id,rule_category,source_authority,rule_summary,applies_to_property,violation_risk_level,current_compliance_status,last_verified_date,owner,notes
+REG-001,STR Permission,City or Local Code,Confirm STR use is permitted at property address,Verify,High,Researching,2026-04-01,Owner,Must be verified before listing activation
+REG-002,Occupancy Limits,City Code and HOA if applicable,Confirm max guest occupancy and bedroom-based limits,Yes,High,Researching,2026-04-01,Owner,Align listing max occupancy to strictest valid limit
+REG-003,Noise and Quiet Hours,Local ordinance and HOA,Document enforceable quiet hours for house rules,Yes,Medium,Researching,2026-04-01,Owner,Map to guest manual and check-in messaging
+REG-004,Parking Rules,HOA and local parking rules,Confirm allowed parking count and restrictions,Yes,Medium,Researching,2026-04-01,Owner,Add to listing and house manual once verified
+REG-005,Trash and Collection Rules,HOA and city services,Confirm bin placement and collection day requirements,Yes,Low,Researching,2026-04-01,Owner,Prevent neighbor complaints and fines
