@@ -28,11 +28,11 @@ export function ProgressBar({
   };
 
   const getBarColor = () => {
-    if (percentage >= 100) return 'bg-gradient-to-r from-emerald-500 to-emerald-400';
-    if (percentage >= 75) return 'bg-gradient-to-r from-emerald-500 to-emerald-400';
-    if (percentage >= 50) return 'bg-gradient-to-r from-amber-500 to-amber-400';
-    if (percentage >= 25) return 'bg-gradient-to-r from-orange-500 to-orange-400';
-    return 'bg-gradient-to-r from-indigo-500 to-purple-500';
+    if (percentage >= 100) return 'bg-gradient-to-r from-emerald-400 via-emerald-300 to-cyan-300';
+    if (percentage >= 75) return 'bg-gradient-to-r from-emerald-400 to-cyan-300';
+    if (percentage >= 50) return 'bg-gradient-to-r from-amber-300 to-yellow-200';
+    if (percentage >= 25) return 'bg-gradient-to-r from-[#9bc2ff] to-[#6f93c5]';
+    return 'bg-gradient-to-r from-[#657991] to-[#89a8cd]';
   };
 
   return (
@@ -45,13 +45,13 @@ export function ProgressBar({
       )}
       <div
         className={cn(
-          'w-full bg-bg-surface rounded-full overflow-hidden border border-border-dark',
+          'w-full rounded-full overflow-hidden border border-white/10 bg-white/[0.04]',
           sizeClasses[size]
         )}
       >
         <div
           className={cn(
-            'h-full transition-all duration-500 ease-out',
+            'h-full transition-all duration-700 ease-out shadow-[0_0_18px_rgba(138,180,255,0.18)]',
             getBarColor(),
             barClassName
           )}

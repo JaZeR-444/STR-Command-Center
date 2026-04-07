@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { RoadmapEditDrawer } from '@/components/roadmap-edit-drawer';
+import { TaskQuickActions } from '@/components/task-quick-actions';
 import { TaskListSkeleton } from '@/components/ui/skeleton';
 import { cn, getProgressColor } from '@/lib/utils';
 import type { Task, TaskTiming } from '@/types';
@@ -123,6 +124,7 @@ function CategoryGroup({
   onTaskClick,
   toggleTask,
   togglePin,
+  setTaskStatus,
 }: {
   category: string;
   tasks: Task[];
@@ -132,6 +134,7 @@ function CategoryGroup({
   onTaskClick: (task: Task, e: React.MouseEvent) => void;
   toggleTask: (id: number) => void;
   togglePin: (id: number) => void;
+  setTaskStatus: (id: number, status: 'default' | 'blocked' | 'in-progress' | 'na') => void;
 }) {
   const completedCount = tasks.filter(t => state.completedIds.includes(t.id)).length;
   const isAllDone = completedCount === tasks.length;
@@ -252,29 +255,31 @@ function CategoryGroup({
                     </div>
                   </div>
 
-                  {/* ── #2 HIGH IMPACT: Inline Pin Button ── */}
-                  <button
-                    onClick={e => { e.stopPropagation(); togglePin(task.id); }}
-                    title={isPinned ? 'Unpin task' : 'Pin to dashboard'}
-                    className={cn(
-                      'shrink-0 mt-0.5 p-1 rounded-md transition-all duration-150',
-                      isPinned
-                        ? 'text-amber-400 opacity-100'
-                        : 'text-zinc-700 opacity-0 group-hover:opacity-100 hover:text-amber-400 hover:bg-zinc-800'
-                    )}
-                  >
-                    <svg className="w-3.5 h-3.5" fill={isPinned ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                  </button>
-
-                  {/* Edit chevron — only visible on hover */}
-                  <svg
-                    className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-500 transition-colors shrink-0 mt-0.5 opacity-0 group-hover:opacity-100"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  {/* ── HOVER QUICK ACTIONS (NEW) ── */}
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <TaskQuickActions
+                      taskId={task.id}
+                      isCompleted={isCompleted}
+                      isPinned={isPinned}
+                      isBlocked={status === 'blocked'}
+                      hasNote={hasNote}
+                      onToggleComplete={() => toggleTask(task.id)}
+                      onTogglePin={() => togglePin(task.id)}
+                      onToggleBlocked={() => {
+                        if (status === 'blocked') {
+                          setTaskStatus(task.id, 'default');
+                        } else {
+                          setTaskStatus(task.id, 'blocked');
+                        }
+                      }}
+                      onAddNote={() => {
+                        // Simulate click to open drawer
+                        const e = { stopPropagation: () => {}, preventDefault: () => {} } as React.MouseEvent;
+                        onTaskClick(task, e);
+                      }}
+                      className="mr-2"
+                    />
+                  </div>
                 </div>
               );
             })}
@@ -291,7 +296,7 @@ function RoadmapContent() {
   const searchParams = useSearchParams();
   const initialSection = searchParams.get('section') || sections[0];
 
-  const { state, isLoaded, toggleTask, togglePin, toggleCategory, isCategoryCollapsed } = useApp();
+  const { state, isLoaded, toggleTask, togglePin, setTaskStatus, toggleCategory, isCategoryCollapsed } = useApp();
   const [selectedSection, setSelectedSection] = useState(initialSection);
   const [timingFilter, setTimingFilter] = useState<'All' | TaskTiming>('All');
   const [completionFilter, setCompletionFilter] = useState<'all' | 'incomplete' | 'complete'>('all');
@@ -522,6 +527,7 @@ function RoadmapContent() {
                   onTaskClick={handleTaskClick}
                   toggleTask={toggleTask}
                   togglePin={togglePin}
+                  setTaskStatus={setTaskStatus}
                 />
               );
             })}

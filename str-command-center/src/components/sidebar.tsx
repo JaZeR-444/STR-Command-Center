@@ -74,10 +74,18 @@ export function Sidebar() {
     if (isLoaded) setDaysToLaunch(getDaysUntilLaunch(state.launchDate));
   }, [isLoaded, state.launchDate]);
 
+  // Update CSS variable for sidebar width to adjust main content margin
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--sidebar-width',
+      isCollapsed ? '72px' : '240px'
+    );
+  }, [isCollapsed]);
+
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col h-screen bg-zinc-950 border-r border-zinc-800/80 transition-all duration-300 ease-in-out shrink-0 select-none overflow-hidden relative z-50 shadow-2xl',
+        'hidden lg:flex flex-col h-screen glass-heavy transition-all duration-300 ease-in-out shrink-0 select-none overflow-hidden fixed left-0 top-0 z-50',
         isCollapsed ? 'w-[72px]' : 'w-[240px]'
       )}
     >
@@ -91,7 +99,7 @@ export function Sidebar() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cn(
-            'flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-inner hover:bg-blue-500/20 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 shrink-0',
+            'flex items-center justify-center rounded-2xl premium-pill text-[#bdd5ff] hover:border-white/20 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[rgba(138,180,255,0.4)] shrink-0',
             isCollapsed ? 'w-10 h-10' : 'w-8 h-8'
           )}
           title={isCollapsed ? 'Expand Control Strip' : 'Collapse Control Strip'}
@@ -104,11 +112,11 @@ export function Sidebar() {
 
         {!isCollapsed && (
             <Link href="/" className="flex flex-col min-w-0 outline-none flex-1 group">
-              <h1 className="text-sm font-extrabold text-zinc-100 uppercase tracking-wide leading-tight group-hover:text-blue-400 transition-colors">
-                STR Launch
+              <h1 className="text-lg font-display font-semibold text-zinc-50 leading-tight tracking-tight group-hover:text-[#f6e7c4] transition-colors">
+                STR Operations
               </h1>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mt-0.5 truncate">
-                Austin Operations
+              <p className="text-[10px] text-zinc-500 uppercase tracking-[0.28em] font-semibold mt-0.5 truncate">
+                Austin Command Suite
               </p>
             </Link>
         )}
@@ -117,25 +125,25 @@ export function Sidebar() {
       {/* ── Context Board (Health Signals) ── */}
       {!isCollapsed && (
         <div className="px-5 mb-4">
-          <div className="bg-zinc-900/50 border border-zinc-800/60 rounded-xl p-3 flex flex-col gap-3 shadow-inner">
+          <div className="premium-pill rounded-[1.4rem] p-4 flex flex-col gap-3">
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5">Countdown</p>
-                <p className="text-lg font-bold text-zinc-200 leading-none">
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.24em] mb-1">Launch Window</p>
+                <p className="text-xl font-semibold text-zinc-100 leading-none">
                   {daysToLaunch} <span className="text-xs text-zinc-500 font-medium">days</span>
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5">Readiness</p>
-                <p className={cn("text-lg font-bold leading-none", overallStats.percentage === 100 ? 'text-emerald-400' : 'text-amber-400')}>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.24em] mb-1">Readiness</p>
+                <p className={cn("text-xl font-semibold leading-none", overallStats.percentage === 100 ? 'text-emerald-300' : 'text-[#f1d39a]')}>
                   {overallStats.percentage}%
                 </p>
               </div>
             </div>
             
-            <div className="w-full h-1 bg-zinc-950 rounded-full overflow-hidden">
+            <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
               <div 
-                className={cn("h-full transition-all duration-500", overallStats.percentage === 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-blue-500 to-amber-400')}
+                className={cn("h-full transition-all duration-500", overallStats.percentage === 100 ? 'bg-emerald-400' : 'bg-gradient-to-r from-[#8ab4ff] to-[#d9b36c]')}
                 style={{ width: `${overallStats.percentage}%` }}
               />
             </div>
@@ -143,7 +151,7 @@ export function Sidebar() {
             {blockedTasks.length > 0 && (
               <div className="flex items-center gap-2 mt-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-[10px] text-red-400 font-bold tracking-wide uppercase">
+                <span className="text-[10px] text-red-300 font-bold tracking-[0.22em] uppercase">
                   {blockedTasks.length} Blocked Items
                 </span>
               </div>
@@ -155,7 +163,7 @@ export function Sidebar() {
       {/* ── Primary Navigation ── */}
       <nav className="flex-1 overflow-y-auto px-3 sidebar-scrollbar">
         {!isCollapsed && (
-          <p className="px-2 text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-2 mt-2">
+          <p className="px-2 text-[10px] font-bold text-zinc-600 uppercase tracking-[0.28em] mb-2 mt-2">
             Workflows
           </p>
         )}
@@ -184,16 +192,16 @@ export function Sidebar() {
                   href={item.href}
                   title={isCollapsed ? item.label : undefined}
                   className={cn(
-                    'relative flex items-center rounded-xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 group',
+                    'relative flex items-center rounded-2xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4ff] group',
                     isCollapsed ? 'justify-center h-12 w-12 mx-auto my-0.5' : 'px-3 py-2.5 gap-3',
                     isActive
-                      ? 'bg-blue-500/10 text-blue-400 font-bold'
-                      : 'text-zinc-400 hover:bg-zinc-900/80 hover:text-zinc-200'
+                      ? 'premium-pill text-white font-bold'
+                      : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
                   )}
                 >
                   {/* Active Indicator Bar */}
                   {isActive && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-500 rounded-r-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#d9b36c] rounded-r-full shadow-[0_0_12px_rgba(217,179,108,0.45)]" />
                   )}
 
                   {/* Icon */}
@@ -214,7 +222,7 @@ export function Sidebar() {
                         isCollapsed 
                           ? 'absolute top-2 right-2 w-4 h-4 text-[9px] rounded-full ring-2 ring-zinc-950' 
                           : 'px-2 py-0.5 text-[10px] rounded-full',
-                        badgeVariant === 'error' ? 'bg-red-500 text-white shadow-[0_0_8px_rgba(239,68,68,0.3)]' : 'bg-amber-500/20 text-amber-500 border border-amber-500/20'
+                        badgeVariant === 'error' ? 'bg-red-500 text-white shadow-[0_0_8px_rgba(239,68,68,0.3)]' : 'bg-[#d9b36c]/15 text-[#f1d39a] border border-[#d9b36c]/20'
                       )}
                     >
                       {badgeCount}
@@ -237,7 +245,7 @@ export function Sidebar() {
             document.dispatchEvent(ev);
           }}
           className={cn(
-            'flex items-center rounded-xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-zinc-400 hover:bg-zinc-900/80 hover:text-zinc-200 group relative',
+            'flex items-center rounded-2xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4ff] text-zinc-400 hover:bg-white/5 hover:text-zinc-100 group relative',
             isCollapsed ? 'justify-center h-12 w-12 mx-auto' : 'px-3 py-2.5 gap-3 w-full'
           )}
           title={isCollapsed ? 'Search (Ctrl+K)' : undefined}
@@ -250,7 +258,7 @@ export function Sidebar() {
           {!isCollapsed && (
             <>
               <span className="flex-1 truncate text-left tracking-wide">Search</span>
-              <span className="text-[10px] font-mono bg-zinc-800/60 px-1.5 py-0.5 rounded text-zinc-500 border border-zinc-700/50">⌘K</span>
+              <span className="text-[10px] font-mono premium-pill px-1.5 py-0.5 rounded-md text-zinc-400">⌘K</span>
             </>
           )}
         </button>
@@ -260,13 +268,13 @@ export function Sidebar() {
           href="/settings"
           title={isCollapsed ? 'Settings' : undefined}
           className={cn(
-            'flex items-center rounded-xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-zinc-400 hover:bg-zinc-900/80 hover:text-zinc-200 group relative',
+            'flex items-center rounded-2xl text-sm font-semibold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4ff] text-zinc-400 hover:bg-white/5 hover:text-zinc-100 group relative',
             isCollapsed ? 'justify-center h-12 w-12 mx-auto' : 'px-3 py-2.5 gap-3',
-            pathname === '/settings' && 'bg-blue-500/10 text-blue-400 font-bold'
+            pathname === '/settings' && 'premium-pill text-white font-bold'
           )}
         >
           {pathname === '/settings' && (
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-500 rounded-r-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#d9b36c] rounded-r-full shadow-[0_0_12px_rgba(217,179,108,0.45)]" />
           )}
           <span className="flex items-center justify-center shrink-0">
             <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +288,7 @@ export function Sidebar() {
         {!isCollapsed && (
           <div className="flex items-center justify-center gap-1.5 mt-2 opacity-50 hover:opacity-100 transition-opacity">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] font-bold text-zinc-400 tracking-widest uppercase">System Synced</span>
+            <span className="text-[9px] font-bold text-zinc-400 tracking-[0.24em] uppercase">System Synced</span>
           </div>
         )}
       </div>

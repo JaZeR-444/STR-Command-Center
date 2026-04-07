@@ -2,98 +2,154 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useApp } from '@/lib/context';
+import { getBlockedTasks, getOverallStats } from '@/lib/selectors';
 
 const navItems = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/roadmap', label: 'Roadmap' },
-  { href: '/documents', label: 'Documents' },
-  { href: '/focus', label: 'Focus' },
-  { href: '/settings', label: 'Settings' },
+  { 
+    href: '/', 
+    label: 'Dash',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    )
+  },
+  { 
+    href: '/roadmap', 
+    label: 'Roadmap',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+    )
+  },
+  { 
+    href: '/documents', 
+    label: 'Docs',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+      </svg>
+    )
+  },
+  { 
+    href: '/focus', 
+    label: 'Focus',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    )
+  },
 ];
 
 export function MobileNav() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const { state, isLoaded } = useApp();
+  
+  const blockedTasks = isLoaded ? getBlockedTasks(state) : [];
+  const overallStats = isLoaded ? getOverallStats(state) : { percentage: 0 };
 
   return (
     <>
-      {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-40 bg-bg-dark/95 backdrop-blur-sm border-b border-border-dark">
-        <div className="flex items-center justify-between px-4 py-3">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/5"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <h1 className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            Launch Center
-          </h1>
-          <Link href="/focus" className="text-amber-400/70 p-1.5 rounded-lg hover:bg-amber-500/10">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+      {/* Mobile Top Header (Sticky) */}
+      <header className="lg:hidden sticky top-0 z-40 glass-heavy border-b border-white/10 shadow-md">
+        <div className="flex items-center justify-between px-5 py-3">
+          <Link href="/" className="flex flex-col min-w-0 pointer-events-auto">
+            <h1 className="text-lg font-display font-semibold text-white leading-tight">
+              STR Operations
+            </h1>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <p className="text-[9px] text-zinc-500 uppercase tracking-[0.24em] font-semibold">
+                Live Sync
+              </p>
+            </div>
           </Link>
+
+          <div className="flex items-center gap-3">
+            {/* Rapid Context Block */}
+            <div className="text-right flex flex-col items-end">
+              <span className="text-[9px] uppercase tracking-[0.24em] text-zinc-500 font-bold">Readiness</span>
+              <span className={cn("text-xs font-bold", overallStats.percentage === 100 ? 'text-emerald-300' : 'text-[#f1d39a]')}>
+                {overallStats.percentage}%
+              </span>
+            </div>
+
+            {/* Global Search / Command trigger */}
+            <button
+              onClick={() => {
+                const ev = new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true });
+                document.dispatchEvent(ev);
+              }}
+              className="w-8 h-8 flex flex-col items-center justify-center rounded-full premium-pill text-zinc-300 hover:text-white"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            
+            {/* Settings Link */}
+            <Link 
+              href="/settings"
+              className={cn(
+                "w-8 h-8 flex items-center justify-center rounded-full border transition-all",
+                pathname === '/settings' ? "premium-pill border-white/15 text-white" : "premium-pill text-zinc-300 hover:text-white"
+              )}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* Progress Bar Ribbon */}
+        <div className="w-full h-0.5 bg-white/5 absolute bottom-0 left-0">
+          <div className="h-full bg-gradient-to-r from-[#8ab4ff] to-[#d9b36c] transition-all duration-500" style={{ width: `${overallStats.percentage}%` }} />
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 z-50 bg-black/50"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Mobile Menu Drawer */}
-      <div
-        className={cn(
-          'lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-card-dark border-r border-border-dark',
-          'transform transition-transform duration-300',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        )}
-      >
-        <div className="p-6 border-b border-border-dark flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              Launch Center
-            </h1>
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">
-              Austin STR Operations
-            </p>
-          </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-slate-400 hover:text-white"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <nav className="p-4 space-y-1">
-          {navItems.map(item => (
+      {/* Mobile Bottom Tab Bar (iOS style) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 z-50 w-full h-[76px] glass-heavy border-t border-white/10 flex items-center justify-around pb-safe safe-area-bottom">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          const isFocus = item.label === 'Focus';
+          
+          return (
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all',
-                pathname === item.href
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white'
-                  : 'text-slate-400 hover:bg-white/5'
-              )}
+              className="relative w-full h-full flex flex-col items-center justify-center gap-1 min-w-[64px]"
             >
-              {item.label}
+              {isActive && (
+                <div className="absolute top-0 w-1/2 h-[3px] bg-[#d9b36c] rounded-b-full shadow-[0_0_10px_rgba(217,179,108,0.5)]" />
+              )}
+              
+              <div className={cn(
+                "relative flex items-center justify-center transition-transform active:scale-90",
+                isActive ? (isFocus ? "text-red-300" : "text-[#f1d39a]") : "text-zinc-500"
+              )}>
+                {item.icon}
+                
+                {isFocus && blockedTasks.length > 0 && (
+                  <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-zinc-950">
+                    {blockedTasks.length}
+                  </span>
+                )}
+              </div>
+              
+              <span className={cn(
+                "text-[10px] uppercase font-bold tracking-[0.2em]",
+                isActive ? (isFocus ? "text-red-300" : "text-zinc-100") : "text-zinc-500"
+              )}>
+                {item.label}
+              </span>
             </Link>
-          ))}
-        </nav>
-      </div>
+          );
+        })}
+      </nav>
     </>
   );
 }

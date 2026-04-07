@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import type { AppState, TaskStatus } from '@/types';
+import type { AppState, TaskStatus, DocumentStatus } from '@/types';
 import { loadState, saveState, DEFAULT_STATE, exportState, importState, clearState, getLocalUpdatedAt } from './storage';
 import { clearRemoteState, isCloudSyncConfigured, loadRemoteState, saveRemoteState } from './supabase';
 
@@ -11,11 +11,19 @@ interface AppContextType {
   toggleTask: (taskId: number) => void;
   setTaskStatus: (taskId: number, status: TaskStatus) => void;
   setTaskNote: (taskId: number, note: string) => void;
+  setTaskPriority: (taskId: number, priority: import('@/types').TaskPriority) => void;
+  setTaskEstimate: (taskId: number, minutes: number) => void;
+  setTaskOwner: (taskId: number, owner: string) => void;
   togglePin: (taskId: number) => void;
   // Document actions
   toggleDoc: (docId: string) => void;
   setDocNote: (docId: string, note: string) => void;
-  setDocAttachment: (docId: string, fileName?: string, fileSize?: number) => void;
+  addDocAttachment: (docId: string, attachment: { id: string; name: string; size: number; type: string }) => void;
+  removeDocAttachment: (docId: string, attachmentId: string) => void;
+  updateDocStatus: (docId: string, status: DocumentStatus) => void;
+  appendAuditLog: (docId: string, action: string, actor: string) => void;
+  setSmartTags: (docId: string, tags: { key: string; value: string }[]) => void;
+  setDocumentViewMode: (mode: 'list' | 'grid') => void;
   // Settings
   setLaunchDate: (date: string) => void;
   // Data management
@@ -25,6 +33,20 @@ interface AppContextType {
   // Category collapse
   toggleCategory: (category: string) => void;
   isCategoryCollapsed: (category: string) => boolean;
+  // Preferences
+  toggleAutoCollapse: () => void;
+  toggleCategoryLock: (category: string) => void;
+  isCategoryLocked: (category: string) => boolean;
+  addSearchHistory: (term: string) => void;
+  clearSearchHistory: () => void;
+  setExpandAllForSection: (section: string, expanded: boolean) => void;
+  // Undo/Redo
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  // Activity log
+  getRecentActivity: (limit?: number) => import('@/types').ActivityEntry[];
   // Loading state
   isLoaded: boolean;
   cloudSyncStatus: 'disabled' | 'connecting' | 'online' | 'error';
@@ -182,7 +204,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const newCompletedDocIds = isCompleted
         ? prev.completedDocIds.filter(id => id !== docId)
         : [...prev.completedDocIds, docId];
-      const newState = { ...prev, completedDocIds: newCompletedDocIds };
+        
+      const newStatus = isCompleted ? 'missing' : 'verified';
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          status: newStatus as DocumentStatus,
+        },
+      };
+
+      const newState = { ...prev, completedDocIds: newCompletedDocIds, docMeta: newDocMeta };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -205,18 +237,110 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, [syncRemoteState]);
 
-  const setDocAttachment = useCallback((docId: string, fileName?: string, fileSize?: number) => {
+  const addDocAttachment = useCallback((docId: string, attachment: { id: string; name: string; size: number; type: string }) => {
+    setState(prev => {
+      const currentAttachments = prev.docMeta[docId]?.attachments || [];
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          attachments: [
+            ...currentAttachments,
+            { ...attachment, attachedAt: new Date().toISOString() },
+          ],
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const removeDocAttachment = useCallback((docId: string, attachmentId: string) => {
+    setState(prev => {
+      const currentAttachments = prev.docMeta[docId]?.attachments || [];
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          attachments: currentAttachments.filter(a => a.id !== attachmentId),
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const updateDocStatus = useCallback((docId: string, status: DocumentStatus) => {
     setState(prev => {
       const newDocMeta = {
         ...prev.docMeta,
         [docId]: {
           ...prev.docMeta[docId],
-          attachedFileName: fileName,
-          attachedFileSize: fileSize,
-          attachedAt: fileName ? new Date().toISOString() : undefined,
+          status,
+        },
+      };
+      // Keep legacy completedDocIds in sync
+      const isCurrentlyCompleted = prev.completedDocIds.includes(docId);
+      let newCompletedDocIds = prev.completedDocIds;
+      if (status === 'verified' && !isCurrentlyCompleted) {
+        newCompletedDocIds = [...prev.completedDocIds, docId];
+      } else if (status !== 'verified' && isCurrentlyCompleted) {
+        newCompletedDocIds = prev.completedDocIds.filter(id => id !== docId);
+      }
+
+      const newState = { ...prev, docMeta: newDocMeta, completedDocIds: newCompletedDocIds };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const appendAuditLog = useCallback((docId: string, action: string, actor: string) => {
+    setState(prev => {
+      const currentLog = prev.docMeta[docId]?.auditLog || [];
+      const newLogEntry = {
+        id: crypto.randomUUID(),
+        action,
+        actor,
+        timestamp: new Date().toISOString(),
+      };
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          auditLog: [newLogEntry, ...currentLog], // Prepend to show newest first!
         },
       };
       const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const setSmartTags = useCallback((docId: string, tags: { key: string; value: string }[]) => {
+    setState(prev => {
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          smartTags: tags,
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const setDocumentViewMode = useCallback((mode: 'list' | 'grid') => {
+    setState(prev => {
+      const newState = { ...prev, documentViewMode: mode };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -273,21 +397,222 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return state.collapsedCategories.includes(category);
   }, [state.collapsedCategories]);
 
+  // New task metadata actions
+  const setTaskPriority = useCallback((taskId: number, priority: import('@/types').TaskPriority) => {
+    setState(prev => {
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: { ...prev.taskMeta[taskId], priority },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const setTaskEstimate = useCallback((taskId: number, minutes: number) => {
+    setState(prev => {
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: { ...prev.taskMeta[taskId], estimatedMinutes: minutes },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const setTaskOwner = useCallback((taskId: number, owner: string) => {
+    setState(prev => {
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: { ...prev.taskMeta[taskId], owner },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  // Preferences
+  const toggleAutoCollapse = useCallback(() => {
+    setState(prev => {
+      const newState = {
+        ...prev,
+        preferences: {
+          ...DEFAULT_STATE.preferences,
+          ...prev.preferences,
+          autoCollapseCompleted: !(prev.preferences?.autoCollapseCompleted ?? false),
+        },
+      };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const toggleCategoryLock = useCallback((category: string) => {
+    setState(prev => {
+      const lockedCategories = prev.preferences?.lockedCategories ?? [];
+      const isLocked = lockedCategories.includes(category);
+      const newLocked = isLocked
+        ? lockedCategories.filter(c => c !== category)
+        : [...lockedCategories, category];
+      const newState = {
+        ...prev,
+        preferences: { 
+          ...DEFAULT_STATE.preferences, 
+          ...prev.preferences, 
+          lockedCategories: newLocked 
+        },
+      };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const isCategoryLocked = useCallback((category: string) => {
+    return state.preferences?.lockedCategories?.includes(category) ?? false;
+  }, [state.preferences?.lockedCategories]);
+
+  const addSearchHistory = useCallback((term: string) => {
+    if (!term.trim()) return;
+    setState(prev => {
+      const searchHistory = prev.preferences?.searchHistory ?? [];
+      const history = [term, ...searchHistory.filter(t => t !== term)].slice(0, 10);
+      const newState = {
+        ...prev,
+        preferences: { 
+          ...DEFAULT_STATE.preferences, 
+          ...prev.preferences, 
+          searchHistory: history 
+        },
+      };
+      saveState(newState);
+      return newState;
+    });
+  }, []);
+
+  const clearSearchHistory = useCallback(() => {
+    setState(prev => {
+      const newState = {
+        ...prev,
+        preferences: { 
+          ...DEFAULT_STATE.preferences, 
+          ...prev.preferences, 
+          searchHistory: [] 
+        },
+      };
+      saveState(newState);
+      return newState;
+    });
+  }, []);
+
+  const setExpandAllForSection = useCallback((section: string, expanded: boolean) => {
+    setState(prev => {
+      const expandAllBySection = prev.preferences?.expandAllBySection ?? {};
+      const newState = {
+        ...prev,
+        preferences: {
+          ...DEFAULT_STATE.preferences,
+          ...prev.preferences,
+          expandAllBySection: { ...expandAllBySection, [section]: expanded },
+        },
+      };
+      saveState(newState);
+      return newState;
+    });
+  }, []);
+
+  // Undo/Redo
+  const createUndoEntry = useCallback((action: string, prev: AppState, next: AppState): import('@/types').UndoEntry => {
+    return {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      action,
+      previousState: { completedIds: prev.completedIds, taskMeta: prev.taskMeta, pinnedIds: prev.pinnedIds },
+      newState: { completedIds: next.completedIds, taskMeta: next.taskMeta, pinnedIds: next.pinnedIds },
+    };
+  }, []);
+
+  const undo = useCallback(() => {
+    setState(prev => {
+      if (prev.undoStack.length === 0) return prev;
+      const entry = prev.undoStack[prev.undoStack.length - 1];
+      const newState = {
+        ...prev,
+        ...entry.previousState,
+        undoStack: prev.undoStack.slice(0, -1),
+        redoStack: [...prev.redoStack, entry],
+      };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const redo = useCallback(() => {
+    setState(prev => {
+      if (prev.redoStack.length === 0) return prev;
+      const entry = prev.redoStack[prev.redoStack.length - 1];
+      const newState = {
+        ...prev,
+        ...entry.newState,
+        redoStack: prev.redoStack.slice(0, -1),
+        undoStack: [...prev.undoStack, entry],
+      };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const canUndo = state.undoStack.length > 0;
+  const canRedo = state.redoStack.length > 0;
+
+  // Activity log
+  const getRecentActivity = useCallback((limit = 20) => {
+    return state.activityLog.slice(0, limit);
+  }, [state.activityLog]);
+
   const value: AppContextType = {
     state,
     toggleTask,
     setTaskStatus,
     setTaskNote,
+    setTaskPriority,
+    setTaskEstimate,
+    setTaskOwner,
     togglePin,
     toggleDoc,
     setDocNote,
-    setDocAttachment,
+    addDocAttachment,
+    removeDocAttachment,
+    updateDocStatus,
+    appendAuditLog,
+    setSmartTags,
+    setDocumentViewMode,
     setLaunchDate,
     exportData,
     importData,
     resetAll,
     toggleCategory,
     isCategoryCollapsed,
+    toggleAutoCollapse,
+    toggleCategoryLock,
+    isCategoryLocked,
+    addSearchHistory,
+    clearSearchHistory,
+    setExpandAllForSection,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    getRecentActivity,
     isLoaded,
     cloudSyncStatus,
     cloudSyncMessage,

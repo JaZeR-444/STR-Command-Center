@@ -22,7 +22,7 @@ export function Badge({ children, variant = 'default', timing, status, className
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase border',
+        'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em] border backdrop-blur-sm',
         styles,
         className
       )}

@@ -29,6 +29,15 @@ export const DEFAULT_STATE: AppState = {
   pinnedIds: [],
   launchDate: '2026-05-15',
   collapsedCategories: [],
+  activityLog: [],
+  undoStack: [],
+  redoStack: [],
+  preferences: {
+    autoCollapseCompleted: false,
+    lockedCategories: [],
+    searchHistory: [],
+    expandAllBySection: {},
+  },
 };
 
 // Safe JSON parse
@@ -93,6 +102,19 @@ export function loadState(): AppState {
       {}
     );
 
+    const activityLog = safeJsonParse<import('@/types').ActivityEntry[]>(
+      localStorage.getItem(`${STORAGE_PREFIX}activityLog`),
+      []
+    ).slice(0, 100); // Keep last 100 entries
+
+    const preferences = {
+      ...DEFAULT_STATE.preferences,
+      ...safeJsonParse<import('@/types').UserPreferences>(
+        localStorage.getItem(`${STORAGE_PREFIX}preferences`),
+        DEFAULT_STATE.preferences
+      ),
+    };
+
     return {
       completedIds,
       completedDocIds,
@@ -101,6 +123,10 @@ export function loadState(): AppState {
       pinnedIds,
       launchDate,
       collapsedCategories,
+      activityLog,
+      undoStack: [], // Don't persist undo stack
+      redoStack: [], // Don't persist redo stack
+      preferences,
     };
   } catch (error) {
     console.error('Failed to load state from localStorage:', error);
@@ -120,6 +146,8 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEYS.pinnedIds, JSON.stringify(state.pinnedIds));
     localStorage.setItem(STORAGE_KEYS.launchDate, state.launchDate);
     localStorage.setItem(STORAGE_KEYS.collapsedCategories, JSON.stringify(state.collapsedCategories));
+    localStorage.setItem(`${STORAGE_PREFIX}activityLog`, JSON.stringify(state.activityLog.slice(0, 100)));
+    localStorage.setItem(`${STORAGE_PREFIX}preferences`, JSON.stringify(state.preferences));
     localStorage.setItem(STORAGE_KEYS.updatedAt, new Date().toISOString());
   } catch (error) {
     console.error('Failed to save state to localStorage:', error);
@@ -184,6 +212,19 @@ export function importState(jsonString: string): { success: boolean; state?: App
       ? parsed.launchDate
       : DEFAULT_STATE.launchDate;
 
+    const collapsedCategories = Array.isArray(parsed.collapsedCategories)
+      ? parsed.collapsedCategories.filter((cat: unknown) => typeof cat === 'string')
+      : [];
+
+    const activityLog = Array.isArray(parsed.activityLog)
+      ? parsed.activityLog.slice(0, 100)
+      : [];
+
+    const preferences = {
+      ...DEFAULT_STATE.preferences,
+      ...(parsed.preferences && typeof parsed.preferences === 'object' ? parsed.preferences : {}),
+    };
+
     return {
       success: true,
       state: {
@@ -193,7 +234,11 @@ export function importState(jsonString: string): { success: boolean; state?: App
         docMeta: typeof parsed.docMeta === 'object' && parsed.docMeta ? parsed.docMeta : {},
         pinnedIds,
         launchDate,
-        collapsedCategories: [],
+        collapsedCategories,
+        activityLog,
+        undoStack: [],
+        redoStack: [],
+        preferences,
       },
     };
   } catch (error) {
