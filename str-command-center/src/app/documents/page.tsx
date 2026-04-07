@@ -1,370 +1,576 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { Suspense, useState, useMemo, useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useApp } from '@/lib/context';
-import { documentationData, documentsBySection, documentSections, documentTypes } from '@/data/documents';
+import { documentationData, documentSections, getDocShortSectionName, documentTypes } from '@/data/documents';
 import { isDocCompleted } from '@/lib/selectors';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input, Select } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { DocumentEditDrawer } from '@/components/document-edit-drawer';
 import { CardSkeleton } from '@/components/ui/skeleton';
 import { cn, getProgressColor } from '@/lib/utils';
+import type { DocumentArtifact } from '@/types';
 
-export default function DocumentsPage() {
-  const { state, isLoaded, toggleDoc } = useApp();
-  const [sectionFilter, setSectionFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [completionFilter, setCompletionFilter] = useState('all');
-  const [priorityFilter, setPriorityFilter] = useState<'all' | 'required' | 'optional'>('all');
+/* ─── Section Tab Strip ──────────────────────────────────────── */
+
+function SectionTabStrip({
+  sections,
+  selectedSection,
+  onSelect,
+  sectionStats,
+}: {
+  sections: string[];
+  selectedSection: string;
+  onSelect: (s: string) => void;
+  sectionStats: Record<string, { pct: number; missingRequired: number }>;
+}) {
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (activeRef.current && tabsRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [selectedSection]);
+
+  return (
+    <div className="relative">
+      <div
+        ref={tabsRef}
+        className="flex gap-1 overflow-x-auto pb-1 hide-scrollbar"
+        style={{ scrollbarWidth: 'none' }}
+      >
+        {sections.map((section) => {
+          const isActive = section === selectedSection;
+          const numMatch = section.match(/^\d+/);
+          const num = numMatch ? numMatch[0] : '00';
+          const name = getDocShortSectionName(section);
+          const stats = sectionStats[section] ?? { pct: 0, missingRequired: 0 };
+
+          return (
+            <button
+              key={section}
+              ref={isActive ? activeRef : undefined}
+              onClick={() => onSelect(section)}
+              className={cn(
+                'flex flex-col items-start gap-1 px-3 py-2.5 rounded-xl border shrink-0 transition-all duration-150 text-left min-w-[120px] max-w-[160px]',
+                isActive
+                  ? 'bg-blue-500/15 border-blue-500/40 text-white'
+                  : 'bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800/80 hover:border-zinc-700 hover:text-zinc-200'
+              )}
+            >
+              <div className="flex items-center justify-between w-full gap-1">
+                <span className={cn(
+                  'text-[9px] font-bold uppercase tracking-widest',
+                  isActive ? 'text-blue-400' : 'text-zinc-600'
+                )}>
+                  {num.padStart(2, '0')}
+                </span>
+                <div className="flex items-center gap-1 ml-auto">
+                  {stats.missingRequired > 0 && (
+                    <span className="w-3.5 h-3.5 rounded-full bg-amber-500/20 text-amber-400 text-[8px] font-bold flex items-center justify-center">
+                      !
+                    </span>
+                  )}
+                  <span className={cn(
+                    'text-[10px] font-bold',
+                    getProgressColor(stats.pct)
+                  )}>
+                    {stats.pct}%
+                  </span>
+                </div>
+              </div>
+              <span className="text-[11px] font-semibold leading-tight line-clamp-2 w-full">{name}</span>
+              <div className="w-full h-0.5 bg-zinc-800 rounded-full overflow-hidden mt-0.5">
+                <div
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500',
+                    stats.pct >= 100 ? 'bg-emerald-500' : stats.pct >= 50 ? 'bg-amber-500' : 'bg-blue-500'
+                  )}
+                  style={{ width: `${stats.pct}%` }}
+                />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="pointer-events-none absolute left-0 top-0 bottom-1 w-4 bg-gradient-to-r from-zinc-950 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-4 bg-gradient-to-l from-zinc-950 to-transparent" />
+    </div>
+  );
+}
+
+/* ─── Type Group ─────────────────────────────────────────── */
+
+function TypeGroup({
+  type,
+  docs,
+  state,
+  isCollapsed,
+  onToggleCollapse,
+  onDocClick,
+  toggleDoc,
+}: {
+  type: string;
+  docs: DocumentArtifact[];
+  state: ReturnType<typeof useApp>['state'];
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+  onDocClick: (doc: DocumentArtifact, e: React.MouseEvent) => void;
+  toggleDoc: (id: string) => void;
+}) {
+  const completedCount = docs.filter(d => state.completedDocIds.includes(d.id)).length;
+  const isAllDone = completedCount === docs.length;
+  // Type icon mapping
+  const getIcon = (type: string) => {
+    if (type.includes('Strategy')) return '♟️';
+    if (type.includes('Tracker') || type.includes('Spreadsheet')) return '📊';
+    if (type.includes('Checklist') || type.includes('List')) return '✅';
+    if (type.includes('Guide')) return '📖';
+    if (type.includes('Asset')) return '🖼️';
+    return '📄';
+  };
+
+  return (
+    <div>
+      <div
+        className="sticky top-[52px] z-10 bg-zinc-950/97 backdrop-blur-sm py-2.5 mb-2 border-b border-zinc-800/70 cursor-pointer select-none"
+        onClick={onToggleCollapse}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <svg
+              className={cn(
+                'w-3.5 h-3.5 text-zinc-600 shrink-0 transition-transform duration-200',
+                isCollapsed ? '-rotate-90' : 'rotate-0'
+              )}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+
+            {isAllDone ? (
+              <span className="w-1 h-5 bg-emerald-500 rounded-full shrink-0" />
+            ) : (
+              <span className="w-1 h-5 bg-blue-500 rounded-full shrink-0" />
+            )}
+
+            <span className="text-sm">{getIcon(type)}</span>
+            <h3 className={cn(
+              'text-sm font-bold truncate',
+              isAllDone ? 'text-zinc-500' : 'text-white'
+            )}>
+              {type}
+            </h3>
+
+            {isAllDone && (
+              <span className="text-[9px] px-1.5 py-0.5 bg-emerald-500/15 text-emerald-400 rounded-full font-bold uppercase tracking-wider shrink-0">
+                Done ✓
+              </span>
+            )}
+          </div>
+          <span className="text-xs text-zinc-600 font-medium shrink-0">
+            {completedCount}/{docs.length}
+          </span>
+        </div>
+      </div>
+
+      {!isCollapsed && (
+        <Card className="mb-4">
+          <div className="divide-y divide-zinc-800/60">
+            {docs.map(doc => {
+              const isCompleted = isDocCompleted(state, doc.id);
+              const isRequired = doc.timing === 'Pre-Listing';
+              const meta = state.docMeta[doc.id];
+              const hasAttachment = !!(meta && meta.attachedFileName);
+
+              return (
+                <div
+                  key={doc.id}
+                  className={cn(
+                    'flex items-start gap-4 p-4 hover:bg-zinc-900/40 transition-colors cursor-pointer group',
+                    isRequired && !isCompleted && 'bg-amber-500/5 border-l-2 border-l-amber-500'
+                  )}
+                  onClick={(e) => onDocClick(doc, e)}
+                >
+                  <div className="mt-0.5 shrink-0" onClick={e => { e.stopPropagation(); toggleDoc(doc.id); }}>
+                    <Checkbox checked={isCompleted} onChange={() => toggleDoc(doc.id)} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <p className={cn(
+                        'text-sm font-bold leading-snug',
+                        isCompleted ? 'text-zinc-500 line-through' : 'text-zinc-200'
+                      )}>
+                        {doc.artifact}
+                      </p>
+                      {isRequired && !isCompleted && (
+                        <Badge variant="status" status="blocked">Required</Badge>
+                      )}
+                      {isCompleted && (
+                        <span className="text-emerald-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Ready
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-zinc-500 line-clamp-2 mb-2">
+                      {doc.description}
+                    </p>
+
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="timing" timing={doc.timing}>{doc.timing}</Badge>
+                      
+                      {/* File attachment indicator */}
+                      {hasAttachment && (
+                        <span className="text-[10px] px-1.5 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded flex items-center gap-1.5 font-semibold">
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                          </svg>
+                          Linked
+                        </span>
+                      )}
+                      
+                      {/* Note indicator */}
+                      {meta?.note && (
+                        <span className="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-zinc-400 border border-zinc-700 rounded flex items-center gap-1">
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                          </svg>
+                          Notes
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <svg
+                    className="w-4 h-4 text-zinc-700 group-hover:text-zinc-500 transition-colors shrink-0 mt-0.5 opacity-0 group-hover:opacity-100"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+
+/* ─── Main Content ─────────────────────────────────────────── */
+
+function DocumentsContent() {
+  const searchParams = useSearchParams();
+  const initialSection = searchParams.get('section') || documentSections[0];
+
+  const { state, isLoaded, toggleDoc, toggleCategory, isCategoryCollapsed } = useApp();
+  const [selectedSection, setSelectedSection] = useState(initialSection);
+  const [timingFilter, setTimingFilter] = useState<'All' | 'Pre-Listing' | 'Ongoing' | 'Post-Listing'>('All');
+  const [completionFilter, setCompletionFilter] = useState<'all' | 'incomplete' | 'complete'>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDoc, setSelectedDoc] = useState<DocumentArtifact | null>(null);
 
+  // Compute per-section stats for tab strip
+  const sectionStats = useMemo(() => {
+    const out: Record<string, { pct: number; missingRequired: number }> = {};
+    for (const section of documentSections) {
+      const docs = documentationData.filter(d => d.section === section);
+      const total = docs.length;
+      const completed = docs.filter(d => state.completedDocIds.includes(d.id)).length;
+      const missingReq = docs.filter(d => d.timing === 'Pre-Listing' && !state.completedDocIds.includes(d.id)).length;
+      out[section] = {
+        pct: total > 0 ? Math.round((completed / total) * 100) : 0,
+        missingRequired: missingReq,
+      };
+    }
+    return out;
+  }, [state.completedDocIds]);
+
+  // Global missing required alert stats
+  const missingRequiredTotal = useMemo(() => {
+    return documentationData.filter(d => d.timing === 'Pre-Listing' && !state.completedDocIds.includes(d.id)).length;
+  }, [state.completedDocIds]);
+
+  // Docs for active section
+  const sectionDocs = useMemo(() => documentationData.filter(d => d.section === selectedSection), [selectedSection]);
+
+  // Filtered docs
   const filteredDocs = useMemo(() => {
-    if (!isLoaded) return [];
-    
-    let docs = [...documentationData];
+    let docs = [...sectionDocs];
 
-    // Section filter
-    if (sectionFilter !== 'all') {
-      docs = docs.filter(d => d.section === sectionFilter);
+    if (timingFilter !== 'All') {
+      docs = docs.filter(d => d.timing === timingFilter);
     }
-
-    // Type filter
-    if (typeFilter !== 'all') {
-      docs = docs.filter(d => d.type === typeFilter);
-    }
-
-    // Priority filter (Pre-Listing = required for launch)
-    if (priorityFilter === 'required') {
-      docs = docs.filter(d => d.timing === 'Pre-Listing');
-    } else if (priorityFilter === 'optional') {
-      docs = docs.filter(d => d.timing !== 'Pre-Listing');
-    }
-
-    // Completion filter
     if (completionFilter === 'complete') {
       docs = docs.filter(d => state.completedDocIds.includes(d.id));
     } else if (completionFilter === 'incomplete') {
       docs = docs.filter(d => !state.completedDocIds.includes(d.id));
     }
-
-    // Search
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
       docs = docs.filter(d =>
         d.artifact.toLowerCase().includes(term) ||
         d.description.toLowerCase().includes(term) ||
-        d.section.toLowerCase().includes(term)
+        d.type.toLowerCase().includes(term)
       );
     }
-
     return docs;
-  }, [isLoaded, sectionFilter, typeFilter, completionFilter, priorityFilter, searchTerm, state.completedDocIds]);
+  }, [sectionDocs, timingFilter, completionFilter, searchTerm, state.completedDocIds]);
 
-  // Stats
-  const stats = useMemo(() => {
-    const total = documentationData.length;
-    const completed = state.completedDocIds.length;
-    const required = documentationData.filter(d => d.timing === 'Pre-Listing');
-    const requiredCompleted = required.filter(d => state.completedDocIds.includes(d.id));
-    
-    return {
-      total,
-      completed,
-      percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
-      requiredTotal: required.length,
-      requiredCompleted: requiredCompleted.length,
-      requiredMissing: required.length - requiredCompleted.length,
-      requiredPercentage: required.length > 0 ? Math.round((requiredCompleted.length / required.length) * 100) : 0,
-    };
-  }, [state.completedDocIds]);
-
-  // Group by type for display
-  const docsByType = useMemo(() => {
+  // Group by type
+  const groupedDocs = useMemo(() => {
     return filteredDocs.reduce((acc, doc) => {
       if (!acc[doc.type]) acc[doc.type] = [];
       acc[doc.type].push(doc);
       return acc;
-    }, {} as Record<string, typeof filteredDocs>);
+    }, {} as Record<string, DocumentArtifact[]>);
   }, [filteredDocs]);
+
+  // Section summary stats
+  const currentSectionStats = useMemo(() => {
+    const total = sectionDocs.length;
+    const completed = sectionDocs.filter(d => state.completedDocIds.includes(d.id)).length;
+    return {
+      total, completed,
+      percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
+    };
+  }, [sectionDocs, state.completedDocIds]);
+
+  // Auto-collapse logic when switching sections
+  useEffect(() => {
+    const groups = filteredDocs.reduce((acc, doc) => {
+      if (!acc[doc.type]) acc[doc.type] = [];
+      acc[doc.type].push(doc);
+      return acc;
+    }, {} as Record<string, DocumentArtifact[]>);
+    
+    for (const [type, docs] of Object.entries(groups)) {
+      const allDone = docs.every(d => state.completedDocIds.includes(d.id));
+      const key = `doc::${selectedSection}::${type}`;
+      if (allDone && !isCategoryCollapsed(key)) {
+        toggleCategory(key);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSection]);
+
 
   if (!isLoaded) {
     return (
-      <div className="max-w-6xl mx-auto p-6 lg:p-10">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
+          {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       </div>
     );
   }
 
+  const handleDocClick = (doc: DocumentArtifact, e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('[role="checkbox"]')) return;
+    if ((e.target as HTMLElement).closest('a')) return;
+    setSelectedDoc(doc);
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-6 lg:p-10">
-      {/* Header */}
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-          <span className="text-3xl">📄</span>
-          Documentation Repository
-        </h1>
-        <p className="text-zinc-400 text-lg">
-          Track and manage all artifacts required for launch
-        </p>
-      </header>
+    <>
+      <div className="p-4 sm:p-6 lg:p-8 max-w-[1200px] mx-auto">
+        <header className="mb-5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5 leading-tight">
+            <span className="text-2xl">📄</span>
+            Documentation Repository
+          </h1>
+          <p className="text-zinc-500 text-sm mt-1">Track and build every required artifact for the property.</p>
+        </header>
 
-      {/* Required Documents Alert */}
-      {stats.requiredMissing > 0 && (
-        <Card className="mb-6 bg-amber-500/10 border-amber-500/30">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+        {missingRequiredTotal > 0 && (
+          <Card className="mb-5 bg-amber-500/10 border-amber-500/30">
+            <CardContent className="py-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-amber-400 mb-0.5 truncate">
+                    {missingRequiredTotal} Pre-Listing Artifacts Missing
+                  </p>
+                  <p className="text-[11px] text-amber-400/80 uppercase tracking-widest font-semibold flex items-center gap-2">
+                    Check the tabs above with an orange badge <span className="w-2.5 h-2.5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[7px]">!</span>
+                  </p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-amber-400 mb-1">
-                  {stats.requiredMissing} Required Document{stats.requiredMissing !== 1 ? 's' : ''} Missing
-                </p>
-                <p className="text-xs text-zinc-400">
-                  Complete all Pre-Listing documents before launch
-                </p>
-              </div>
-              <button
-                onClick={() => setPriorityFilter('required')}
-                className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-400 rounded-lg text-sm font-medium transition-all"
-              >
-                View Missing
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
-          <CardContent className="py-6 text-center">
-            <div className={cn('text-5xl font-bold mb-2', getProgressColor(stats.percentage))}>
-              {stats.percentage}%
-            </div>
-            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
-              Overall Complete
-            </p>
-            <p className="text-xs text-zinc-600">
-              {stats.completed} / {stats.total} artifacts
-            </p>
-          </CardContent>
-        </Card>
+        {/* ── Section Tab Strip ── */}
+        <div className="mb-5">
+          <SectionTabStrip
+            sections={documentSections}
+            selectedSection={selectedSection}
+            onSelect={(s) => {
+              setSelectedSection(s);
+              setTimingFilter('All');
+              setCompletionFilter('all');
+              setSearchTerm('');
+            }}
+            sectionStats={sectionStats}
+          />
+        </div>
 
-        <Card className={cn(
-          'transition-all',
-          stats.requiredPercentage < 100 ? 'bg-amber-500/10 border-amber-500/30' : 'bg-emerald-500/10 border-emerald-500/30'
-        )}>
-          <CardContent className="py-6 text-center">
-            <div className={cn(
-              'text-5xl font-bold mb-2',
-              stats.requiredPercentage === 100 ? 'text-emerald-400' : 'text-amber-400'
-            )}>
-              {stats.requiredPercentage}%
+        {/* ── Active section progress bar ── */}
+        <div className="mb-5 p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest shrink-0">
+                {(selectedSection.match(/^\d+/) || ['00'])[0].padStart(2, '0')}
+              </span>
+              <h2 className="text-sm font-bold text-zinc-200 truncate">
+                {getDocShortSectionName(selectedSection)}
+              </h2>
             </div>
-            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
-              Required Ready
-            </p>
-            <p className="text-xs text-zinc-600">
-              {stats.requiredCompleted} / {stats.requiredTotal} Pre-Listing
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardContent className="py-6 text-center">
-            <div className="text-5xl font-bold mb-2 text-zinc-400">
-              {stats.total - stats.requiredTotal}
+            <div className="flex items-center gap-4 shrink-0">
+              <span className={cn('text-lg font-extrabold', getProgressColor(currentSectionStats.percentage))}>
+                {currentSectionStats.percentage}%
+              </span>
             </div>
-            <p className="text-sm text-zinc-400 uppercase tracking-wider font-semibold mb-1">
-              Optional Docs
-            </p>
-            <p className="text-xs text-zinc-600">
-              Ongoing & Post-Listing
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card className="mb-6">
-        <CardContent className="py-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-            <Input
-              type="text"
-              placeholder="Search artifacts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Select
-              value={sectionFilter}
-              onChange={(e) => setSectionFilter(e.target.value)}
-              options={[
-                { value: 'all', label: 'All Sections' },
-                ...documentSections.map(s => ({ value: s, label: s })),
-              ]}
-            />
-            <Select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              options={[
-                { value: 'all', label: 'All Types' },
-                ...documentTypes.map(t => ({ value: t, label: t })),
-              ]}
-            />
-            <Select
-              value={completionFilter}
-              onChange={(e) => setCompletionFilter(e.target.value)}
-              options={[
-                { value: 'all', label: 'All Status' },
-                { value: 'complete', label: 'Complete' },
-                { value: 'incomplete', label: 'Incomplete' },
-              ]}
-            />
-            <Select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value as any)}
-              options={[
-                { value: 'all', label: 'All Priority' },
-                { value: 'required', label: 'Required Only' },
-                { value: 'optional', label: 'Optional Only' },
-              ]}
-            />
           </div>
-          
-          {/* Filter Chips */}
-          <div className="flex gap-2 flex-wrap">
-            {(['required', 'optional'] as const).map(priority => (
+          <ProgressBar value={currentSectionStats.percentage} size="md" />
+          <p className="text-xs text-zinc-600 mt-2">
+            {currentSectionStats.completed} of {currentSectionStats.total} documents complete
+          </p>
+        </div>
+
+        {/* ── Filter bar ── */}
+        <div className="flex flex-col sm:flex-row gap-2 mb-5 sticky top-0 z-20 bg-zinc-950 py-3 -mt-3">
+          <div className="flex gap-1.5 flex-wrap">
+            {(['All', 'Pre-Listing', 'Ongoing', 'Post-Listing'] as const).map(timing => (
               <Button
-                key={priority}
-                variant={priorityFilter === priority ? 'primary' : 'ghost'}
+                key={timing}
+                variant={timingFilter === timing ? 'primary' : 'secondary'}
                 size="sm"
-                onClick={() => setPriorityFilter(priority === priorityFilter ? 'all' : priority)}
+                onClick={() => setTimingFilter(timing)}
               >
-                {priority === 'required' ? '⚠️ Required' : '📌 Optional'}
+                {timing}
               </Button>
             ))}
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex gap-1.5">
+            {(['all', 'incomplete', 'complete'] as const).map(comp => (
+              <Button
+                key={comp}
+                variant={completionFilter === comp ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setCompletionFilter(comp)}
+              >
+                {comp === 'all' ? 'All' : comp === 'incomplete' ? 'Todo' : 'Done'}
+              </Button>
+            ))}
+          </div>
+          <div className="flex-1 sm:max-w-xs">
+            <Input
+              type="text"
+              placeholder="Search documents..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-1.5 ml-auto shrink-0">
+            <button
+              onClick={() => {
+                Object.keys(groupedDocs).forEach(type => {
+                  const key = `doc::${selectedSection}::${type}`;
+                  if (isCategoryCollapsed(key)) toggleCategory(key);
+                });
+              }}
+              className="text-[11px] text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded-md hover:bg-zinc-800 transition-all"
+            >
+              Expand all
+            </button>
+            <button
+              onClick={() => {
+                Object.keys(groupedDocs).forEach(type => {
+                  const key = `doc::${selectedSection}::${type}`;
+                  if (!isCategoryCollapsed(key)) toggleCategory(key);
+                });
+              }}
+              className="text-[11px] text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded-md hover:bg-zinc-800 transition-all"
+            >
+              Collapse all
+            </button>
+          </div>
+        </div>
 
-      {/* Documents List */}
-      <div className="space-y-6">
-        {Object.keys(docsByType).length === 0 ? (
+        {/* ── Document List ── */}
+        {Object.entries(groupedDocs).length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center text-zinc-500">
-              <p className="text-lg mb-2">No documents match your filters</p>
-              <p className="text-sm">Try adjusting your filters above</p>
+            <CardContent className="py-12 text-center">
+              {searchTerm ? (
+                <>
+                  <p className="text-zinc-500 font-medium mb-1">No documents match '{searchTerm}'</p>
+                  <Button variant="ghost" size="sm" onClick={() => setSearchTerm('')} className="mt-2 text-indigo-400">
+                    Clear search
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p className="text-3xl mb-3">🎉</p>
+                  <p className="text-zinc-300 text-base font-semibold mb-1">Section complete!</p>
+                  <p className="text-zinc-500 text-sm">Every required document is ready.</p>
+                </>
+              )}
             </CardContent>
           </Card>
         ) : (
-          Object.entries(docsByType).map(([type, docs]) => (
-            <div key={type}>
-              {/* Type Header */}
-              <div className="mb-3">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="w-1 h-6 bg-blue-500 rounded-full" />
-                  {type}
-                  <span className="text-sm text-zinc-500 font-normal">
-                    ({docs.filter(d => state.completedDocIds.includes(d.id)).length}/{docs.length})
-                  </span>
-                </h3>
-              </div>
+          <div className="space-y-1">
+            {Object.entries(groupedDocs).map(([type, docs]) => {
+              const key = `doc::${selectedSection}::${type}`;
+              const collapsed = isCategoryCollapsed(key);
 
-              {/* Documents */}
-              <Card>
-                <div className="divide-y divide-zinc-800">
-                  {docs.map(doc => {
-                    const isCompleted = isDocCompleted(state, doc.id);
-                    const isRequired = doc.timing === 'Pre-Listing';
-
-                    return (
-                      <div
-                        key={doc.id}
-                        className={cn(
-                          'flex items-start gap-4 p-4 hover:bg-zinc-900/50 transition-colors group',
-                          isRequired && !isCompleted && 'bg-amber-500/5 border-l-4 border-amber-500'
-                        )}
-                      >
-                        <Checkbox
-                          checked={isCompleted}
-                          onChange={() => toggleDoc(doc.id)}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <p className={cn(
-                              'text-sm font-semibold',
-                              isCompleted ? 'text-zinc-500 line-through' : 'text-white'
-                            )}>
-                              {doc.artifact}
-                            </p>
-                            {isRequired && !isCompleted && (
-                              <Badge variant="status" status="blocked">
-                                Required
-                              </Badge>
-                            )}
-                            {isCompleted && (
-                              <span className="text-emerald-400 text-xs font-medium flex items-center gap-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Ready
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-zinc-500 line-clamp-2 mb-2">
-                            {doc.description}
-                          </p>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="timing" timing={doc.timing}>
-                              {doc.timing}
-                            </Badge>
-                            <span className="text-[10px] text-zinc-600">{doc.section}</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Card>
-            </div>
-          ))
+              return (
+                <TypeGroup
+                  key={type}
+                  type={type}
+                  docs={docs}
+                  state={state}
+                  isCollapsed={collapsed}
+                  onToggleCollapse={() => toggleCategory(key)}
+                  onDocClick={handleDocClick}
+                  toggleDoc={toggleDoc}
+                />
+              );
+            })}
+          </div>
         )}
       </div>
 
-      {/* Summary Footer */}
-      <div className="mt-12 p-6 bg-zinc-900 border border-zinc-800 rounded-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-zinc-400 mb-1">Currently showing</p>
-            <p className="text-lg font-semibold text-white">{filteredDocs.length} artifacts</p>
-          </div>
-          <div className="flex items-center gap-8">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{Object.keys(docsByType).length}</div>
-              <div className="text-xs text-zinc-500 uppercase tracking-wider">Types</div>
-            </div>
-            <div className="text-center">
-              <div className={cn(
-                'text-2xl font-bold',
-                stats.requiredMissing === 0 ? 'text-emerald-400' : 'text-amber-400'
-              )}>
-                {stats.requiredMissing}
-              </div>
-              <div className="text-xs text-zinc-500 uppercase tracking-wider">Missing</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <DocumentEditDrawer
+        doc={selectedDoc}
+        onClose={() => setSelectedDoc(null)}
+      />
+    </>
+  );
+}
+
+export default function DocumentsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-zinc-500 text-sm">Loading repository...</div>}>
+      <DocumentsContent />
+    </Suspense>
   );
 }

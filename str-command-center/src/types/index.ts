@@ -21,6 +21,15 @@ export interface TaskMeta {
   completedAt?: string;
 }
 
+// Document metadata (notes, file attachment reference)
+export interface DocMeta {
+  note?: string;
+  completedAt?: string;
+  attachedFileName?: string;
+  attachedFileSize?: number;
+  attachedAt?: string;
+}
+
 // Document/artifact types
 export type DocumentType = 
   | 'Strategy Doc' 
@@ -61,6 +70,7 @@ export interface AppState {
   completedIds: number[];
   completedDocIds: string[];
   taskMeta: Record<number, TaskMeta>;
+  docMeta: Record<string, DocMeta>;
   pinnedIds: number[];
   launchDate: string;
   collapsedCategories: string[];

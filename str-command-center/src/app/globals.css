@@ -119,3 +119,34 @@ body {
   overflow: hidden;
 }
 
+/* Sidebar section list — ultra-thin scrollbar */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Stable grid column sizing for bento */
+.bento-auto {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+/* Hide scrollbar while keeping scroll behavior (section tab strip) */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

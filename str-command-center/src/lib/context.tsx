@@ -14,6 +14,8 @@ interface AppContextType {
   togglePin: (taskId: number) => void;
   // Document actions
   toggleDoc: (docId: string) => void;
+  setDocNote: (docId: string, note: string) => void;
+  setDocAttachment: (docId: string, fileName?: string, fileSize?: number) => void;
   // Settings
   setLaunchDate: (date: string) => void;
   // Data management
@@ -187,6 +189,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, [syncRemoteState]);
 
+  const setDocNote = useCallback((docId: string, note: string) => {
+    setState(prev => {
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          note,
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const setDocAttachment = useCallback((docId: string, fileName?: string, fileSize?: number) => {
+    setState(prev => {
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          attachedFileName: fileName,
+          attachedFileSize: fileSize,
+          attachedAt: fileName ? new Date().toISOString() : undefined,
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
   // Settings
   const setLaunchDate = useCallback((date: string) => {
     setState(prev => {
@@ -244,6 +280,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTaskNote,
     togglePin,
     toggleDoc,
+    setDocNote,
+    setDocAttachment,
     setLaunchDate,
     exportData,
     importData,

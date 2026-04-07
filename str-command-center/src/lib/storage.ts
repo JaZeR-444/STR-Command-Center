@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   completedIds: `${STORAGE_PREFIX}completedIds`,
   completedDocIds: `${STORAGE_PREFIX}completedDocIds`,
   taskMeta: `${STORAGE_PREFIX}taskMeta`,
+  docMeta: `${STORAGE_PREFIX}docMeta`,
   pinnedIds: `${STORAGE_PREFIX}pinnedIds`,
   launchDate: `${STORAGE_PREFIX}launchDate`,
   collapsedCategories: `${STORAGE_PREFIX}collapsedCats`,
@@ -24,8 +25,9 @@ export const DEFAULT_STATE: AppState = {
   completedIds: [],
   completedDocIds: [],
   taskMeta: {},
+  docMeta: {},
   pinnedIds: [],
-  launchDate: '2026-05-15', // Default launch date
+  launchDate: '2026-05-15',
   collapsedCategories: [],
 };
 
@@ -86,10 +88,16 @@ export function loadState(): AppState {
       []
     );
 
+    const docMeta = safeJsonParse<Record<string, import('@/types').DocMeta>>(
+      localStorage.getItem(STORAGE_KEYS.docMeta),
+      {}
+    );
+
     return {
       completedIds,
       completedDocIds,
       taskMeta,
+      docMeta,
       pinnedIds,
       launchDate,
       collapsedCategories,
@@ -108,6 +116,7 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEYS.completedIds, JSON.stringify(state.completedIds));
     localStorage.setItem(STORAGE_KEYS.completedDocIds, JSON.stringify(state.completedDocIds));
     localStorage.setItem(STORAGE_KEYS.taskMeta, JSON.stringify(state.taskMeta));
+    localStorage.setItem(STORAGE_KEYS.docMeta, JSON.stringify(state.docMeta));
     localStorage.setItem(STORAGE_KEYS.pinnedIds, JSON.stringify(state.pinnedIds));
     localStorage.setItem(STORAGE_KEYS.launchDate, state.launchDate);
     localStorage.setItem(STORAGE_KEYS.collapsedCategories, JSON.stringify(state.collapsedCategories));
@@ -181,6 +190,7 @@ export function importState(jsonString: string): { success: boolean; state?: App
         completedIds,
         completedDocIds,
         taskMeta,
+        docMeta: typeof parsed.docMeta === 'object' && parsed.docMeta ? parsed.docMeta : {},
         pinnedIds,
         launchDate,
         collapsedCategories: [],
