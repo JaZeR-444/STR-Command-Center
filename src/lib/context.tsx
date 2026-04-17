@@ -56,6 +56,7 @@ interface AppContextType {
   addSearchHistory: (term: string) => void;
   clearSearchHistory: () => void;
   setExpandAllForSection: (section: string, expanded: boolean) => void;
+  setTheme: (theme: 'dark' | 'light') => void;
   // Undo/Redo
   undo: () => void;
   redo: () => void;
@@ -289,6 +290,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return newState;
     });
   }, [syncRemoteState]);
+
+  // Apply persisted theme preference globally.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const theme = state.preferences?.theme || 'dark';
+    document.documentElement.classList.toggle('light-theme', theme === 'light');
+  }, [state.preferences?.theme]);
 
   const patchDocAttachment = useCallback((
     docId: string,
@@ -593,6 +601,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const setTheme = useCallback((theme: 'dark' | 'light') => {
+    setState(prev => {
+      const newState = {
+        ...prev,
+        preferences: {
+          ...DEFAULT_STATE.preferences,
+          ...prev.preferences,
+          theme,
+        },
+      };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
   // Undo/Redo
   const createUndoEntry = useCallback((action: string, prev: AppState, next: AppState): import('@/types').UndoEntry => {
     return {
@@ -862,6 +886,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addSearchHistory,
     clearSearchHistory,
     setExpandAllForSection,
+    setTheme,
     undo,
     redo,
     canUndo,

@@ -37,6 +37,7 @@ export const DEFAULT_STATE: AppState = {
     lockedCategories: [],
     searchHistory: [],
     expandAllBySection: {},
+    theme: 'dark',
   },
   fileRegistry: {},
 };

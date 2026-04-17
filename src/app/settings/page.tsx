@@ -15,6 +15,7 @@ export default function SettingsPage() {
     exportData,
     importData,
     resetAll,
+    setTheme,
     cloudSyncStatus,
     cloudSyncMessage,
   } = useApp();
@@ -100,6 +101,33 @@ export default function SettingsPage() {
                 onChange={(e) => setLaunchDate(e.target.value)}
                 className="max-w-xs"
               />
+            </CardContent>
+          </Card>
+
+          <Card className="mb-0">
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-zinc-400 mb-4">
+                Switch between dark and light application themes.
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={state.preferences.theme === 'dark' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setTheme('dark')}
+                >
+                  Dark
+                </Button>
+                <Button
+                  variant={state.preferences.theme === 'light' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setTheme('light')}
+                >
+                  Light
+                </Button>
+              </div>
             </CardContent>
           </Card>
 

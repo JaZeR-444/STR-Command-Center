@@ -151,6 +151,7 @@ export interface UserPreferences {
   lockedCategories: string[]; // Categories that won't auto-collapse
   searchHistory: string[];
   expandAllBySection: Record<string, boolean>; // Remember expand all per section
+  theme: 'dark' | 'light';
 }
 
 // Activity log entry for tracking changes
