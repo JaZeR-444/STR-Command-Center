@@ -1,5 +1,0 @@
-task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
-TIM-002-01,Primary Furnishing Order Launch,Critical,2026-04-08,2026-04-12,4,,Planned,TIM-001-02,Owner,Prioritize long-lead items
-TIM-002-02,Amenity and Tech Procurement,High,2026-04-11,2026-04-20,9,,Planned,TIM-002-01,Owner,Focus on social island items
-TIM-002-03,Linen and Consumable Bulk Order,Medium,2026-04-15,2026-04-18,3,,Planned,TIM-002-01,Owner,Linen system setup
-TIM-002-04,Logistics and Delivery Coordination,High,2026-04-12,2026-04-20,8,,Planned,TIM-002-01,Owner,Align with install dates

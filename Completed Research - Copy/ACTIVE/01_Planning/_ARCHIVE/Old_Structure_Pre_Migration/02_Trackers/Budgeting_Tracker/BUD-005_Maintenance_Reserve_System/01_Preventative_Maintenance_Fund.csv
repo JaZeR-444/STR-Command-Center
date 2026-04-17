@@ -1,8 +1,0 @@
-reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
-BUD-005-PMF-01,HVAC Monthly Filters,Prevention,High,180.00,150.00,30.00,Active,MERV 11 for Austin summer heat
-BUD-005-PMF-02,AC Condenser Cleaning,Prevention,High,250.00,200.00,50.00,Active,Annual seasonal tuning (April)
-BUD-005-PMF-03,Gourmet Coffee Descaling,Prevention,High,120.00,100.00,20.00,Active,Bi-annual descaling (Austin hard water)
-BUD-005-PMF-04,Smart Lock Batteries,Prevention,High,100.00,80.00,20.00,Active,Quarterly replacement (Duracell)
-BUD-005-PMF-05,Drain & Plumbing Treatment,Prevention,Medium,150.00,120.00,30.00,Active,Monthly Enzyme treatment for clogs
-BUD-005-PMF-06,Kitchen Dishwasher Cleaning,Prevention,Medium,100.00,100.00,0.00,Pending,Monthly Affresh cleaning cycle
-BUD-005-PMF-07,Water Heater Flush Fee,Prevention,Medium,100.00,100.00,0.00,Pending,Annual flush (Scheduled Sept)

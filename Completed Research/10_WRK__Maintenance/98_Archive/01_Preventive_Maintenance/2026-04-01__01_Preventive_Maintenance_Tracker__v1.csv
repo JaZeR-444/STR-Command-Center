@@ -1,8 +1,0 @@
-pm_id,system,task,frequency,last_completed_date,next_due_date,owner,status,related_asset_id,notes
-PM-001,HVAC,Replace return air filter,Monthly,2026-04-01,2026-05-01,Owner,Planned,AST-001,Use MERV rating recommended by HVAC vendor
-PM-002,Safety,Test smoke and CO alarms,Monthly,2026-04-01,2026-05-01,Owner,Planned,AST-006,Log battery status each check
-PM-003,Safety,Inspect fire extinguisher pressure gauge,Monthly,2026-04-01,2026-05-01,Owner,Planned,AST-007,Needle must stay in green zone
-PM-004,Plumbing,Run sink and shower drain treatment,Monthly,2026-04-01,2026-05-01,Owner,Planned,AST-003,Prevents slow-drain incidents
-PM-005,Smart Lock,Check and replace lock batteries if below threshold,Quarterly,2026-04-01,2026-07-01,Owner,Planned,AST-004,Always keep spare battery set onsite
-PM-006,Water Heater,Inspect valve area and flush sediment,Annual,2026-04-01,2027-04-01,Owner,Planned,AST-005,Schedule with licensed plumber if needed
-PM-007,Patio,Clean and inspect fire pit and seating hardware,Monthly,2026-04-01,2026-05-01,Owner,Planned,AST-008,Check burner ports and ignition reliability

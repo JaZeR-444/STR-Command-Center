@@ -1,7 +1,0 @@
-trigger_id,risk_id,event_category,severity,automatic_limit,approval_required_above,documentation_required
-TRG-01,RSK-001,regulatory,high,0.00,1.00,"proof_of_denial_or_delay,city_or_state_notice,car_form"
-TRG-02,RSK-002,operations_quality,high,150.00,150.01,"turnover_failure_evidence,guest_impact_note,car_form"
-TRG-03,RSK-003,revenue_margin,medium,100.00,100.01,"pricing_variance_snapshot,occupancy_impact_note,car_form"
-TRG-04,RSK-004,asset_failure,high,200.00,200.01,"repair_quote_or_invoice,incident_photo_or_report,car_form"
-TRG-05,RSK-005,demand_shortfall,medium,125.00,125.01,"booking_pace_report,approved_recovery_plan,car_form"
-TRG-06,RSK-NEW,emergency_unplanned,critical,0.00,0.01,"new_risk_entry_in_register,owner_approval,car_form"

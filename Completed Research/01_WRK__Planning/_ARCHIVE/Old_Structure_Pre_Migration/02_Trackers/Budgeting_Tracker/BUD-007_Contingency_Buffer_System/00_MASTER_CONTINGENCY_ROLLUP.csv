@@ -1,6 +1,0 @@
-reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
-BUD-007-TIM,Launch Timeline Acceleration,Timeline,High,1000.00,1000.00,0.00,Active,Expedited shipping/labor to recover schedule
-BUD-007-REG,Regulatory and Legal Surges,Compliance,Critical,750.00,750.00,0.00,Active,Unplanned permit/compliance costs
-BUD-007-AFM,Critical Asset Failure Mitigation,Asset,High,750.00,750.00,0.00,Active,Replacement of damaged install items
-BUD-007-MBR,Marketing and Booking Recovery,Revenue,Medium,500.00,500.00,0.00,Active,Emergency listing boosts/amenity adds
-TOTAL,Aggregate Contingency Health,Summary,NA,3000.00,3000.00,0.00,Healthy,Total emergency liquidity available

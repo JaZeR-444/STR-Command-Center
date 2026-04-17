@@ -1,6 +1,0 @@
-item_id,risk_mitigant,category,priority,est_cost,actual_spend,variance,status,authority_carrier,notes
-BUD-006-LIC-01,permitting_licensing__austin_str_operating_license,licensing_and_permits,risk_critical,750.00,0.00,750.00,pending,city_of_austin,"type_1_or_type_2 application and issuance fee; license must be active pre_listing"
-BUD-006-LIC-02,permitting_licensing__certificate_of_occupancy_validation,licensing_and_permits,high,125.00,0.00,125.00,pending,city_of_austin_development_services,"records pull and occupancy validation for legal habitability"
-BUD-006-LIC-03,permitting_licensing__llc_formation_and_registration,licensing_and_permits,high,425.00,0.00,425.00,pending,texas_secretary_of_state,"llc filing, registered_agent first_year, and local business setup"
-BUD-006-LIC-04,local_rules__license_display_materials,licensing_and_permits,med,40.00,0.00,40.00,pending,office_supply_vendor,"required permit number display materials for entry and operations binder"
-BUD-006-LIC-05,permitting_licensing__filing_buffer,licensing_and_permits,med,40.00,0.00,40.00,pending,compliance_admin,"notary courier and expedited document handling reserve"

@@ -1,6 +1,0 @@
-item_id,risk_mitigant,category,priority,est_cost,actual_spend,variance,status,authority_carrier,notes
-BUD-006-TAX-01,taxation__texas_hot_registration_setup,tax_setup_and_reporting,high,180.00,0.00,180.00,pending,texas_comptroller,"state lodging tax registration and account activation support"
-BUD-006-TAX-02,taxation__austin_hot_registration_setup,tax_setup_and_reporting,high,220.00,0.00,220.00,pending,city_of_austin_finance,"city_hot registration and account linkage to booking channels"
-BUD-006-TAX-03,taxation__lodging_tax_reconciliation_software,tax_setup_and_reporting,high,360.00,0.00,360.00,active,tax_accounting_platform,"software annualized reserve for multi_channel lodging tax reconciliation"
-BUD-006-TAX-04,taxation__austin_hot_monthly_reconciliation_workflow,tax_setup_and_reporting,high,150.00,0.00,150.00,pending,tax_advisor,"austin_specific monthly hot tie_out between platform collection and remittance"
-BUD-006-TAX-05,taxation__filing_calendar_and_controls,tax_setup_and_reporting,med,140.00,0.00,140.00,pending,compliance_accountant,"filing cadence setup, due_date control sheet, and variance checks"

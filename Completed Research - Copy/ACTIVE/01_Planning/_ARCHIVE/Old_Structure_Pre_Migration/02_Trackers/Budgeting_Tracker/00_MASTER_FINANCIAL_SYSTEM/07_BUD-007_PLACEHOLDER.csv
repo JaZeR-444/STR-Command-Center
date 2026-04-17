@@ -1,2 +1,0 @@
-budget_id,source_system_path,planned_investment,actual_spend,status,next_action,notes
-BUD-007,"contingency_reserve_control",3000.00,0.00,reserved_no_spend,"release only with logged risk_trigger_id and owner approval","no_spend zone for capital protection"

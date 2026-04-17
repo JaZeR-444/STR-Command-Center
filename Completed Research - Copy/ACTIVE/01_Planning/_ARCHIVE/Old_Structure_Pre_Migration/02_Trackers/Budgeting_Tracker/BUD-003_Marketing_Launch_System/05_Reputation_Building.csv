@@ -1,3 +1,0 @@
-item_id,investment_name,category,priority,est_cost,actual_spend,variance,status,channel,roi_tier,notes
-BUD-003-REP-01,"First-5-Booking Welcome Gifts",loyalty,high,250.00,0.00,250.00,pending,local,exp_enhancer,"$50 ea for 5-star baseline"
-BUD-003-REP-02,"Guest Favorite Incentive Layer",loyalty,med,0.00,0.00,0.00,pending,various,low_impact,"Ongoing review driver"

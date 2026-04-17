@@ -1,2 +1,0 @@
-budget_id,source_system_path,planned_investment,actual_spend,status,next_action,notes
-BUD-004,"..\BUD-004_Operations_Start_System\00_MASTER_OPERATIONS_ROLLUP.csv",5255.89,0.00,placeholder_synced,"maintain weekly sync to global dashboard","placeholder tab retained per master v2.1 requirement"

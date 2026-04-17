@@ -1,6 +1,0 @@
-item_id,cost_type,category,priority,est_cost,actual_spend,variance,status,vendor,notes
-BUD-004-SAF-01,regulatory_reserve,str_license_renewal,high,500.00,0.00,500.00,pending,city_of_austin,"license renewal reserve for uninterrupted operations"
-BUD-004-SAF-02,down_payment_reserve,insurance,operational_critical,650.00,0.00,650.00,pending,str_insurance_provider,"down_payment for liability and short_term_rental coverage"
-BUD-004-SAF-03,onsite_compliance_materials,safety_signage,high,120.00,0.00,120.00,pending,print_vendor,"emergency_exit_maps house_rules and property_safety signage"
-BUD-004-SAF-04,digital_access_setup,safety_signage,med,45.00,0.00,45.00,pending,canva_print,"qr_code placards for house_manual and emergency procedures"
-BUD-004-SAF-05,admin_buffer,compliance_operations,med,95.00,0.00,95.00,pending,operations_admin,"filing_notary_misc compliance processing buffer"

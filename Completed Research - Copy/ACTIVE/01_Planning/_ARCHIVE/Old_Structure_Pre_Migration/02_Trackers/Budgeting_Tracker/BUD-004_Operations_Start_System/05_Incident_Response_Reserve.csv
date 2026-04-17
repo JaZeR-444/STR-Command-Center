@@ -1,6 +1,0 @@
-item_id,cost_type,category,priority,est_cost,actual_spend,variance,status,vendor,notes
-BUD-004-INC-01,rapid_response_reserve,hvac_incidents,critical,350.00,0.00,350.00,active,on_call_hvac,"diagnostic plus first_response visit within incident_velocity target"
-BUD-004-INC-02,rapid_response_reserve,plumbing_incidents,critical,300.00,0.00,300.00,active,on_call_plumber,"urgent leak_clog response reserve for first_5_guests"
-BUD-004-INC-03,rapid_response_reserve,tech_incidents,high,250.00,0.00,250.00,active,smart_home_technician,"lock_wifi_noise_monitor troubleshooting reserve"
-BUD-004-INC-04,guest_recovery_fund,guest_recovery,operational_critical,200.00,0.00,200.00,active,local_gift_cards,"zero_friction rule: service_recovery credits for guest dissatisfaction"
-BUD-004-INC-05,expedited_service_buffer,incident_logistics,high,150.00,0.00,150.00,pending,local_vendor_network,"same_day parts courier and emergency consumable replenishment"

@@ -1,2 +1,0 @@
-budget_id,source_rollup_path,linked_total,status,last_sync,notes
-BUD-002,"..\BUD-002_Setup_and_Installation_System\00_MASTER_SETUP_ROLLUP.csv",4150.00,linked,2026-04-03,"direct link to setup and installation rollup"

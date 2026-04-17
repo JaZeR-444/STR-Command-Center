@@ -1,7 +1,0 @@
-category_id,category_name,pillar_alignment,est_cost,actual_spend,variance,status,last_updated,risk_priority
-CAT-01,"Licensing and Permit Fees","permitting_licensing",1380.00,0.00,1380.00,pending,2026-04-03,risk_critical
-CAT-02,"Insurance Premiums","insurance",1950.00,0.00,1950.00,active,2026-04-03,risk_critical
-CAT-03,"Tax Setup and Reporting","taxation",1050.00,0.00,1050.00,pending,2026-04-03,high
-CAT-04,"Onsite Safety Compliance","local_rules",815.00,0.00,815.00,pending,2026-04-03,high
-CAT-05,"Professional Legal Review","permitting_licensing_and_local_rules",1555.00,0.00,1555.00,pending,2026-04-03,high
-TOTAL,"Compliance and Insurance","defense_in_depth",6750.00,0.00,6750.00,ACTIVE,2026-04-03,CRITICAL

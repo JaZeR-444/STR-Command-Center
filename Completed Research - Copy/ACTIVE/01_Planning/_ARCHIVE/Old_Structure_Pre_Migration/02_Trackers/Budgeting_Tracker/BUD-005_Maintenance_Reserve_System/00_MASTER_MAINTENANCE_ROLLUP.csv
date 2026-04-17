@@ -1,7 +1,0 @@
-reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
-BUD-005-PMF,Preventative Maintenance Fund,Prevention,High,1000.00,850.00,150.00,Active,Monthly AC filters and descaling agents
-BUD-005-ERR,Emergency Repair Reserve,Restoration,Critical,2500.00,2200.00,300.00,Active,Swift response for plumbing/locks/HVAC failure
-BUD-005-ARA,Asset Replacement Accrual,Integrity,Medium,7500.00,1200.00,0.00,Accumulating,Sinking fund for future mattress/HVAC/appliance
-BUD-005-ELR,Exterior and Landscape Reserve,Restoration,Medium,1500.00,1250.00,250.00,Active,Patio UV protection and grill maintenance
-BUD-005-UBF,Utility Buffer Fund,Detection,High,1500.00,1000.00,500.00,Active,Reserve for Austin summer AC/Water surge spikes
-TOTAL,Aggregate Maintenance Health,Summary,NA,14000.00,6500.00,1200.00,Caution,Total liquidity across all maintenance categories

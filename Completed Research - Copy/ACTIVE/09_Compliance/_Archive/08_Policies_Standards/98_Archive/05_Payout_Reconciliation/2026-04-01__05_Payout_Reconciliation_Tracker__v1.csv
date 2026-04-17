@@ -1,5 +1,0 @@
-recon_id,period_start,period_end,channel,gross_booking_usd,platform_fees_usd,tax_withheld_or_collected_usd,net_payout_usd,bank_received_usd,variance_usd,status,owner,notes
-REC-2026-W14-ABNB,2026-03-30,2026-04-05,Airbnb,0,0,0,0,0,0,Baseline,Owner,Pre-launch baseline
-REC-2026-W14-VRBO,2026-03-30,2026-04-05,VRBO,0,0,0,0,0,0,Baseline,Owner,Pre-launch baseline
-REC-2026-W15-ABNB,2026-04-06,2026-04-12,Airbnb,0,0,0,0,0,0,Planned,Owner,Update after first payout cycle
-REC-2026-W15-VRBO,2026-04-06,2026-04-12,VRBO,0,0,0,0,0,0,Planned,Owner,Update after first payout cycle

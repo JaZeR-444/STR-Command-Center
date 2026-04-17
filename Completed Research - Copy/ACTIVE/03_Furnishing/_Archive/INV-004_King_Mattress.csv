@@ -1,2 +1,0 @@
-inventory_id,room,item_name,sourcing_priority,target_price_usd,actual_price_usd,source_channel,condition_score,measurements_verified,assembly_required,status,owner,notes
-INV-004,Primary Bed,King Mattress,Critical,800,,Retail (New),10,Yes,No,Planned,Owner,Hybrid preferred; standard king size 76x80

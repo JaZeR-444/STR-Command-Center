@@ -1,2 +1,0 @@
-checkpoint_id,week_ending_date,schedule_adherence_score,budget_variance_score,risk_mitigation_score,top_3_risks,primary_bottleneck,owner_signoff,status
-WCP-2026-001,4/5/2026,0,0,0,"RSK-001,RSK-002,RSK-005",pending_first_week_audit,no,pending_budget_reconciliation

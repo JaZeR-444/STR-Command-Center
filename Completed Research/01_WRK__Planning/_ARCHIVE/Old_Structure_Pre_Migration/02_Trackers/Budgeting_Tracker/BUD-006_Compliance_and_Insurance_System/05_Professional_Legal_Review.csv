@@ -1,6 +1,0 @@
-item_id,risk_mitigant,category,priority,est_cost,actual_spend,variance,status,authority_carrier,notes
-BUD-006-LEG-01,local_rules__cleaner_sla_contract_controls,professional_legal_review,high,350.00,0.00,350.00,pending,hospitality_counsel,"draft cleaner agreement with turnover quality and incident timing sla clauses"
-BUD-006-LEG-02,local_rules__handyman_sla_contract_controls,professional_legal_review,high,300.00,0.00,300.00,pending,hospitality_counsel,"draft maintenance agreement with emergency response obligations"
-BUD-006-LEG-03,permitting_licensing__house_rules_and_cancellation_review,professional_legal_review,high,425.00,0.00,425.00,pending,hospitality_counsel,"legal review for enforceability across airbnb_vrbo policy surfaces"
-BUD-006-LEG-04,insurance__guest_damage_claim_workflow,professional_legal_review,med,180.00,0.00,180.00,pending,hospitality_counsel,"damage claim evidence protocol aligned to insurer documentation standards"
-BUD-006-LEG-05,defense_in_depth__launch_phase_legal_buffer,professional_legal_review,med,300.00,0.00,300.00,pending,hospitality_counsel,"reserve for rapid legal interpretation of new city notices or disputes"

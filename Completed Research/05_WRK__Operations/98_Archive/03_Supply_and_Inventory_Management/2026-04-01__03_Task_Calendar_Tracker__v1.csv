@@ -1,9 +1,0 @@
-task_id,task_name,frequency,next_due_date,owner,status,trigger,notes
-OPS-001,Post-checkout audit,Every turnover,2026-04-15,Owner,Planned,Guest checkout completed,Check damages and missing items within 2 hours
-OPS-002,Full reset cleaning,Every turnover,2026-04-15,Owner,Planned,Post-checkout audit complete,Run Turnover SOP Full Reset
-OPS-003,Arrival quality walkthrough,Every turnover,2026-04-15,Owner,Planned,Cleaning marked complete,Use Arrival Quality Checklist before check-in
-OPS-004,Coffee and consumables PAR check,Twice weekly,2026-04-05,Owner,Planned,Inventory below PAR or weekly cadence,Refill coffee pods TP paper towels and dish pods
-OPS-005,Linen rotation and damage check,Weekly,2026-04-06,Owner,Planned,Sunday review,Ensure 3x set protocol stays intact
-OPS-006,Smart lock code refresh,Every reservation,2026-04-15,Owner,Planned,New guest booking confirmed,Create unique time-bound code
-OPS-007,Vendor performance review,Monthly,2026-05-01,Owner,Planned,End of month,Review response time quality and costs
-OPS-008,Preventive safety check,Monthly,2026-05-01,Owner,Planned,End of month,Smoke detectors extinguisher first-aid and hallway obstruction check

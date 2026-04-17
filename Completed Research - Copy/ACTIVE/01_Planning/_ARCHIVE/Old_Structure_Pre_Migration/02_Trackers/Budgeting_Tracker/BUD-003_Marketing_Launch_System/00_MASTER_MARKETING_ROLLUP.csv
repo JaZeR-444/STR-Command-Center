@@ -1,7 +1,0 @@
-category_id,category_name,strategic_focus,est_cost,actual_spend,variance,status,last_updated,roi_priority
-CAT-01,"Platform & Listing Setup","SEO & Copy Optimization",400.00,0.00,400.00,pending,2026-04-03,high
-CAT-02,"Launch Promotions","Review Moat Acquisition",675.00,0.00,675.00,pending,2026-04-03,critical
-CAT-03,"Local SEO & Branding","Austin Local Experience",350.00,0.00,350.00,pending,2026-04-03,med
-CAT-04,"Paid Social & Ads","Event Surge Captures",500.00,0.00,500.00,active,2026-04-03,high
-CAT-05,"Reputation Building","5-Star Loyalty Gifts",250.00,0.00,250.00,pending,2026-04-03,high
-TOTAL,"Marketing Launch","Total Launch Investment",2175.00,0.00,2175.00,ACTIVE,2026-04-03,CRITICAL

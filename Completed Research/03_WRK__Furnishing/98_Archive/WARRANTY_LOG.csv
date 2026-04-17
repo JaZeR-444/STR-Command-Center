@@ -1,4 +1,0 @@
-Warranty_ID,Room,Item,Vendor,Warranty_Type,Coverage_Start,Coverage_End,Claim_Process,Proof_of_Purchase,Related_Procurement_ID,Source_File,Notes
-W-001,Primary Bedroom,King Mattress,Retail (New),Manufacturer (10-yr),,,Contact Vendor with Receipt,Digital Receipt Attached,PR-004,06_Warranties_and_Manuals/2026-04-01__05_Warranties_Manuals_Template__v1.md,Wait for purchase to finalize dates
-W-002,Primary Bedroom,50" Smart TV,Retail (New),Manufacturer (1-yr),,,Manufacturer Website Registration,Digital Receipt Attached,UNKNOWN,06_Warranties_and_Manuals/2026-04-01__05_Warranties_Manuals_Template__v1.md,Register within 30 days
-W-003,Great Room,Smart Soundbar,Retail (New),Manufacturer (1-yr),,,In-App Registration,Digital Receipt Attached,UNKNOWN,06_Warranties_and_Manuals/2026-04-01__05_Warranties_Manuals_Template__v1.md,App-based registration

@@ -1,6 +1,0 @@
-vendor_id,category,vendor_name,contact_person,phone,email,response_target_hrs,status,priority,notes
-VND-001,Cleaning,Austin STR Clean,Maria S.,512-555-0101,service@austinstrclean.com,2,Active,Primary,Primary turnover team
-VND-002,Cleaning,Spic-n-Span ATX,John D.,512-555-0102,info@spicnspanatx.com,4,Active,Backup,Emergency backup cleaning
-VND-003,Handyman,Austin ProFix,Kevin G.,512-555-0103,kevin@profixatx.com,4,Active,Primary,General maintenance and repairs
-VND-004,Plumbing,Flush-It-Right,Plumbing Dispatch,512-555-0104,emergency@flushitright.com,2,Active,Primary,Emergency plumbing issues
-VND-005,HVAC,CoolAir Austin,Dispatch,512-555-0105,service@coolairatx.com,4,Active,Primary,HVAC seasonal PM and repairs

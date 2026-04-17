@@ -1,8 +1,0 @@
-Procurement_ID,Room,Item,Vendor,Order_Status,Order_Date,Expected_Delivery,Actual_Delivery,Cost,Order_Reference,Design_Spec_Reference,Source_File,Notes
-PR-001,Great Room,L-Sectional Sofa,FB Marketplace,Selected,,,,,INV-001,02_Interior_Design/2026-04-01__04_Great_Room_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Lead active; negotiating pickup
-PR-002,Kitchen,Counter Bar Stools,FB Marketplace,Selected,,,,,INV-002,02_Interior_Design/2026-04-01__05_Kitchen_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Lead active
-PR-003,Primary Bed,Solid Wood King Frame,FB Marketplace,Selected,,,,,INV-003,02_Interior_Design/2026-04-01__01_Primary_Bedroom_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Lead active
-PR-004,Primary Bed,King Mattress,Retail (New),Needed,,,,,INV-004,02_Interior_Design/2026-04-01__01_Primary_Bedroom_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Compare Hybrid options (Zinus/Casper/Tuft)
-PR-005,Den,Queen Sleeper Sofa,FB Marketplace,Selected,,,,,INV-005,02_Interior_Design/2026-04-01__10_Den_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Lead active
-PR-006,Great Room,Area Rug (10x14),Estate Sale,Selected,,,,,INV-006,02_Interior_Design/2026-04-01__04_Great_Room_Layout_Guide__v1.md,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Sale date 04-04; arrival priority
-PR-007,Dining,Solid Wood Dining Table,Estate Sale,Selected,,,,,INV-007,UNKNOWN,2026-04-01__01_Inventory_Master_Tracker__v1.csv,Sale date 04-04

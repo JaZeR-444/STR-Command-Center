@@ -1,5 +1,0 @@
-item_id,cost_type,category,priority,est_cost,actual_spend,variance,status,vendor,notes
-BUD-004-LAB-01,turnover_reserve,cleaner_labor,high,1080.00,0.00,1080.00,pending,preferred_cleaning_team,"reserve for 6_turnovers at 180_each during stabilization"
-BUD-004-LAB-02,laundry_reserve,linen_operations,high,150.00,0.00,150.00,pending,local_laundry_partner,"first_30_days laundry overflow and rush loads"
-BUD-004-LAB-03,quality_control_reserve,owner_operator,med,180.00,0.00,180.00,pending,in_house,"manager_walkthrough labor for golden_window handoff quality"
-BUD-004-LAB-04,standby_labor,maintenance_support,high,220.00,0.00,220.00,pending,on_call_maintenance,"turnover_adjacent fixes discovered during resets"

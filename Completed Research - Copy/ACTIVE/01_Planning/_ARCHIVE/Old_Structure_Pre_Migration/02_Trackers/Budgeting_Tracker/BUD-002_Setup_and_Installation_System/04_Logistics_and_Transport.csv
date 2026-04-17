@@ -1,5 +1,0 @@
-item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
-BUD-002-LOG-01,"U-Haul/Truck Rental (x2)",logistics,med,200.00,0.00,200.00,pending,uhaul,"Major furniture hauls"
-BUD-002-LOG-02,"Scavenging Fuel Buffer",logistics,med,150.00,0.00,150.00,active,self,"15% project padding"
-BUD-002-LOG-03,"Storage Unit (1-mo)",logistics,med,100.00,0.00,100.00,active,public_storage,"Staging inventory buffer"
-BUD-002-LOG-04,"Shipping/Handling Fees",logistics,med,100.00,0.00,100.00,pending,various,"Freight/delivery surcharges"

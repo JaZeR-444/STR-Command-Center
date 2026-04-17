@@ -1,8 +1,0 @@
-budget_id,category,budget_item,budgeted_usd,actual_usd,variance_usd,status,owner,notes
-BUD-001,Design and Furnishing,Core furniture and decor package,12000,0,12000,Planned,Owner,Align with procurement tracker updates
-BUD-002,Setup and Installation,Install labor and smart-home setup,2500,0,2500,Planned,Owner,Include contingency for unexpected install needs
-BUD-003,Marketing Launch,Photography and listing launch assets,1200,0,1200,Planned,Owner,Photo pipeline now prepared
-BUD-004,Operations Start,Initial consumables and linen systems,1800,0,1800,Planned,Owner,Use supply and inventory tracking to refine
-BUD-005,Maintenance Reserve,Initial reserve for first 90 days repairs,2500,0,2500,Planned,Owner,Protect against early-cycle failures
-BUD-006,Compliance and Insurance,Permits and policy setup costs,1800,0,1800,Researching,Owner,Finalize after permit and insurance verification
-BUD-007,Contingency Buffer,Unplanned launch overages,3000,0,3000,Planned,Owner,Do not spend unless trigger is documented

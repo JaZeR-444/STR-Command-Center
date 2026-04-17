@@ -1,6 +1,0 @@
-risk_id,risk_category,risk_description,likelihood,impact,mitigation_plan,trigger_or_early_signal,status,owner,notes
-RSK-001,Compliance,Permit or STR eligibility issue delays launch,Medium,High,Complete legal research checklist and verify official sources,Permit status unresolved within target launch window,Open,Owner,Primary launch blocker risk
-RSK-002,Operations,Cleaning turnover inconsistency impacts guest reviews,Medium,High,Use turnover quick checklist every stay and verify with photos,Repeated missed checklist items,Open,Owner,Quality control priority
-RSK-003,Pricing,Over-discounting reduces margin without occupancy gain,Medium,Medium,Apply 15 percent cap and weekly pricing review cadence,Occupancy flat while ADR declines,Open,Owner,Use promotions playbook guardrails
-RSK-004,Maintenance,Unexpected repair issue causes guest disruption,Medium,High,Run monthly maintenance quick pass and keep reserve budget,Multiple repair tickets in same system within 30 days,Open,Owner,Link incidents to preventive tasks
-RSK-005,Demand,Slow booking pace in first 45 days,Medium,Medium,Use launch promo stack and optimize listing/photo quality,Occupancy below target by more than 10 points for 2 weeks,Open,Owner,Escalate with controlled weekday rate adjustments

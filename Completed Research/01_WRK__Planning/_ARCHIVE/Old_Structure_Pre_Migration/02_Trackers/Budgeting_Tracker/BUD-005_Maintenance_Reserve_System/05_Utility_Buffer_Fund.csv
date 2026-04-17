@@ -1,5 +1,0 @@
-reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
-BUD-005-UBF-01,Summer AC Usage Spike,Detection,Critical,750.00,500.00,250.00,Active,Reserve for Austin heat wave electricity
-BUD-005-UBF-02,Water Anomaly Detection,Detection,High,300.00,200.00,100.00,Active,Funds for leak investigation or surge
-BUD-005-UBF-03,Gas Winter Freeze Spike,Detection,Medium,250.00,200.00,50.00,Active,Reserve for winter heating surges
-BUD-005-UBF-04,Smart Device Connectivity,Detection,Medium,200.00,100.00,100.00,Active,Hotspot backup or system troubleshooting

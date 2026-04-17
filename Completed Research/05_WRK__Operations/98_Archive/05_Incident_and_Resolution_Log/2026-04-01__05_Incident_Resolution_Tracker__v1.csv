@@ -1,4 +1,0 @@
-incident_id,opened_date,area,issue_description,severity_score,reported_by,vendor_assigned,status,resolution_date,cost_usd,notes
-INC-001,2026-04-01,Kitchen,Dishwasher not draining,7,Cleaner,Flush-It-Right,Resolved,2026-04-01,145,Filter blockage resolved
-INC-002,2026-04-01,Primary Bath,Slow water pressure,4,Guest,Austin ProFix,In Progress,,120,Check aerator and supply line
-INC-003,2026-04-01,Den,Sleeper sofa handle loose,1,Cleaner,Austin ProFix,Open,,,Schedule at next turnover

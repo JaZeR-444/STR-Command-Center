@@ -1,7 +1,0 @@
-rule_id,rule_name,rule_type,value,channel,active,status,owner,notes
-DF-001,Maximum Promo Discount,Percent Cap,15 percent,Airbnb + VRBO,Yes,Active,Owner,Hard cap unless manual override
-DF-002,Stacking Policy,Stack Rule,No stacking of percent discounts,Airbnb + VRBO,Yes,Active,Owner,Only one percent-off promo per reservation
-DF-003,Weekly Discount,Percent Off,15 percent,Airbnb + VRBO,Yes,Planned,Owner,Use with 7+ night target only
-DF-004,Monthly Discount,Percent Off,20 percent,Airbnb + VRBO,No,Planned,Owner,Enable later if monthly demand target is needed
-DF-005,Last-Minute Discount,Percent Off,8 percent within 7 days,Airbnb + VRBO,Yes,Planned,Owner,Gap-fill only
-DF-006,Early Check-In Offer,Value Add,Free when ops allow,Airbnb + VRBO,Yes,Planned,Owner,Do not guarantee before cleaner confirms

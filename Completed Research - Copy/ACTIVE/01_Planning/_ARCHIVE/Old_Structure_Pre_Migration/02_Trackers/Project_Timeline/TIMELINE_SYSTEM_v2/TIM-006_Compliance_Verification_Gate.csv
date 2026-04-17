@@ -1,5 +1,0 @@
-task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
-TIM-006-01,STR Permit and Compliance Finalization,Critical,2026-04-10,2026-05-01,21,,In Progress,TIM-001-02,Owner,City of Austin lead times
-TIM-006-02,Insurance and Tax Setup Verification,High,2026-04-20,2026-05-05,15,,Planned,TIM-006-01,Owner,Verify STR coverage
-TIM-006-03,Smart Lock Compliance Check,High,2026-04-25,2026-04-30,5,,Planned,TIM-003-02,Owner,Safety code validation
-TIM-006-04,House Rules and Policy Review,Medium,2026-04-30,2026-05-04,4,,Planned,TIM-006-01,Owner,Align with legal strategy

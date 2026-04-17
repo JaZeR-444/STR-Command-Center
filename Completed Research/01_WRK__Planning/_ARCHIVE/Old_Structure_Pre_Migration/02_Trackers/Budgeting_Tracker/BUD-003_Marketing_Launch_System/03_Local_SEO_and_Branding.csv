@@ -1,4 +1,0 @@
-item_id,investment_name,category,priority,est_cost,actual_spend,variance,status,channel,roi_tier,notes
-BUD-003-SEO-01,"Branded House Manual Print",branding,med,100.00,0.00,100.00,pending,local,exp_enhancer,"Austin Modern aesthetic"
-BUD-003-SEO-02,"Custom QR Code Signage",branding,med,50.00,0.00,50.00,pending,local,exp_enhancer,"Frictionless info access"
-BUD-003-SEO-03,"Local Austin Guidebook Curation",branding,med,200.00,0.00,200.00,pending,local,exp_enhancer,"Digital/Physical asset"

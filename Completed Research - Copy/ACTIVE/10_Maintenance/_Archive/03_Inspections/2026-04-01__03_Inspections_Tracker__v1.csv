@@ -1,5 +1,0 @@
-inspection_id,inspection_type,scope,scheduled_date,completed_date,status,issues_found,followup_ticket,owner,notes
-INSP-001,Monthly Walkthrough,Interior safety and wear check,2026-04-07,,Scheduled,,,Owner,Check walls floors doors fixtures and high-touch wear
-INSP-002,Monthly Systems Check,HVAC lock Wi-Fi appliance quick test,2026-04-07,,Scheduled,,,Owner,Run before first weekend booking cycle
-INSP-003,Pre-Peak Season Reset,Full home readiness before summer demand,2026-05-20,,Scheduled,,,Owner,Includes patio deep-check and linen condition audit
-INSP-004,Quarterly Exterior Review,Patio and entry condition review,2026-07-01,,Scheduled,,,Owner,Check weather exposure rust and hardware stability

@@ -41,7 +41,6 @@ desktop.ini
 
 # TypeScript
 *.tsbuildinfo
-next-env.d.ts
 
 # IDE
 .idea/
@@ -59,3 +58,17 @@ next-env.d.ts
 # OS
 .DS_Store
 Thumbs.db
+
+# Project-specific non-app content
+Completed Research/
+Completed Research - Copy/
+str-command-center/
+.frontmatter/
+
+# Local maintenance utilities (not part of app deploy)
+upgrade_command_center.py
+audit_script.py
+generate_11_run_orders.py
+generate_run_order.py
+inject_frontmatter_standard.py
+completed_research_file_list.txt

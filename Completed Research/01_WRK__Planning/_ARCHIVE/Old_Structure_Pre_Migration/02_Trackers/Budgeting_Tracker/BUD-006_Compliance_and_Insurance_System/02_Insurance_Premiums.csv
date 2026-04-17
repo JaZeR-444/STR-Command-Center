@@ -1,6 +1,0 @@
-item_id,risk_mitigant,category,priority,est_cost,actual_spend,variance,status,authority_carrier,notes
-BUD-006-INS-01,insurance__commercial_str_master_policy,insurance_premiums,risk_critical,950.00,0.00,950.00,active,str_specialty_carrier,"commercial_str policy bind and early premium reserve"
-BUD-006-INS-02,insurance__general_liability_1m_plus,insurance_premiums,risk_critical,420.00,0.00,420.00,active,str_specialty_carrier,"general_liability coverage minimum 1000000 limit"
-BUD-006-INS-03,insurance__business_interruption_loss_of_income,insurance_premiums,high,280.00,0.00,280.00,pending,str_specialty_carrier,"loss_of_income endorsement aligned to monthly_revpar exposure"
-BUD-006-INS-04,insurance__umbrella_liability_layer,insurance_premiums,med,180.00,0.00,180.00,pending,umbrella_carrier,"excess liability reserve while final risk tolerance is set"
-BUD-006-INS-05,insurance__broker_binding_support,insurance_premiums,med,120.00,0.00,120.00,pending,insurance_broker,"policy comparison and binding support fee"

@@ -1,6 +1,0 @@
-task_id,risk_id,mitigation_task,priority,status,owner,completion_date,notes
-MIT-01,RSK-001,Verify City of Austin STR License Requirements,Critical,In Progress,Compliance Lead,,Requirement matrix and submission packet checklist compiled; awaiting city filing artifact and license confirmation.
-MIT-02,RSK-002,Draft Photo-Validation Cleaning Checklist,High,In Progress,Operations Lead,,QC checklist draft initiated with photo proof fields and cleaner signoff workflow; pending vendor validation pass.
-MIT-03,RSK-003,Define 15% Maximum Booking Discount Rule,Medium,Completed,Pricing Lead,2026-04-05,15% max discount guardrail locked as escalation Level 2 control with floor-rate protection.
-MIT-04,RSK-004,Establish $2500 Maintenance Reserve Fund,High,In Progress,Maintenance Lead,,Reserve earmarked in BUD-005 with emergency vendor response shortlist; pending signed PM schedule artifact.
-MIT-05,RSK-005,Finalize Hero Shot Photography Brief,High,Completed,Marketing Lead,2026-04-05,Hero shot brief finalized with primary and backup visual hooks and CTR threshold triggers.

@@ -1,3 +1,0 @@
-item_id,investment_name,category,priority,est_cost,actual_spend,variance,status,channel,roi_tier,notes
-BUD-003-PRO-01,"20% New Listing Discount",promotion,high,675.00,0.00,675.00,pending,airbnb,roi_critical,"Est cost for first 5 bookings"
-BUD-003-PRO-02,"Early Bird Discount (Event)",promotion,med,0.00,0.00,0.00,pending,various,exp_enhancer,"Dynamic pricing trigger"

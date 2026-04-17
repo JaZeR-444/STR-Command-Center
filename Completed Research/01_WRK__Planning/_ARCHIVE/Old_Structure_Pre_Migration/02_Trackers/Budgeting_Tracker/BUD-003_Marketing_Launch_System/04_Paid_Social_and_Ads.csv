@@ -1,3 +1,0 @@
-item_id,investment_name,category,priority,est_cost,actual_spend,variance,status,channel,roi_tier,notes
-BUD-003-ADS-01,"COTA/F1 Targeted Meta Ads",ads,high,300.00,0.00,300.00,active,meta,roi_critical,"Oct surge capture"
-BUD-003-ADS-02,"SXSW Targeted Google Ads",ads,high,200.00,0.00,200.00,pending,google,roi_critical,"Mar surge capture"

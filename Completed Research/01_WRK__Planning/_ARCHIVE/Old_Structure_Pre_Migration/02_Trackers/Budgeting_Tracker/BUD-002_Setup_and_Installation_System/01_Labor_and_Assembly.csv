@@ -1,5 +1,0 @@
-item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
-BUD-002-LAB-01,"121-Item Furniture Assembly",labor,high,800.00,0.00,800.00,pending,pro_handyman,"Est 40 hours @ $20/hr (Team)"
-BUD-002-LAB-02,"TV Wall Mounting (x4)",labor,high,200.00,0.00,200.00,pending,pro_handyman,"Primary, Den, Bed2, Bed3"
-BUD-002-LAB-03,"Blind/Window Install",labor,high,100.00,0.00,100.00,pending,self_install,"Includes primary blackout setup"
-BUD-002-LAB-04,"Pendant Light Swap",labor,med,100.00,0.00,100.00,pending,electrician,"Replace island pendants"

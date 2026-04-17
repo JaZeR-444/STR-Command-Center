@@ -1,6 +1,0 @@
-item_id,risk_mitigant,category,priority,est_cost,actual_spend,variance,status,authority_carrier,notes
-BUD-006-SAF-01,local_rules__fire_suppression_readiness,onsite_safety_compliance,high,140.00,0.00,140.00,pending,fire_safety_vendor,"abc extinguishers and mounting kits for required zones"
-BUD-006-SAF-02,local_rules__enhanced_smoke_co_detection,onsite_safety_compliance,high,240.00,0.00,240.00,pending,life_safety_vendor,"additional smoke_co units beyond baseline mesh coverage"
-BUD-006-SAF-03,local_rules__egress_and_permit_display_frames,onsite_safety_compliance,high,95.00,0.00,95.00,pending,acrylic_frame_vendor,"entry acrylic frames for permit display and evacuation map"
-BUD-006-SAF-04,local_rules__emergency_egress_signage,onsite_safety_compliance,med,130.00,0.00,130.00,pending,safety_signage_vendor,"directional egress and emergency contact signage package"
-BUD-006-SAF-05,local_rules__life_safety_inspection,onsite_safety_compliance,high,210.00,0.00,210.00,pending,licensed_inspector,"third_party walkthrough to validate life_safety controls"

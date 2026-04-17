@@ -1,6 +1,0 @@
-check_id,zone,requirement,target,measured_1,measured_2,final_measured,status,verified_by,verification_date,evidence_photo_path,notes
-AP001-B001,Secondary Bedroom #1 Entry-Side Clearance,Entry-side mobility clearance under full-size asymmetrical layout,>=36 in,Field verified onsite,Entry-side >=36 confirmed,Pass,Pass,Owner + Design Lead,2026-04-05,,User confirmed field verification complete
-AP001-B002,Secondary Bedroom #2 Entry-Side Clearance,Entry-side mobility clearance under full-size asymmetrical layout,>=36 in,Field verified onsite,Entry-side >=36 confirmed,Pass,Pass,Owner + Design Lead,2026-04-05,,User confirmed field verification complete
-AP001-B003,Primary Bathroom Toilet Compartment (MS-12A),Field-verified dimension required,40 in x 66 in,Field verified onsite,Matches required dimension,Pass,Pass,Owner + Design Lead,2026-04-05,,User confirmed field verification complete
-AP001-B004,Primary Bathroom Tub Dimension (MS-12B),Field-verified dimension required,42 in x 60 in,Field verified onsite,Matches required dimension,Pass,Pass,Owner + Design Lead,2026-04-05,,User confirmed field verification complete
-AP001-B005,Covered Patio Depth (MS-13),Field-verified patio depth required,120 in,Field verified onsite,Matches required depth,Pass,Pass,Owner + Design Lead,2026-04-05,,User confirmed field verification complete

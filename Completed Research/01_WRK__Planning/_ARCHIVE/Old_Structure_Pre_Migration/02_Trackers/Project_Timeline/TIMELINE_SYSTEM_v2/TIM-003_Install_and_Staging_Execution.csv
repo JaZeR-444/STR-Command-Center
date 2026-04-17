@@ -1,5 +1,0 @@
-task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
-TIM-003-01,Furniture Assembly and Staging,High,2026-04-15,2026-04-25,10,,Planned,TIM-002-02,Owner,Turnover-style staging QA
-TIM-003-02,Smart Home and Tech Deployment,High,2026-04-20,2026-04-27,7,,Planned,TIM-003-01,Owner,Smart lock and mesh validation
-TIM-003-03,Final Site Cleaning and Prep,High,2026-04-25,2026-04-27,2,,Planned,TIM-003-01,Owner,White-glove sanitization
-TIM-003-04,Amenity Stocking and QA Pass,Medium,2026-04-26,2026-04-27,1,,Planned,TIM-003-03,Owner,Inventory verification

@@ -1,2 +1,0 @@
-Experience_Asset_ID,Document_Name,Guest_Journey_Stage,Amenity_Name,Amenity_Category,Confirmed_or_Proposed,Availability_Status,Verification_Date,Verification_Evidence,Issue_Escalation_Path,Status,Notes
-EX-AM-001,03_Amenities_Tracker.csv,In-Stay,[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],FACTUAL DATA MISSING: Amenity verification records not yet linked.

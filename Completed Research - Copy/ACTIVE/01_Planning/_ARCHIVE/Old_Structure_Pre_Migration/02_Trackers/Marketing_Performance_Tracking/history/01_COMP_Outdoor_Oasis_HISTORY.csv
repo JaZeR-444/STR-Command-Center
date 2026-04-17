@@ -1,2 +1,0 @@
-comp_id,comp_name,scrape_date,checkin_date,nights,day_type,days_until_checkin,lead_time_bucket,is_weekend,event_flag,holiday_flag,listed_nightly_rate,cleaning_fee,total_before_tax,total_after_tax,min_stay,availability_status,instant_book,free_cancellation,review_count,rating,guest_favorite,source_url,source_platform,captured_by,capture_method,confidence_notes,notes
-COMP-01,The 78744 Outdoor Oasis,4/3/2026,4/10/2026,2,weekend,7,flash,TRUE,FALSE,FALSE,475,225,1175,TBD,2,available,TRUE,TRUE,100,4.95,TRUE,TBD,airbnb,owner,manual,high,Initial baseline scrape

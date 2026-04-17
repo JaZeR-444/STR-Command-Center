@@ -1,4 +1,0 @@
-item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
-BUD-002-INF-01,"Utility Activation Fees",infrastructure,high,150.00,0.00,150.00,active,city_of_austin,"Water/Electric/Gas starts"
-BUD-001-INF-02,"Google Fiber Mesh Kit",infrastructure,high,200.00,0.00,200.00,active,google,"Full home coverage mesh"
-BUD-001-INF-03,"Smart Lock Hub/Setup",infrastructure,high,100.00,0.00,100.00,pending,schlage,"Bridge/Connectivity hardware"
