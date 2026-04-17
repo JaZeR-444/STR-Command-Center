@@ -42,6 +42,21 @@ export function DocumentViewerPane({ doc }: DocumentViewerPaneProps) {
   const currentStatus: DocumentStatus = meta.status || (isLegacyCompleted ? 'verified' : 'missing');
   const smartTags = meta.smartTags || [];
 
+  const mergeSmartTags = useCallback(
+    (existing: { key: string; value: string }[], incoming: { key: string; value: string }[]) => {
+      const seen = new Set<string>();
+      const merged: { key: string; value: string }[] = [];
+      [...existing, ...incoming].forEach(tag => {
+        const id = `${tag.key}::${tag.value}`;
+        if (seen.has(id)) return;
+        seen.add(id);
+        merged.push(tag);
+      });
+      return merged;
+    },
+    []
+  );
+
   // Load notes when doc changes
   useEffect(() => {
     if (doc) {
@@ -96,35 +111,49 @@ export function DocumentViewerPane({ doc }: DocumentViewerPaneProps) {
     appendAuditLog(doc.id, 'Updated editor notes', 'You');
   }, [doc, note, setDocNote, appendAuditLog]);
 
-  const attachFile = useCallback(async (file: File) => {
-    if (!doc) return;
-    
-    const fileId = crypto.randomUUID();
-    await saveFile(fileId, file);
-    addDocAttachment(doc.id, {
-      id: fileId,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    });
-    
-    appendAuditLog(doc.id, `Uploaded ${file.name}`, 'You');
-    
-    // Simulate AI Scanner
+  const attachFiles = useCallback(async (files: File[]) => {
+    if (!doc || files.length === 0) return;
+
     setIsScanning(true);
-    setTimeout(() => {
-      setIsScanning(false);
-      const newTags = extractSmartTags(file.name, doc.type);
-      setSmartTags(doc.id, newTags);
-      appendAuditLog(doc.id, 'Smart scanning extracted metadata', 'Vault AI');
-      
-      // Auto upgrade status if missing
-      if (currentStatus === 'missing') {
-        updateDocStatus(doc.id, 'in_review');
-        appendAuditLog(doc.id, 'Auto-promoted to In Review', 'Vault AI');
-      }
-    }, 1500);
-  }, [doc, currentStatus, addDocAttachment, appendAuditLog, setSmartTags, updateDocStatus]);
+    const pendingTags: { key: string; value: string }[] = [];
+
+    for (const file of files) {
+      const fileId = crypto.randomUUID();
+      await saveFile(fileId, file);
+      addDocAttachment(doc.id, {
+        id: fileId,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+
+      appendAuditLog(doc.id, `Uploaded ${file.name}`, 'You');
+
+      // Per-file tagging so each tracker artifact file is represented.
+      pendingTags.push({ key: 'File', value: file.name });
+      pendingTags.push(...extractSmartTags(file.name, doc.type));
+    }
+
+    const mergedTags = mergeSmartTags(smartTags, pendingTags);
+    setSmartTags(doc.id, mergedTags);
+    appendAuditLog(doc.id, `Smart scanning tagged ${files.length} file(s)`, 'Vault AI');
+
+    if (currentStatus === 'missing') {
+      updateDocStatus(doc.id, 'in_review');
+      appendAuditLog(doc.id, 'Auto-promoted to In Review', 'Vault AI');
+    }
+
+    setIsScanning(false);
+  }, [
+    addDocAttachment,
+    appendAuditLog,
+    currentStatus,
+    doc,
+    mergeSmartTags,
+    setSmartTags,
+    smartTags,
+    updateDocStatus,
+  ]);
 
   const handleRemoveAttachment = useCallback(async (attachmentId: string) => {
     if (!doc) return;
@@ -162,9 +191,9 @@ export function DocumentViewerPane({ doc }: DocumentViewerPaneProps) {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) attachFile(file);
-  }, [attachFile]);
+    const files = e.dataTransfer.files ? Array.from(e.dataTransfer.files) : [];
+    if (files.length > 0) void attachFiles(files);
+  }, [attachFiles]);
 
   // Empty state
   if (!doc) {
@@ -214,7 +243,7 @@ export function DocumentViewerPane({ doc }: DocumentViewerPaneProps) {
             isDragging={isDragging}
             onSelectAttachment={setActivePreviewId}
             onRemoveAttachment={handleRemoveAttachment}
-            onFileSelect={attachFile}
+            onFilesSelect={(files) => { void attachFiles(files); }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}

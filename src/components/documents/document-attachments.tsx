@@ -15,7 +15,7 @@ interface DocumentAttachmentsProps {
   isDragging: boolean;
   onSelectAttachment: (id: string) => void;
   onRemoveAttachment: (id: string) => void;
-  onFileSelect: (file: File) => void;
+  onFilesSelect: (files: File[]) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
@@ -34,7 +34,7 @@ export const DocumentAttachments = memo(function DocumentAttachments({
   isDragging,
   onSelectAttachment,
   onRemoveAttachment,
-  onFileSelect,
+  onFilesSelect,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -42,8 +42,8 @@ export const DocumentAttachments = memo(function DocumentAttachments({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) onFileSelect(file);
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (files.length > 0) onFilesSelect(files);
     if (e.target) e.target.value = ''; // Reset input
   };
 
@@ -110,10 +110,10 @@ export const DocumentAttachments = memo(function DocumentAttachments({
           </svg>
         </div>
         <div>
-          <p className={cn("text-xs font-semibold", isDragging ? "text-indigo-300" : "text-zinc-400")}>Add File</p>
-          <p className="text-[10px] text-zinc-600">Drop or click</p>
+          <p className={cn("text-xs font-semibold", isDragging ? "text-indigo-300" : "text-zinc-400")}>Add Files</p>
+          <p className="text-[10px] text-zinc-600">Drop many or click</p>
         </div>
-        <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+        <input type="file" multiple ref={fileInputRef} className="hidden" onChange={handleFileChange} />
       </div>
     </div>
   );
