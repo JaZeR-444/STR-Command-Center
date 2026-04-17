@@ -1,0 +1,2 @@
+inventory_id,room,item_name,sourcing_priority,target_price_usd,actual_price_usd,source_channel,condition_score,measurements_verified,assembly_required,status,owner,notes
+INV-001,Great Room,L-Sectional Sofa,Critical,600,,FB Marketplace,TBD,No,Yes,Sourcing,Owner,"Min 110"" length required; verify 158"" hallway turn"

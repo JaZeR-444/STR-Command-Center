@@ -1,0 +1,4 @@
+report_id,report_month,report_year,prepared_date,property_id,gross_booking_usd,platform_fees_usd,taxes_collected_usd,net_revenue_usd,occupancy_percent,adr_usd,revpar_usd,avg_stay_nights,total_nights_booked,total_nights_available,status,owner,notes
+RSR-2026-PRE,Pre-Launch,2026,2026-04-05,7513_Ballydawn,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,30,Baseline,Owner,Pre-launch baseline - no bookings yet
+RSR-2026-04,April,2026,2026-05-01,7513_Ballydawn,[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],30,Planned,Owner,Update after first month of operations
+RSR-2026-05,May,2026,2026-06-01,7513_Ballydawn,[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],[MISSING_EVIDENCE],31,Planned,Owner,Update after second month of operations

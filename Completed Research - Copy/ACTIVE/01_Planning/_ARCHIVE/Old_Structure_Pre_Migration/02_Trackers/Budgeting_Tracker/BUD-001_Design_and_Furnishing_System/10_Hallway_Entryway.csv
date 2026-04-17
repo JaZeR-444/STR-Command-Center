@@ -1,0 +1,28 @@
+item_id,item_name,tier,option_label,description,source_vendor,est_cost,qty,priority,is_selected,purchase_status,notes
+BUD-001-HALL-01,Entry Console Table,budget,Option 1,Local Slim Console,fb_marketplace,150,1,high,FALSE,sourcing,
+BUD-001-HALL-01,Entry Console Table,value,Option 1,IKEA LISTERBY oak,ikea,200,1,high,TRUE,pending,
+BUD-001-HALL-01,Entry Console Table,premium,Option 1,West Elm console,west_elm,450,1,high,FALSE,pending,$350-$900 range
+BUD-001-HALL-02,Extra-Long Runner (14ft),budget,Option 1,Montauk 14ft,target,100,1,high,FALSE,pending,
+BUD-001-HALL-02,Extra-Long Runner (14ft),value,Option 1,Unique Loom modern,target,140,1,high,TRUE,pending,
+BUD-001-HALL-02,Extra-Long Runner (14ft),premium,Option 1,Ruggable runner,ruggable,250,1,high,FALSE,pending,$200-$450 range
+BUD-001-HALL-03,Smart Lock,budget,Option 1,eufy Smart Lock C30,eufy,80,1,high,FALSE,pending,
+BUD-001-HALL-03,Smart Lock,value,Option 1,Schlage Encode,home_depot,289,1,high,TRUE,pending,
+BUD-001-HALL-03,Smart Lock,premium,Option 1,Yale Assure 2,best_buy,300,1,high,FALSE,pending,
+BUD-001-HALL-04,Gallery Wall Art Pkg,budget,Option 1,Threshold 3-pc set,target,100,1,med,FALSE,pending,
+BUD-001-HALL-04,Gallery Wall Art Pkg,value,Option 1,Local Austin mix,etsy,120,1,med,TRUE,pending,$120-$200 range
+BUD-001-HALL-04,Gallery Wall Art Pkg,premium,Option 1,Custom Framed set,local,400,1,med,FALSE,pending,$200-$600 range
+BUD-001-HALL-05,Key/Mail Bowl,budget,Option 1,IKEA KEJSARFISK,ikea,8,1,low,FALSE,pending,
+BUD-001-HALL-05,Key/Mail Bowl,value,Option 1,Threshold Ceramic,target,15,1,low,TRUE,pending,
+BUD-001-HALL-05,Key/Mail Bowl,premium,Option 1,West Elm Catchall,west_elm,40,1,low,FALSE,pending,$25-$80 range
+BUD-001-HALL-06,Wall-Mounted Hooks,budget,Option 1,Individual hooks x3,target,10,1,med,FALSE,pending,
+BUD-001-HALL-06,Wall-Mounted Hooks,value,Option 1,Brightroom Accordion,target,25,1,med,TRUE,pending,
+BUD-001-HALL-06,Wall-Mounted Hooks,premium,Option 1,Umbra Flip rail,target,40,1,med,FALSE,pending,
+BUD-001-HALL-07,Full-Length Mirror,budget,Option 1,MyDepot Arched,target,81,1,med,FALSE,pending,
+BUD-001-HALL-07,Full-Length Mirror,value,Option 1,IKEA KARMSUND,ikea,100,1,med,TRUE,pending,
+BUD-001-HALL-07,Full-Length Mirror,premium,Option 1,West Elm oversized,west_elm,300,1,med,FALSE,pending,$180-$400 range
+BUD-001-HALL-08,Art Frame Layer 1,budget,Option 1,Basic Frame,target,15,1,med,FALSE,pending,
+BUD-001-HALL-08,Art Frame Layer 1,value,Option 1,Styling Depth Layer,target,20,1,med,TRUE,pending,
+BUD-001-HALL-08,Art Frame Layer 1,premium,Option 1,Custom Mat,local,40,1,med,FALSE,pending,
+BUD-001-HALL-09,Art Frame Layer 2,budget,Option 1,Basic Frame,target,15,1,med,FALSE,pending,
+BUD-001-HALL-09,Art Frame Layer 2,value,Option 1,Styling Depth Layer,target,20,1,med,TRUE,pending,
+BUD-001-HALL-09,Art Frame Layer 2,premium,Option 1,Custom Mat,local,40,1,med,FALSE,pending,

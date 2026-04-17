@@ -1,0 +1,4 @@
+Repair_ID,Title,Severity,Category,Owner,Reported_Date,Status,Due_Date,Completion_Date,Cost,Root_Cause,Photo_Link,Notes
+RPR-001,[EXAMPLE] HVAC not cooling,Critical,HVAC,Vendor,2026-04-01,Done,2026-04-01,2026-04-01,$250,Dirty condenser coil,[TBD],Preventive action: Add semi-annual deep HVAC service to PM schedule
+RPR-002,[EXAMPLE] Slow kitchen drain,High,Plumbing,Vendor,2026-04-02,In Progress,2026-04-05,[TBD],[TBD],Clog buildup,[TBD],Scheduled plumber visit 2026-04-05
+RPR-003,[EXAMPLE] Burned out patio light,Low,Electrical,Host,2026-04-03,Open,2026-04-10,[TBD],[TBD],Bulb end-of-life,[TBD],Replacement bulb on order

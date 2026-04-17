@@ -1,0 +1,7 @@
+reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
+BUD-005-ELR-01,Patio Furniture UV Protect,Prevention,Medium,250.00,200.00,50.00,Active,UV resistant sprays and cleaning
+BUD-005-ELR-02,Grill Burner/Drip Pan Rep,Prevention,High,150.00,100.00,50.00,Active,Replacement parts for high-use BBQ
+BUD-005-ELR-03,Landscape Drought Watering,Prevention,High,400.00,300.00,100.00,Active,Supplementary water for Austin droughts
+BUD-005-ELR-04,Fire Pit Safety Check/Cln,Prevention,Medium,150.00,100.00,50.00,Active,Burner port cleaning and valve check
+BUD-005-ELR-05,Fence and Gate Maintenance,Prevention,Low,350.00,350.00,0.00,Active,Hinge lubrication and wood sealant
+BUD-005-ELR-06,Power Wash Covered Patio,Prevention,Medium,200.00,200.00,0.00,Pending,Annual cleaning of the 468" patio

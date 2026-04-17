@@ -1,0 +1,2 @@
+budget_id,source_system_path,planned_investment,actual_spend,status,next_action,notes
+BUD-005,"pending_system_build",2500.00,0.00,placeholder_required,"create BUD-005_Maintenance_Reserve_System rollup","placeholder seeded from original planning assumption"

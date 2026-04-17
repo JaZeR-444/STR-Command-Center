@@ -1,0 +1,3 @@
+record_id,booking_ref,guest_name,platform,last_contact_date,current_milestone,status,next_action_due,notes
+1,HM-12345,Sample Guest,Airbnb,2026-04-01,Booking Confirmed,Active,2026-04-09,Pre-arrival scheduled for 9th
+2,HM-67890,John Doe,VRBO,2026-04-01,Inquiry,Pending,2026-04-02,Guest asked about 36" clearance in hall

@@ -1,0 +1,8 @@
+inventory_id,room,item_name,sourcing_priority,target_price_usd,actual_price_usd,source_channel,condition_score,measurements_verified,assembly_required,status,owner,notes
+INV-001,Great Room,L-Sectional Sofa,Critical,600,,FB Marketplace,TBD,No,Yes,Sourcing,Owner,Min 110" length required
+INV-002,Kitchen,Counter Bar Stools (4),Critical,200,,FB Marketplace,TBD,No,No,Sourcing,Owner,Max 18" width to fit 142" island
+INV-003,Primary Bed,Solid Wood King Frame,Critical,300,,FB Marketplace,TBD,No,Yes,Sourcing,Owner,Target MCM or Modern Rustic
+INV-004,Primary Bed,King Mattress,Critical,800,,Retail (New),10,Yes,No,Planned,Owner,Hybrid preferred
+INV-005,Den,Queen Sleeper Sofa,Utility,400,,FB Marketplace,TBD,No,Yes,Sourcing,Owner,Check mechanism integrity
+INV-006,Great Room,Area Rug (10x14),Aesthetic,300,,Estate Sale,TBD,Yes,No,Sourcing,Owner,High contrast woven preferred
+INV-007,Dining,Solid Wood Dining Table,Critical,250,,Estate Sale,TBD,No,Yes,Sourcing,Owner,Seats 6-8 for group stay

@@ -1,0 +1,22 @@
+Non-MD File: 00_Prompt_Pack_Manifest.csv
+Bad suffix: 00_01_Planning_Run_Order_and_Standards.md
+Unusual prefix: BUD-MASTER_Financial_Tracker_Execution_Prompt.md
+Missing number sequence: BUD_Contingency_Spend_Rule_Enforcement_Execution_Prompt.md
+Missing number sequence: BUD_Variance_Compliance_Execution_Prompt.md
+Missing number sequence: KPI_Performance_Logging_Execution_Prompt.md
+Missing number sequence: RSK_Risk_Register_Execution_Prompt.md
+Missing number sequence: TIM_Timeline_Execution_Prompt.md
+Missing number sequence: TIM_Timeline_Integrity_Verification_Execution_Prompt.md
+Missing number sequence: TIM_Timeline_Milestone_Update_Execution_Prompt.md
+Missing number sequence: TIM_Weekly_Checkpoint_Log_Execution_Prompt.md
+Missing number sequence: TIM_Weekly_Planning_Audit_Execution_Prompt.md
+Bad suffix: 00_02_Property_Design_Run_Order_and_Standards.md
+Bad suffix: 00_03_Furnishing_Procurement_Run_Order_and_Standards.md
+Bad suffix: 00_04_Setup_Execution_Run_Order_and_Standards.md
+Bad suffix: 00_05_Operations_Run_Order_and_Standards.md
+Bad suffix: 00_06_Guest_Experience_Run_Order_and_Standards.md
+Bad suffix: 00_07_Marketing_Listing_Run_Order_and_Standards.md
+Bad suffix: 00_08_Pricing_Revenue_Run_Order_and_Standards.md
+Bad suffix: 00_09_Legal_Compliance_Run_Order_and_Standards.md
+Bad suffix: 00_10_Maintenance_Run_Order_and_Standards.md
+Bad suffix: 00_11_Analytics_Performance_Run_Order_and_Standards.md

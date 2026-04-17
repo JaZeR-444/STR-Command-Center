@@ -1,0 +1,101 @@
+{
+  "room_id": "den",
+  "room_name": "Den (Hybrid 4th Bedroom / Office)",
+  "strategic_focus": "Dual-use Office / Media Lounge / High-Occupancy Capacity",
+  "sleeps": 2,
+  "tiered_strategy": "Secondhand Furniture / New Sleep Surfaces",
+  "inventory": [
+    {
+      "item": "Queen Sofa Bed",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": false,
+      "baseline_cost": 750.00,
+      "tiers": {
+        "budget": "Local Used Queen Sleeper ($250-$700)",
+        "value": "Lark Manor / IKEA Sleeper Segment ($700-$1200)",
+        "premium": "Article / West Elm / Crate & Barrel ($1200-$2400)"
+      },
+      "notes": "Memory foam mattress preferred; check mechanism integrity before purchase"
+    },
+    {
+      "item": "50\" 4K Smart TV",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 258.00,
+      "tiers": {
+        "budget": "Roku Select Series / Hisense 50R6 ($175-$220)",
+        "value": "Roku Select Variant / Costco Value ($220-$320)",
+        "premium": "Sony/LG / Samsung QLED ($320-$550)"
+      },
+      "notes": "Dedicated gaming mode preferred; Guest Mode enabled"
+    },
+    {
+      "item": "48\" Desk",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Local Marketplace / JIONJOY Writing Desk ($40-$90)",
+        "value": "IKEA Desk Segment / Target Writing ($90-$180)",
+        "premium": "Article / West Elm MCM Desk ($180-$420)"
+      },
+      "notes": "Built-in feel corner unit; Google Fiber Hookup ready"
+    },
+    {
+      "item": "Ergonomic Task Chair",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 120.00,
+      "tiers": {
+        "budget": "Yaheetech Mesh / Generic Ergonomic ($60-$100)",
+        "value": "Karl Home Upholstered / Target Segment ($100-$180)",
+        "premium": "Branch / Herman Miller Entry ($180-$450)"
+      },
+      "notes": "Upholstered performance chair; must look polished in photos"
+    },
+    {
+      "item": "8x10 High-Pile Rug",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 250.00,
+      "tiers": {
+        "budget": "IKEA Budget / Target Plush ($120-$220)",
+        "value": "IKEA VOLLERSLEV / Rugs.com Lane ($220-$360)",
+        "premium": "Ruggable / West Elm Premium ($360-$700)"
+      },
+      "notes": "Acoustic Priority for WFH/Sleep; sound absorption focus"
+    },
+    {
+      "item": "Gaming Cabinet",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Local Marketplace / OfferUp ($40-$100)",
+        "value": "IKEA BESTA / TV Bench Lane ($100-$220)",
+        "premium": "West Elm / CB2 Compact Media ($220-$500)"
+      },
+      "notes": "Low-profile; conceals consoles and cable 'spaghetti'"
+    },
+    {
+      "item": "Small Coffee Table",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 100.00,
+      "tiers": {
+        "budget": "Local Used / Walmart Round Table ($30-$70)",
+        "value": "Castalia / Hearth & Hand Round ($70-$150)",
+        "premium": "CB2 / West Elm Designer Small ($150-$400)"
+      },
+      "notes": "Lightweight/mobile; easy to move for bed use"
+    }
+  ],
+  "total_baseline_cost": 1778.00
+}

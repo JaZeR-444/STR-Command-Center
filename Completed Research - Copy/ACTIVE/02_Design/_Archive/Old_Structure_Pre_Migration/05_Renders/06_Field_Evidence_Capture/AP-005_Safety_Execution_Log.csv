@@ -1,0 +1,6 @@
+check_id,category,requirement,status,verified_by,verification_date,evidence_path,notes
+F.3,Fire Safety,Fire safety requirements complete (extinguishers detectors placement),Pending,Safety Lead,2026-04-05,,Awaiting physical audit evidence
+F.4,CO/Air Quality,CO detection and air quality complete including MERV-13 requirement,In Progress,Safety Lead,2026-04-05,04_Safety_Accessibility/SAFETY_ACCESSIBILITY_STANDARD.md,Policy language locked; awaiting physical detector/filter verification
+F.5,Hazard Mitigation,Hazard mitigation checks complete,Pending,Safety Lead,2026-04-05,,Awaiting room-by-room hazard audit evidence
+F.6,Smart Safety,Smart safety systems tested and documented,Pending,Operations Lead,2026-04-05,,Awaiting lock/leak/noise/alarm test evidence
+F.10,Insurance/Risk,Insurance and risk requirements documented,Pending,Compliance Lead,2026-04-05,,Awaiting policy metadata artifact evidence

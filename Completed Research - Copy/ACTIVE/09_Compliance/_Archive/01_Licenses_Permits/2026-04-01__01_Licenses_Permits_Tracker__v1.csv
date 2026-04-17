@@ -1,0 +1,5 @@
+permit_id,requirement_name,jurisdiction,applies_to_property,application_status,permit_number,issue_date,renewal_date,verification_source,last_verified_date,owner,notes
+LCP-001,Short-Term Rental Operating Permit,City of Austin,Yes,Researching,TBD,TBD,TBD,City STR portal or official code page,2026-04-01,Owner,Confirm exact permit type and category before listing goes live
+LCP-002,Certificate of Occupancy Requirement,City of Austin,Verify,Researching,TBD,TBD,TBD,City permitting records,2026-04-01,Owner,Confirm whether existing home classification is sufficient for STR use
+LCP-003,Business Registration Requirement,State/Local,Verify,Researching,TBD,TBD,TBD,Texas SOS and city business guidance,2026-04-01,Owner,Determine if separate registration is required for host entity
+LCP-004,Fire Safety Compliance Requirement,City/County,Yes,Researching,TBD,TBD,TBD,Official fire code and STR guidance,2026-04-01,Owner,Track required alarms extinguisher and egress standards

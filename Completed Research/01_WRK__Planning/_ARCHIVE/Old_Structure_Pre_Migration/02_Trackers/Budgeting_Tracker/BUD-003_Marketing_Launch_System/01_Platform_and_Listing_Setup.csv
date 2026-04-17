@@ -1,0 +1,4 @@
+item_id,investment_name,category,priority,est_cost,actual_spend,variance,status,channel,roi_tier,notes
+BUD-003-SET-01,"Professional Copywriting/Editing",setup,high,250.00,0.00,250.00,pending,various,roi_critical,"Optimizing for Families/Groups"
+BUD-003-SET-02,"SEO Keyword Optimization",setup,high,100.00,0.00,100.00,pending,various,roi_critical,"South Austin/COTA focus"
+BUD-003-SET-03,"Channel Manager Setup Fee",setup,med,50.00,0.00,50.00,pending,hospitable,exp_enhancer,"Syncing Airbnb/VRBO calendars"

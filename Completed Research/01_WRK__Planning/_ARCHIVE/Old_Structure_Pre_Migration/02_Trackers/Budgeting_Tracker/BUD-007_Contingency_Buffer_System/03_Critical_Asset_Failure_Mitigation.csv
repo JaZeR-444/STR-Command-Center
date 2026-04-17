@@ -1,0 +1,4 @@
+drawdown_id,risk_id,task_name,priority,est_impact,actual_spend,status,trigger_event,notes
+BUD-007-AFM-01,RSK-004,Smart Lock Replacement (Defect),High,250.00,0.00,Open,DOA out-of-box failure,Immediate readiness need
+BUD-007-AFM-02,RSK-004,Secondary TV (Damage in Install),Medium,300.00,0.00,Open,Uninsured install damage,Restore guest amenity
+BUD-007-AFM-03,RSK-004,Furniture Assembly Parts Loss,Medium,200.00,0.00,Open,Shipment missing critical hardware,Rapid restoration

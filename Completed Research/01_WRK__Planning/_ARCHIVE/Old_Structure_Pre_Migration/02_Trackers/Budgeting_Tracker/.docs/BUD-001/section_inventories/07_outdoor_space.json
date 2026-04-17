@@ -1,0 +1,139 @@
+{
+  "room_id": "outdoor_space",
+  "room_name": "Outdoor Space (The Texas Sunset Patio)",
+  "strategic_focus": "Al fresco dining / Fire-pit social experience / Photo-critical 'Glow'",
+  "tiered_strategy": "Social Seating Grouping / Fire Centerpiece / Evening Ambiance",
+  "inventory": [
+    {
+      "item": "Patio Seating Group (L-shape)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 700.00,
+      "tiers": {
+        "budget": "Aiho 5-piece / ELPOSUN 4-piece ($250-$700)",
+        "value": "BOSMILLER 7-piece / IKEA NAMMARO ($700-$1500)",
+        "premium": "Captiva 6-seater / West Elm Sectional ($1500-$3200)"
+      },
+      "notes": "Weather-resistant; strategic grouping trigger for social gathering"
+    },
+    {
+      "item": "Fire Feature (Pit or Table)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Mainstays 26-28in Round Pit ($40-$90)",
+        "value": "Target Metal Lattice / Homall Propane ($90-$220)",
+        "premium": "Propane Fire Table / West Elm Segment ($220-$650)"
+      },
+      "notes": "Centerpiece for social gatherings; Propane preferred for ease of use"
+    },
+    {
+      "item": "String Lights (Edison Style)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 50.00,
+      "tiers": {
+        "budget": "Target LED Globe / Better Homes Edison ($17-$35)",
+        "value": "Brightech Ambience 48ft / Feit LED ($35-$70)",
+        "premium": "Commercial Grade / Govee Smart ($70-$220)"
+      },
+      "notes": "Twilight photography critical; install in tension-wired zigzag pattern"
+    },
+    {
+      "item": "Outdoor Dining Table (Seats 6-8)",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 400.00,
+      "tiers": {
+        "budget": "IKEA NAMMARO / Local used set ($170-$260)",
+        "value": "NAMMARO package / Extendable set ($260-$500)",
+        "premium": "NAMMARO Full 6-chair set / Designer ($500-$1400)"
+      },
+      "notes": "Solid wood or aluminum; min 72-84\" for group stays"
+    },
+    {
+      "item": "Outdoor Area Rug",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 100.00,
+      "tiers": {
+        "budget": "Target Waterproof Mat / 8x10 segment ($50-$80)",
+        "value": "Nuloom Camryn / Nourison Courtyard ($80-$150)",
+        "premium": "West Elm Outdoor / Ruggable Segment ($150-$350)"
+      },
+      "notes": "Defines the seating area; UV-resistant/high-contrast preferred"
+    },
+    {
+      "item": "Propane BBQ Grill",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 250.00,
+      "tiers": {
+        "budget": "Walmart 4-burner / Local Clean Used ($140-$210)",
+        "value": "Grill Boss 4-burner / Char-Broil Perf ($210-$320)",
+        "premium": "Weber Premium / Specialist Segment ($320-$1000)"
+      },
+      "notes": "Include tank; high-demand for event groups (COTA/SXSW)"
+    },
+    {
+      "item": "Patio Blinds / Shade",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Linen Avenue Solar Screen ($60-$110)",
+        "value": "Mid-tier Roller / Matched Install ($110-$220)",
+        "premium": "Motorized Exterior Shade ($220-$600)"
+      },
+      "notes": "Shade and privacy for Austin heat; install on west-facing side"
+    },
+    {
+      "item": "Outdoor Yard Games (Cornhole)",
+      "quantity": 1,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 60.00,
+      "tiers": {
+        "budget": "Local Used / Entry Cornhole Lane ($25-$45)",
+        "value": "Target Selection / Multi-game Bundle ($45-$90)",
+        "premium": "Branded Premium Set ($90-$220)"
+      },
+      "notes": "Guest satisfaction hook for family stays"
+    },
+    {
+      "item": "Outdoor Storage Box",
+      "quantity": 1,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Small Deck Box / Walmart Segment ($80-$130)",
+        "value": "Costway 100-gal / Lifetime 116-gal ($130-$220)",
+        "premium": "Lifetime 150-gal+ Premium ($220-$450)"
+      },
+      "notes": "Waterproof resin for cushions and yard games"
+    },
+    {
+      "item": "Potted Plants / Greenery",
+      "quantity": 3,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 80.00,
+      "tiers": {
+        "budget": "Local Nursery Hardy Mix ($20-$50)",
+        "value": "Target Live/Artificial Mix ($50-$120)",
+        "premium": "West Elm Planters + Large Greens ($120-$320)"
+      },
+      "notes": "Drought-tolerant Cactus/Yucca preferred for Austin climate"
+    }
+  ],
+  "total_baseline_cost": 2090.00
+}

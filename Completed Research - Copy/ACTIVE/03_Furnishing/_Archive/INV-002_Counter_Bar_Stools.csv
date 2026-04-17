@@ -1,0 +1,2 @@
+inventory_id,room,item_name,sourcing_priority,target_price_usd,actual_price_usd,source_channel,condition_score,measurements_verified,assembly_required,status,owner,notes
+INV-002,Kitchen,Counter Bar Stools (4),Critical,200,,FB Marketplace,TBD,No,No,Sourcing,Owner,"Max 18"" width to fit 142"" island spacing"

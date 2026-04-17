@@ -1,0 +1,165 @@
+{
+  "room_id": "great_room",
+  "room_name": "Great Room (The Central Gathering Hub)",
+  "strategic_focus": "Group social experience / Acoustic comfort / 300in architectural scale",
+  "tiered_strategy": "Hero Seating Spend / Secondhand Casegoods / Acoustic Layering",
+  "inventory": [
+    {
+      "item": "Large Sectional Sofa",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": false,
+      "baseline_cost": 1249.00,
+      "tiers": {
+        "budget": "Local 6-8 Seat Sectional / Consignment ($500-$1100)",
+        "value": "IKEA FINNALA Modular / IKEA KIVIK ($1100-$1900)",
+        "premium": "Article / Crate & Barrel / CB2 ($1900-$3200)"
+      },
+      "notes": "Must seat 6-8; Min 110\" length required; budget for steam cleaning if used"
+    },
+    {
+      "item": "65\" OLED/4K Smart TV",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 650.00,
+      "tiers": {
+        "budget": "Samsung Q8F / Roku Select QLED ($450-$650)",
+        "value": "Mini-LED Segment / Sony/LG Value-Premium ($650-$950)",
+        "premium": "LG G6 OLED / Samsung Frame ($950-$2000)"
+      },
+      "notes": "Main Hero Feature; mounted on wall; wall-aesthetic is strategic for CTR"
+    },
+    {
+      "item": "Area Rug (10x14)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 400.00,
+      "tiers": {
+        "budget": "IKEA Large Rug Segment / Local Used ($220-$380)",
+        "value": "Rugs.com Easy-clean / Wayfair Low-pile ($380-$650)",
+        "premium": "Ruggable / West Elm Wool ($650-$1400)"
+      },
+      "notes": "Acoustic dampening priority; must cover 70% of floor area to mitigate echo"
+    },
+    {
+      "item": "80\" Media Console",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 300.00,
+      "tiers": {
+        "budget": "Local Long Console / Walmart Value ($100-$220)",
+        "value": "IKEA BESTA Configured / TV Bench Lane ($220-$420)",
+        "premium": "West Elm / CB2 Media Console ($420-$900)"
+      },
+      "notes": "Solid Wood; must be 25% wider than TV for visual balance"
+    },
+    {
+      "item": "Circular Coffee Table",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Local Round Table / Walmart Entry ($60-$130)",
+        "value": "Castalia Round / Hearth & Hand Pedestal ($130-$260)",
+        "premium": "Stone/Oak Designer Round ($260-$650)"
+      },
+      "notes": "Oak or Stone; rounded edges for child-safe group travel"
+    },
+    {
+      "item": "Swivel Accent Chairs",
+      "quantity": 2,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 400.00,
+      "tiers": {
+        "budget": "Used local pair / Wayfair Value ($150-$300/pair)",
+        "value": "Brayden Studio / Barrel Swivel ($300-$650/pair)",
+        "premium": "Crate & Barrel / CB2 Designer Pair ($650-$1200/pair)"
+      },
+      "notes": "Support TV and conversation flow; contrast color (Rust/Cognac)"
+    },
+    {
+      "item": "Arched Floor Lamp",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 90.00,
+      "tiers": {
+        "budget": "Threshold Knurled / Basic Arc ($60-$90)",
+        "value": "360 Lighting Cora / FC Design Marble ($90-$160)",
+        "premium": "West Elm / CB2 Designer Arc ($160-$350)"
+      },
+      "notes": "Vertical balance moment; use for evening atmosphere staging"
+    },
+    {
+      "item": "Smart Soundbar",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 250.00,
+      "tiers": {
+        "budget": "Entry Samsung / Best Buy Lane ($120-$220)",
+        "value": "Bose TV Speaker / Mid-tier Samsung ($220-$350)",
+        "premium": "Sonos / Bose Premium Bar ($350-$700)"
+      },
+      "notes": "Integrated with TV/Spotify; critical for 'Cinema-scale' promise"
+    },
+    {
+      "item": "Decorative Pillows + Throw",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 110.00,
+      "tiers": {
+        "budget": "One Throw + 2 Pillows / Chunky Bundle ($40-$80)",
+        "value": "Bundle + Accent Layer / Studio McGee Segment ($80-$140)",
+        "premium": "Premium Textile Layer Set ($140-$280)"
+      },
+      "notes": "Texture and color accents; keep palette neutral"
+    },
+    {
+      "item": "Wall Art / Photo Styling",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 140.00,
+      "tiers": {
+        "budget": "Single Large Framed / Value 2-3pc Set ($50-$100)",
+        "value": "Local Austin Print Grouping / Threshold Mix ($100-$180)",
+        "premium": "Custom Framed Local Photography Set ($180-$500)"
+      },
+      "notes": "Better local story than generic sets; canvas preferred for acoustics"
+    },
+    {
+      "item": "Bookshelf / Display Cabinet",
+      "quantity": 1,
+      "priority": "Low",
+      "buy_new": false,
+      "baseline_cost": 190.00,
+      "tiers": {
+        "budget": "Used Bookshelf / Defer at Launch ($0-$120)",
+        "value": "IKEA Display Cabinets / Storage-Display Lane ($120-$260)",
+        "premium": "West Elm / CB2 Premium Display ($260-$650)"
+      },
+      "notes": "Useful for games and decor mix; source used first"
+    },
+    {
+      "item": "Indoor Plants / Greenery",
+      "quantity": 1,
+      "priority": "Low",
+      "buy_new": true,
+      "baseline_cost": 75.00,
+      "tiers": {
+        "budget": "Small Faux Accent / Defer at Launch ($0-$35)",
+        "value": "Mid-size Faux Olive / Romswi Faux Tree ($35-$110)",
+        "premium": "Large 7-8ft Faux Tree Styling ($110-$280)"
+      },
+      "notes": "Cheap visual freshness; low maintenance priority"
+    }
+  ],
+  "total_baseline_cost": 4303.00
+}

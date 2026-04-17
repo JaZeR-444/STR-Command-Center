@@ -1,0 +1,5 @@
+item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
+BUD-002-STA-01,"Furniture Felt Pads (Pkg)",staging,med,50.00,0.00,50.00,pending,amazon,"LVP floor protection"
+BUD-002-STA-02,"TV/Art Mounting Hardware",staging,high,100.00,0.00,100.00,pending,home_depot,"Heavy duty anchors/mounts"
+BUD-002-STA-03,"Cable Management Kit",staging,high,50.00,0.00,50.00,pending,amazon,"Raceways for zero-clutter"
+BUD-002-STA-04,"Launch Welcome Kit",staging,med,50.00,0.00,50.00,pending,local,"Coffee/Snacks for photos"

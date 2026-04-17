@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # STR Launch Command Center v2.1
 
 A professional-grade operations dashboard for tracking short-term rental launch progress across 756 tasks and 115 documents.
@@ -249,3 +250,7 @@ The state architecture is designed to easily migrate to a database:
 ## License
 
 Private use only.
+=======
+# STR-Command-Center
+Private STR command center for tracking launch readiness, completed work, outstanding tasks, documents, and key operational milestones. Built as a simple family-facing dashboard to keep everything organized, visible, and easy to review in one central place.
+>>>>>>> main

@@ -1,0 +1,8 @@
+category_id,category_name,strategic_focus,est_cost,actual_spend,variance,status,last_updated,roi_priority
+CAT-01,"Labor & Assembly","121-Item Pro Assembly",1200.00,0.00,1200.00,pending,2026-04-03,high
+CAT-02,"Media & Content","Twilight / 3D / Pro Shots",1250.00,0.00,1250.00,pending,2026-04-03,critical
+CAT-03,"Cleaning & Prep","White-Glove Sanitization",450.00,0.00,450.00,pending,2026-04-03,high
+CAT-04,"Logistics & Transport","Scavenge Run Fuel/Trucks",550.00,0.00,550.00,active,2026-04-03,med
+CAT-05,"Infrastructure/Utility","Utility Starts / Mesh Set",450.00,0.00,450.00,active,2026-04-03,high
+CAT-06,"Staging Consumables","Felt Pads / Hardware",250.00,0.00,250.00,pending,2026-04-03,med
+TOTAL,"Launch Execution","Total Setup Investment",4150.00,0.00,4150.00,ACTIVE,2026-04-03,CRITICAL

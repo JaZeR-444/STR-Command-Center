@@ -1,0 +1,8 @@
+milestone_id,milestone_name,planned_start,planned_end,status,dependency,owner,notes
+TIM-001,Design and Theme Lock,2026-04-01,2026-04-10,In Progress,None,Owner,Brand standards and styling map in place
+TIM-002,Procurement Ordering Window,2026-04-08,2026-04-20,Planned,TIM-001,Owner,Prioritize photo-critical items first
+TIM-003,Install and Staging Execution,2026-04-15,2026-04-27,Planned,TIM-002,Owner,Run turnover-style staging and QA passes
+TIM-004,Photo and Listing Asset Capture,2026-04-22,2026-04-30,Planned,TIM-003,Owner,Follow shot list and upload workflows
+TIM-005,Pricing and Promotions Setup,2026-04-25,2026-05-02,Planned,TIM-004,Owner,Enable core promo and pricing rules
+TIM-006,Compliance Verification Gate,2026-04-10,2026-05-05,In Progress,TIM-001,Owner,Complete permit insurance tax research checks
+TIM-007,Go-Live Readiness Review,2026-05-03,2026-05-07,Planned,"TIM-004|TIM-005|TIM-006",Owner,Launch only when photo ops pricing and compliance gates are clear

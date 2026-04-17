@@ -1,0 +1,6 @@
+rule_id,rule_name,trigger_condition,price_adjustment,channel,active,status,last_updated,owner,notes
+DP-001,Weekend Premium,Fri-Sat nights with normal demand,+12 percent,Airbnb + VRBO,Yes,Active,2026-04-01,Owner,Core weekend rate lift
+DP-002,Near-Term Gap Fill,Unbooked nights within 7 days,-8 percent,Airbnb + VRBO,Yes,Planned,2026-04-01,Owner,Use with last-minute promo rule
+DP-003,Long-Stay Yield Rule,7+ nights where calendar has open midweek gaps,-5 percent base adjustment before weekly discount,Airbnb + VRBO,Yes,Planned,2026-04-01,Owner,Protect occupancy with controlled ADR impact
+DP-004,High-Demand Manual Override,Known city events with proven demand,+20 to +35 percent,Airbnb + VRBO,No,Planned,2026-04-01,Owner,Enable only with observed search/booking lift
+DP-005,Low-Pace Recovery,Occupancy pace below target by >10 points for 2 weeks,-5 percent weekday adjustment,Airbnb + VRBO,Yes,Planned,2026-04-01,Owner,Review after one week before further cuts

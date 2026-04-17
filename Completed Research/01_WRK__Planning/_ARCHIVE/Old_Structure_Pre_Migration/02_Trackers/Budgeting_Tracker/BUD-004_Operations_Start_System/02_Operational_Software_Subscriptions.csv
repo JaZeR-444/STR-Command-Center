@@ -1,0 +1,6 @@
+item_id,cost_type,category,priority,est_cost,actual_spend,variance,status,vendor,notes
+BUD-004-SUB-01,setup_plus_first_month,channel_manager,operational_critical,89.00,0.00,89.00,active,hospitable,"primary_channel_manager onboarding plus month_1"
+BUD-004-SUB-02,setup_plus_first_month,noise_monitoring,operational_critical,213.99,0.00,213.99,active,minut,"device activation plus first_month monitoring"
+BUD-004-SUB-03,setup_plus_first_month,smart_home,operational_critical,59.00,0.00,59.00,active,google_nest,"nest_aware month_1 plus setup time"
+BUD-004-SUB-04,setup_plus_first_month,dynamic_pricing,operational_critical,39.00,0.00,39.00,active,pricelabs,"dynamic pricing optimization month_1"
+BUD-004-SUB-05,integration_contingency,software_stack,high,75.00,0.00,75.00,pending,operations_stack,"api_sync contingency across pms pricing and monitoring"

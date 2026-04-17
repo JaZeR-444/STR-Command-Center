@@ -1,0 +1,5 @@
+Utility_ID,Utility_Type,Billing_Month,Usage_Amount,Usage_Unit,Cost,Baseline_Average,Variance_Percent,Anomaly_Flag,Investigation_Status,Notes
+UTL-001,Water,2026-04,[TBD],Gallons,[TBD],[TBD],[TBD],No,[TBD],Baseline capture month - establish average gallons per booking
+UTL-002,Electric,2026-04,[TBD],kWh,[TBD],[TBD],[TBD],No,[TBD],Baseline capture month - monitor HVAC efficiency
+UTL-003,Gas,2026-04,[TBD],Therms,[TBD],[TBD],[TBD],No,[TBD],Baseline capture month - monitor water heater usage
+UTL-004,Internet,2026-04,[TBD],% Uptime,[TBD],99%,[TBD],No,[TBD],Monitor connectivity stability for guest experience

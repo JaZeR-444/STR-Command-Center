@@ -1,0 +1,6 @@
+risk_id,category,description,likelihood,impact,risk_score,mitigation_strategy,trigger_event,status,owner,next_review_date
+RSK-001,Compliance,Permit/STR license delay impacts launch date,4,5,20,Complete COA legal checklist and verify permit; Neutralization Artifact: Physical Permit in Frame,Permit status unresolved 10 days before launch,Active,Owner,2026-04-10
+RSK-002,Operations,Cleaning turnover inconsistency affects reviews,3,5,15,Implement turnover photo-validation checklist; Neutralization Artifact: Signed QC Pass in SOP binder,Three consecutive guest mentions of cleanliness issues,Active,Owner,2026-04-10
+RSK-003,Pricing,Over-discounting erodes margin with no occupancy gain,3,3,9,Enforce 15% discount cap and weekly pricing review; Neutralization Artifact: Approved Monthly Yield Report,Occupancy flat while ADR declines for 14 days,Active,Owner,2026-04-10
+RSK-004,Maintenance,Unexpected system failure during guest stay,3,5,15,Bi-weekly system checks and maintenance reserve; Neutralization Artifact: Signed PM Completion Log,Two repair tickets in same system within 30 days,Active,Owner,2026-04-10
+RSK-005,Demand,Slow initial booking pace (first 30 days),3,4,12,Execute launch promo stack and listing optimization; Neutralization Artifact: First 5 Verified 5-Star Reviews,Occupancy <50% of target by day 21,Active,Owner,2026-04-10

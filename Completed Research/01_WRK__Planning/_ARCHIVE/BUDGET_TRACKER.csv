@@ -1,0 +1,8 @@
+Category,Item,Estimated_Cost,Actual_Cost,Variance,Source_File,Notes
+Design and Furnishing,Core furniture and decor package,12000,0,12000,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Align with procurement tracker updates
+Setup and Installation,Install labor and smart-home setup,2500,0,2500,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Include contingency for unexpected install needs
+Marketing Launch,Photography and listing launch assets,1200,0,1200,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Photo pipeline now prepared
+Operations Start,Initial consumables and linen systems,1800,0,1800,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Use supply and inventory tracking to refine
+Maintenance Reserve,Initial reserve for first 90 days repairs,2500,0,2500,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Protect against early-cycle failures
+Compliance and Insurance,Permits and policy setup costs,1800,0,1800,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Finalize after permit and insurance verification
+Contingency Buffer,Unplanned launch overages,3000,0,3000,03_Budgeting/2026-04-01__03_Budgeting_Tracker__v1.csv,Do not spend unless trigger is documented

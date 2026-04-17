@@ -1,0 +1,100 @@
+item_id,item_name,tier,option_label,description,source_vendor,est_cost,qty,priority,is_selected,purchase_status,notes
+BUD-001-KITCH-01,Bar Stools with Backs,budget,Option 1,IKEA STIG x4,ikea,160,4,high,FALSE,pending,
+BUD-001-KITCH-01,Bar Stools with Backs,budget,Option 2,IKEA FRANKLIN x4,ikea,180,4,high,FALSE,pending,
+BUD-001-KITCH-01,Bar Stools with Backs,value,Option 1,IKEA ROSENTORP x4,ikea,280,4,high,TRUE,pending,
+BUD-001-KITCH-01,Bar Stools with Backs,value,Option 2,Local Set of 4,fb_marketplace,265,4,high,FALSE,sourcing,$180-$350 range
+BUD-001-KITCH-01,Bar Stools with Backs,premium,Option 1,IKEA SKOGSTA x4,ikea,380,4,high,FALSE,pending,
+BUD-001-KITCH-01,Bar Stools with Backs,premium,Option 2,Upholstered Premium,wayfair,625,4,high,FALSE,pending,$450-$800 range
+BUD-001-KITCH-02,Dining Table,budget,Option 1,Tribesigns 70in,walmart,190,1,high,FALSE,pending,
+BUD-001-KITCH-02,Dining Table,budget,Option 2,Marketplace Wood,fb_marketplace,265,1,high,FALSE,sourcing,$180-$350 range
+BUD-001-KITCH-02,Dining Table,value,Option 1,IKEA EKEDALEN,ikea,300,1,high,TRUE,pending,
+BUD-001-KITCH-02,Dining Table,value,Option 2,IKEA SKOGSTA 47in,ikea,400,1,high,FALSE,pending,
+BUD-001-KITCH-02,Dining Table,premium,Option 1,IKEA SKOGSTA 92in,ikea,650,1,high,FALSE,pending,
+BUD-001-KITCH-02,Dining Table,premium,Option 2,Article Table,article,1150,1,high,FALSE,pending,$800+ range
+BUD-001-KITCH-03,Dining Chairs,budget,Option 1,IKEA HAUGA x8,ikea,360,8,high,FALSE,pending,
+BUD-001-KITCH-03,Dining Chairs,budget,Option 2,Walmart Upholstered x8,walmart,360,8,high,FALSE,pending,
+BUD-001-KITCH-03,Dining Chairs,value,Option 1,IKEA SKOGSTA x8,ikea,560,8,high,TRUE,pending,
+BUD-001-KITCH-03,Dining Chairs,value,Option 2,Target Set,target,600,8,high,FALSE,pending,$450-$750 range
+BUD-001-KITCH-03,Dining Chairs,premium,Option 1,IKEA BERGMUND x8,ikea,1000,8,high,FALSE,pending,
+BUD-001-KITCH-03,Dining Chairs,premium,Option 2,Article Set,article,1200,8,high,FALSE,pending,$900+ range
+BUD-001-KITCH-04,Coffee Bar Machine,budget,Option 1,Keurig K-Mini,target,90,1,high,FALSE,pending,
+BUD-001-KITCH-04,Coffee Bar Machine,budget,Option 2,Nespresso Pop+,walmart,99,1,high,FALSE,pending,
+BUD-001-KITCH-04,Coffee Bar Machine,value,Option 1,Keurig K-Duo Hot & Iced,target,220,1,high,TRUE,pending,
+BUD-001-KITCH-04,Coffee Bar Machine,value,Option 2,Keurig K-Supreme,walmart,128,1,high,FALSE,pending,
+BUD-001-KITCH-04,Coffee Bar Machine,premium,Option 1,Nespresso VertuoPlus,nespresso,295,1,high,FALSE,pending,$240-$350 range
+BUD-001-KITCH-05,Island Pendants,budget,Option 1,IKEA SKURUP x3,ikea,90,3,high,FALSE,pending,
+BUD-001-KITCH-05,Island Pendants,budget,Option 2,Target POWLIG x3,target,103,3,high,FALSE,pending,
+BUD-001-KITCH-05,Island Pendants,value,Option 1,IKEA RANARP x3,ikea,180,3,high,TRUE,pending,
+BUD-001-KITCH-05,Island Pendants,value,Option 2,Home Depot lane,home_depot,250,3,high,FALSE,pending,$150-$350 range
+BUD-001-KITCH-05,Island Pendants,premium,Option 1,West Elm Pendants,west_elm,825,3,high,FALSE,pending,$450-$1200 range
+BUD-001-KITCH-06,Cookware Set,budget,Option 1,Cuisinart 7-piece,walmart,120,1,high,FALSE,pending,
+BUD-001-KITCH-06,Cookware Set,budget,Option 2,Cuisinart Nonstick,walmart,150,1,high,FALSE,pending,$120-$180 range
+BUD-001-KITCH-06,Cookware Set,value,Option 1,Cuisinart MultiClad,walmart,300,1,high,TRUE,pending,
+BUD-001-KITCH-06,Cookware Set,value,Option 2,Cuisinart 11-pc Stainless,costco,250,1,high,FALSE,pending,
+BUD-001-KITCH-06,Cookware Set,premium,Option 1,All-Clad Entry Set,all_clad,525,1,high,FALSE,pending,$350-$700 range
+BUD-001-KITCH-07,Under-Cabinet Lighting,budget,Option 1,EZVALO 10in 2-pk,target,35,1,high,FALSE,pending,
+BUD-001-KITCH-07,Under-Cabinet Lighting,budget,Option 2,IKEA TVARDRAG,ikea,25,1,high,FALSE,pending,
+BUD-001-KITCH-07,Under-Cabinet Lighting,value,Option 1,EZVALO 15in 2-pk,target,60,1,high,TRUE,pending,
+BUD-001-KITCH-07,Under-Cabinet Lighting,value,Option 2,IKEA MITTLED,ikea,150,1,high,FALSE,pending,
+BUD-001-KITCH-07,Under-Cabinet Lighting,premium,Option 1,IKEA TRADFRI setup,ikea,185,1,high,FALSE,pending,$120-$250 range
+BUD-001-KITCH-08,Knife Set,budget,Option 1,Astercook 14-pc,walmart,40,1,med,FALSE,pending,
+BUD-001-KITCH-08,Knife Set,value,Option 1,KitchenAid 12-pc,walmart,59,1,med,TRUE,pending,
+BUD-001-KITCH-08,Knife Set,value,Option 2,Cuisinart 15-pc,target,90,1,med,FALSE,pending,
+BUD-001-KITCH-08,Knife Set,premium,Option 1,Cuisinart 14-pc Stainless,target,150,1,med,FALSE,pending,
+BUD-001-KITCH-09,Extra Pots/Pans (1),budget,Option 1,Walmart value pan,walmart,20,1,med,FALSE,pending,
+BUD-001-KITCH-09,Extra Pots/Pans (1),value,Option 1,Mid-tier Saute,target,50,1,med,TRUE,pending,
+BUD-001-KITCH-09,Extra Pots/Pans (1),premium,Option 1,All-Clad Saute,all_clad,120,1,med,FALSE,pending,
+BUD-001-KITCH-10,Extra Pots/Pans (2),budget,Option 1,Walmart value stockpot,walmart,25,1,med,FALSE,pending,
+BUD-001-KITCH-10,Extra Pots/Pans (2),value,Option 1,Mid-tier Stockpot,target,50,1,med,TRUE,pending,
+BUD-001-KITCH-10,Extra Pots/Pans (2),premium,Option 1,All-Clad Stockpot,all_clad,150,1,med,FALSE,pending,
+BUD-001-KITCH-11,Ninja Blender,budget,Option 1,Ninja Nutri-Blender,target,80,1,med,FALSE,pending,
+BUD-001-KITCH-11,Ninja Blender,value,Option 1,Prof Plus DUO,target,100,1,med,TRUE,pending,
+BUD-001-KITCH-11,Ninja Blender,premium,Option 1,Kitchen System,target,165,1,med,FALSE,pending,
+BUD-001-KITCH-12,Air Fryer,budget,Option 1,Gourmia 6qt,target,70,1,med,FALSE,pending,
+BUD-001-KITCH-12,Air Fryer,value,Option 1,PowerXL 8qt lane,target,100,1,med,TRUE,pending,
+BUD-001-KITCH-12,Air Fryer,premium,Option 1,Ninja Premium,target,170,1,med,FALSE,pending,$120+ range
+BUD-001-KITCH-13,Countertop Styling,budget,Option 1,Local decor mix,fb_marketplace,30,1,low,FALSE,sourcing,
+BUD-001-KITCH-13,Countertop Styling,value,Option 1,Threshold Styling,target,60,1,low,TRUE,pending,
+BUD-001-KITCH-13,Countertop Styling,premium,Option 1,West Elm,west_elm,140,1,low,FALSE,pending,$100+ range
+BUD-001-KITCH-14,Pantry Organization,budget,Option 1,basic bins,target,25,1,low,FALSE,pending,
+BUD-001-KITCH-14,Pantry Organization,value,Option 1,Target Org Lane,target,65,1,low,TRUE,pending,
+BUD-001-KITCH-14,Pantry Organization,premium,Option 1,Full canister program,container_store,150,1,low,FALSE,pending,$120+ range
+BUD-001-KITCH-15,Dual-Bin Trash/Recycling,budget,Option 1,2x15L dual,target,90,1,med,FALSE,pending,
+BUD-001-KITCH-15,Dual-Bin Trash/Recycling,value,Option 1,80L Dual Bin,target,170,1,med,TRUE,pending,
+BUD-001-KITCH-15,Dual-Bin Trash/Recycling,premium,Option 1,Simplehuman,simplehuman,275,1,med,FALSE,pending,$250+ range
+BUD-001-KITCH-16,Plates (Set of 12),budget,Option 1,Target RE,target,30,1,high,FALSE,pending,
+BUD-001-KITCH-16,Plates (Set of 12),value,Option 1,White Ceramic,target,60,1,high,TRUE,pending,
+BUD-001-KITCH-16,Plates (Set of 12),premium,Option 1,Crate & Barrel,crate_and_barrel,150,1,high,FALSE,pending,$120+ range
+BUD-001-KITCH-17,Bowls (Set of 12),budget,Option 1,Target RE,target,25,1,high,FALSE,pending,
+BUD-001-KITCH-17,Bowls (Set of 12),value,Option 1,White Ceramic,target,50,1,high,TRUE,pending,
+BUD-001-KITCH-17,Bowls (Set of 12),premium,Option 1,Crate & Barrel,crate_and_barrel,125,1,high,FALSE,pending,$100+ range
+BUD-001-KITCH-18,Glasses (Set of 12),budget,Option 1,Walmart Value,walmart,20,1,high,FALSE,pending,
+BUD-001-KITCH-18,Glasses (Set of 12),value,Option 1,Standard Glass,target,40,1,high,TRUE,pending,
+BUD-001-KITCH-18,Glasses (Set of 12),premium,Option 1,West Elm,west_elm,100,1,high,FALSE,pending,$80+ range
+BUD-001-KITCH-19,Wine Glasses (Set of 12),budget,Option 1,Walmart Value,walmart,20,1,med,FALSE,pending,
+BUD-001-KITCH-19,Wine Glasses (Set of 12),value,Option 1,Stemless Glass,target,40,1,med,TRUE,pending,
+BUD-001-KITCH-19,Wine Glasses (Set of 12),premium,Option 1,West Elm,west_elm,100,1,med,FALSE,pending,$80+ range
+BUD-001-KITCH-20,Silverware (Set of 12),budget,Option 1,Target RE,target,30,1,high,FALSE,pending,
+BUD-001-KITCH-20,Silverware (Set of 12),value,Option 1,Stainless Steel,target,60,1,high,TRUE,pending,
+BUD-001-KITCH-20,Silverware (Set of 12),premium,Option 1,Oneida/Laguiole,williams_sonoma,150,1,high,FALSE,pending,$120+ range
+BUD-001-KITCH-21,Mugs (Set of 12),budget,Option 1,IKEA Value,ikea,20,1,high,FALSE,pending,
+BUD-001-KITCH-21,Mugs (Set of 12),value,Option 1,Neutral Tone,target,40,1,high,TRUE,pending,
+BUD-001-KITCH-21,Mugs (Set of 12),premium,Option 1,Pottery Barn,pottery_barn,100,1,high,FALSE,pending,$80+ range
+BUD-001-KITCH-22,Serving Platters,budget,Option 1,Target Value,target,30,2,med,FALSE,pending,$15 ea
+BUD-001-KITCH-22,Serving Platters,value,Option 1,Group Dining Set,target,40,2,med,TRUE,pending,$20 ea
+BUD-001-KITCH-22,Serving Platters,premium,Option 1,Designer Platters,west_elm,100,2,med,FALSE,pending,$40+ ea
+BUD-001-KITCH-23,Baking Sheet Set,budget,Option 1,Walmart Value,walmart,15,1,med,FALSE,pending,
+BUD-001-KITCH-23,Baking Sheet Set,value,Option 1,Non-stick Set,target,30,1,med,TRUE,pending,
+BUD-001-KITCH-23,Baking Sheet Set,premium,Option 1,Williams Sonoma,williams_sonoma,75,1,med,FALSE,pending,$60+ range
+BUD-001-KITCH-24,Mixing Bowls (Set),budget,Option 1,Plastic Set,target,15,1,med,FALSE,pending,
+BUD-001-KITCH-24,Mixing Bowls (Set),value,Option 1,Stainless/Glass,target,25,1,med,TRUE,pending,
+BUD-001-KITCH-24,Mixing Bowls (Set),premium,Option 1,Pyrex/Luxe,williams_sonoma,60,1,med,FALSE,pending,$50+ range
+BUD-001-KITCH-25,Toaster,budget,Option 1,Walmart Value,walmart,20,1,high,FALSE,pending,
+BUD-001-KITCH-25,Toaster,value,Option 1,4-slice Wide Slot,target,40,1,high,TRUE,pending,
+BUD-001-KITCH-25,Toaster,premium,Option 1,Breville,best_buy,125,1,high,FALSE,pending,$100+ range
+BUD-001-KITCH-26,Kettle,budget,Option 1,Walmart Value,walmart,15,1,med,FALSE,pending,
+BUD-001-KITCH-26,Kettle,value,Option 1,Electric Gooseneck,target,30,1,med,TRUE,pending,
+BUD-001-KITCH-26,Kettle,premium,Option 1,Fellow Stagg,best_buy,165,1,med,FALSE,pending,$150+ range
+BUD-001-KITCH-27,Cutting Boards (Set),budget,Option 1,Plastic Set,target,10,1,high,FALSE,pending,
+BUD-001-KITCH-27,Cutting Boards (Set),value,Option 1,Wood/Plastic Mix,target,25,1,high,TRUE,pending,
+BUD-001-KITCH-27,Cutting Boards (Set),premium,Option 1,End-grain Wood,williams_sonoma,100,1,high,FALSE,pending,$80+ range

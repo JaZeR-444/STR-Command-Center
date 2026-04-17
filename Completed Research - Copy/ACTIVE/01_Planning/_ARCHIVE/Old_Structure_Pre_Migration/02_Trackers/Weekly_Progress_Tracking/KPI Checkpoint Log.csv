@@ -1,0 +1,2 @@
+week_ending_date,checkpoint_id,tasks_completed_this_week,schedule_adherence_score,budget_variance_score,risk_mitigation_score,composite_health_score,budget_reconciled_to_bud_master,audit_gate_passed,status
+4/5/2026,WCP-2026-001,0,0,0,0,0,no,no,pending_budget_reconciliation

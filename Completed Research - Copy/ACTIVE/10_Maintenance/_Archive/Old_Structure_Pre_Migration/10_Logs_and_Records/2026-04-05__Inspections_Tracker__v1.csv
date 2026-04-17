@@ -1,0 +1,5 @@
+Inspection_ID,Inspection_Type,Frequency,Owner,Last_Completed,Next_Scheduled,Status,Pass_Fail,Photo_Link,Findings,Action_Items
+INSP-001,Monthly Quick Pass,Monthly,Host,[TBD],2026-05-03,Planned,[TBD],[TBD],[TBD],15-minute visual inspection per checklist
+INSP-002,Quarterly Deep Inspection,Quarterly,Host,[TBD],2026-07-05,Planned,[TBD],[TBD],[TBD],60-minute detailed audit of all systems and PM compliance
+INSP-003,Pre-Season Safety Audit,Pre-Season,Host,[TBD],2026-08-15,Planned,[TBD],[TBD],[TBD],Before peak demand (ACL/Summer) - HVAC stress test and safety equipment verification
+INSP-004,Annual Systems Review,Annual,Host,[TBD],2027-01-15,Planned,[TBD],[TBD],[TBD],Comprehensive full-property systems audit and lifecycle forecast update
