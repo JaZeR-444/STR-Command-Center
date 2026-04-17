@@ -1,0 +1,7 @@
+channel_period_id,period_start,period_end,channel,views,inquiries,bookings,conversion_rate_percent,avg_booking_value_usd,status,owner,notes
+CH-2026-W14-ABNB,2026-03-30,2026-04-05,Airbnb,0,0,0,0.0,0,Baseline,Owner,Pre-launch baseline
+CH-2026-W14-VRBO,2026-03-30,2026-04-05,VRBO,0,0,0,0.0,0,Baseline,Owner,Pre-launch baseline
+CH-2026-W15-ABNB,2026-04-06,2026-04-12,Airbnb,0,0,0,0.0,0,Planned,Owner,Upload photos and optimized copy
+CH-2026-W15-VRBO,2026-04-06,2026-04-12,VRBO,0,0,0,0.0,0,Planned,Owner,Upload platform-specific copy
+CH-2026-W16-ABNB,2026-04-13,2026-04-19,Airbnb,0,0,0,0.0,0,Planned,Owner,Launch promotion impact tracking
+CH-2026-W16-VRBO,2026-04-13,2026-04-19,VRBO,0,0,0,0.0,0,Planned,Owner,Launch promotion impact tracking

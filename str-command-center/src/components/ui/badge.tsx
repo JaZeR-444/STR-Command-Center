@@ -11,7 +11,7 @@ interface BadgeProps {
 }
 
 export function Badge({ children, variant = 'default', timing, status, className }: BadgeProps) {
-  let styles = 'bg-slate-500/15 text-slate-400 border-slate-500/30';
+  let styles = 'bg-slate-500/15 text-slate-300 border-slate-500/30';
   
   if (variant === 'timing' && timing) {
     styles = getTimingStyles(timing);
@@ -22,7 +22,7 @@ export function Badge({ children, variant = 'default', timing, status, className
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em] border backdrop-blur-sm',
+        'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border backdrop-blur-sm',
         styles,
         className
       )}

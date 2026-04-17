@@ -1,0 +1,6 @@
+item_id,task_name,category,priority,est_cost,actual_cost,variance,status,vendor,notes
+BUD-002-MED-01,"Professional Day Interior",media,high,450.00,0.00,450.00,pending,pro_photographer,"Must capture all 10 sections"
+BUD-002-MED-02,"Twilight Exterior Shot",media,critical,250.00,0.00,250.00,pending,pro_photographer,"ROI-Critical for conversion"
+BUD-002-MED-03,"3D Matterport Tour",media,med,350.00,0.00,350.00,pending,pro_photographer,"Visual proof of 10-guest scale"
+BUD-002-MED-04,"2D Floorplan Rendering",media,med,100.00,0.00,100.00,pending,pro_photographer,"Precision Trust requirement"
+BUD-002-MED-05,"Professional Videography",media,low,100.00,0.00,100.00,pending,pro_photographer,"Social media/Listing reel"

@@ -10,15 +10,15 @@ export function Input({ label, className, ...props }: InputProps) {
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.24em] mb-2">
+        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2.5">
           {label}
         </label>
       )}
       <input
         className={cn(
-          'w-full glass border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-100',
-          'placeholder:text-zinc-500',
-          'focus:outline-none focus:ring-2 focus:ring-[rgba(138,180,255,0.35)] focus:border-[rgba(138,180,255,0.35)]',
+          'w-full glass border-white/[0.15] rounded-xl px-4 py-3 text-base text-white',
+          'placeholder:text-slate-400',
+          'focus:outline-none focus:ring-2 focus:ring-accent-400/50 focus:border-accent-400/50',
           'transition-all duration-300',
           className
         )}
@@ -37,14 +37,14 @@ export function Select({ label, options, className, ...props }: SelectProps) {
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.24em] mb-2">
+        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2.5">
           {label}
         </label>
       )}
       <select
         className={cn(
-          'w-full glass border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-100',
-          'focus:outline-none focus:ring-2 focus:ring-[rgba(138,180,255,0.35)]',
+          'w-full glass border-white/[0.15] rounded-xl px-4 py-3 text-base text-white',
+          'focus:outline-none focus:ring-2 focus:ring-accent-400/50',
           'cursor-pointer transition-all duration-300',
           className
         )}
@@ -68,15 +68,15 @@ export function Textarea({ label, className, ...props }: TextareaProps) {
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.24em] mb-2">
+        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2.5">
           {label}
         </label>
       )}
       <textarea
         className={cn(
-          'w-full glass border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-100',
-          'placeholder:text-zinc-500 resize-none',
-          'focus:outline-none focus:ring-2 focus:ring-[rgba(138,180,255,0.35)]',
+          'w-full glass border-white/[0.15] rounded-xl px-4 py-3 text-base text-white',
+          'placeholder:text-slate-400 resize-none',
+          'focus:outline-none focus:ring-2 focus:ring-accent-400/50',
           'transition-all duration-300',
           className
         )}

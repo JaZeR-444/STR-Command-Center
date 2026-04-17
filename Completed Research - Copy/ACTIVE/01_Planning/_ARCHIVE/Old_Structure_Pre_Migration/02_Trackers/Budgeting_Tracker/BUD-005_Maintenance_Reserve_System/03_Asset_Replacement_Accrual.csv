@@ -1,0 +1,7 @@
+reserve_id,fund_name,category,priority,target_balance,actual_balance,spend_to_date,status,notes
+BUD-005-ARA-01,Main HVAC Replacement,Integrity,Medium,3000.00,500.00,0.00,Accumulating,Total replacement est $7k by 2041
+BUD-005-ARA-02,Primary Mattress,Integrity,Medium,800.00,200.00,0.00,Accumulating,Replacement est $1k by 2033
+BUD-005-ARA-03,Kitchen Dishwasher,Integrity,Medium,600.00,150.00,0.00,Accumulating,Replacement est $800 by 2036
+BUD-005-ARA-04,Smart TV Set (Living/Rooms),Integrity,Low,1200.00,100.00,0.00,Accumulating,Replacement est $1500 by 2031
+BUD-005-ARA-05,Sleeper Sofa Mechanism,Integrity,Medium,750.00,150.00,0.00,Accumulating,Replacement est $1000 by 2034
+BUD-005-ARA-06,Water Heater Replacement,Integrity,Medium,1150.00,100.00,0.00,Accumulating,Replacement est $1500 by 2038

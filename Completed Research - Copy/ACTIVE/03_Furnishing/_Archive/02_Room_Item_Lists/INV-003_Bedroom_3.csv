@@ -1,0 +1,10 @@
+Item_ID,Item_Name,Tier,Description,Qty,Est_Cost,Actual_Cost,Status,Condition,Measurements_Verified,Assembly_Required,Notes
+PR-BED3-01,Bunk Bed (Twin/Full),Value,,1,TBD,TBD,Planned,TBD,No,Yes,
+PR-BED3-02,Full Mattress,Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-03,Twin Mattress,Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-04,43in 4K Smart TV,Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-05,Solid Wood Dresser,Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-06,Nightstand,Value,,1,TBD,TBD,Planned,TBD,No,Yes,
+PR-BED3-07,Hospitality Linens (Set 1),Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-08,Hospitality Linens (Set 2),Value,,1,TBD,TBD,Planned,TBD,No,No,
+PR-BED3-09,USB Charging Hub,Value,,1,TBD,TBD,Planned,TBD,No,No,

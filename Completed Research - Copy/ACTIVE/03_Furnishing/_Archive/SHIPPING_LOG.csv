@@ -1,0 +1,3 @@
+Shipment_ID,Room,Item,Vendor,Carrier,Tracking_Number,Ship_Date,Estimated_Arrival,Actual_Arrival,Delivery_Status,Condition_On_Arrival,Related_Procurement_ID,Source_File,Notes
+SH-001,Great Room,Area Rug (10x14),Estate Sale,Owner Pickup,N/A,,,2026-04-04,Delivered,Good,PR-006,2026-04-01__Logistics_and_Staging_Master__v1.md,Self-transport
+SH-002,Dining,Solid Wood Dining Table,Estate Sale,Owner Pickup,N/A,,,2026-04-04,Delivered,Good,PR-007,2026-04-01__Logistics_and_Staging_Master__v1.md,Self-transport

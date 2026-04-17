@@ -1,0 +1,28 @@
+FOLDER STRUCTURE MIGRATION PLAN
+Generated: 2026-04-07_034403
+========================================
+
+CURRENT STATE:
+- 22 root-level folders
+- Using old naming convention
+
+TARGET STATE:
+- 26 root-level folders (per FOLDER_STRUCTURE_STANDARD v2.0)
+- Using NN_FAM__Name naming convention
+
+ACTIONS TO BE PERFORMED:
+1. Rename 19 existing folders to new standard
+2. Create 1 new folder (21_SUP__Intake)
+3. Review 3 folders for consolidation/deletion
+
+BACKUP INFORMATION:
+Location: C:\Rental Docs\Completed Research\90_RET__Backups\PRE_MIGRATION_BACKUP_2026-04-07_034403
+Contents: 
+  - directory_structure_before.csv (complete file listing)
+  - folder_inventory_before.csv (folder summary)
+  - folder_list_before.txt (human-readable list)
+  - migration_plan.txt (this file)
+
+ROLLBACK PROCEDURE:
+If issues occur, folders can be renamed back using the 
+directory_structure_before.csv as reference.

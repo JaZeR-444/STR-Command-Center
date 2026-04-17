@@ -14,11 +14,11 @@ export function Card({ children, className, hover = false, onClick, variant = 'd
   return (
     <div
       className={cn(
-        'rounded-[1.5rem] border transition-all duration-300',
+        'rounded-2xl border transition-all duration-300',
         variant === 'glass' && 'glass shadow-medium',
-        variant === 'brutal' && 'card-brutal bg-zinc-900',
-        variant === 'default' && 'glass border-white/10 shadow-soft',
-        hover && 'hover:-translate-y-0.5 hover:border-white/15 hover:shadow-medium cursor-pointer',
+        variant === 'brutal' && 'card-brutal bg-[#2a2435]',
+        variant === 'default' && 'glass border-white/[0.15] shadow-soft',
+        hover && 'hover:-translate-y-1 hover:border-white/[0.22] hover:shadow-medium cursor-pointer',
         onClick && 'cursor-pointer',
         className
       )}
@@ -36,7 +36,7 @@ interface CardHeaderProps {
 
 export function CardHeader({ children, className }: CardHeaderProps) {
   return (
-    <div className={cn('px-6 py-5 border-b border-white/10', className)}>
+    <div className={cn('px-6 py-5 border-b border-white/[0.12]', className)}>
       {children}
     </div>
   );
@@ -58,7 +58,7 @@ interface CardTitleProps {
 
 export function CardTitle({ children, className }: CardTitleProps) {
   return (
-    <h3 className={cn('text-[1.45rem] font-display font-semibold text-white tracking-tight', className)}>
+    <h3 className={cn('text-2xl font-display font-bold text-white tracking-tight', className)}>
       {children}
     </h3>
   );

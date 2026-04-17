@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { DocumentViewerPane } from '@/components/document-viewer-pane';
+import { DocumentViewerPane } from '@/components/documents/document-viewer-pane';
 import { CardSkeleton } from '@/components/ui/skeleton';
 import { cn, getProgressColor } from '@/lib/utils';
 import { getFile } from '@/lib/file-storage';

@@ -1,0 +1,6 @@
+promo_id,promo_name,promo_type,platform,start_date,end_date,target_stay_length,discount_or_offer,goal,status,owner,notes
+PRM-001,Launch Visibility Boost,Percent Off,Airbnb + VRBO,4/15/2026,5/31/2026,2-4 nights,10 percent off,Get first 5 bookings and reviews,Planned,Owner,Use only for first booking window
+PRM-002,Weekday Work-From-Home Rate,Percent Off,Airbnb + VRBO,5/1/2026,9/30/2026,3-5 nights,12 percent off Mon-Thu nights,Increase weekday occupancy,Planned,Owner,Promote den workspace in description
+PRM-003,Weekly Stay Incentive,Percent Off,Airbnb + VRBO,4/15/2026,12/31/2026,7+ nights,15 percent off weekly,Improve longer-stay occupancy and lower turnover,Planned,Owner,Apply only when dates are open >21 days out
+PRM-004,Last-Minute Fill,Percent Off,Airbnb + VRBO,4/15/2026,12/31/2026,1-3 nights,8 percent off within 7 days of check-in,Reduce orphan nights and gaps,Planned,Owner,Do not stack with weekly incentive
+PRM-005,Midweek Patio Season Push,Value Add,Airbnb + VRBO,6/1/2026,8/31/2026,2-4 nights,Free early check-in when available,Boost summer midweek conversions,Planned,Owner,Only offer when cleaner schedule allows

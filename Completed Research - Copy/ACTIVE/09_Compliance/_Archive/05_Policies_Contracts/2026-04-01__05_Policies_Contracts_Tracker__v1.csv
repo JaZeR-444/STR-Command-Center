@@ -1,0 +1,6 @@
+doc_id,document_name,document_type,required_for_launch,status,last_updated,review_frequency,storage_location,owner,notes
+POL-001,House Rules Policy,Guest Policy,Draft Needed,In Progress,2026-04-01,Quarterly,TBD,Owner,Include occupancy noise parking and no-party rules
+POL-002,Cancellation and Refund Policy,Guest Policy,Platform Config,In Progress,2026-04-01,Quarterly,Airbnb and VRBO settings,Owner,Keep policy consistent across channels
+POL-003,Cleaner Service Agreement,Vendor Contract,Recommended,Draft Needed,2026-04-01,Annual,TBD,Owner,Define scope standards response times and payment terms
+POL-004,Handyman Service Terms,Vendor Contract,Recommended,Draft Needed,2026-04-01,Annual,TBD,Owner,Set after-hours rates and emergency response expectations
+POL-005,Guest Damage Claim Procedure,Internal SOP,Required,In Progress,2026-04-01,Semiannual,TBD,Owner,Define evidence collection and claim submission steps

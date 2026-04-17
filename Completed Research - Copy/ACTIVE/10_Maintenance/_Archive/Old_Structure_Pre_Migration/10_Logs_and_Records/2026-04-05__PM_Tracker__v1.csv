@@ -1,0 +1,8 @@
+PM_ID,Task_Title,Frequency,Owner,Category,Last_Completed,Next_Due,Status,Completion_Photo_Link,Cost_Per_Instance,Notes
+PM-001,HVAC Filter Replacement,Monthly,Host,HVAC,[TBD],5/1/2026,Planned,[TBD],$15 ,Filter size: [TBD - verify in Property Systems Manual]
+PM-002,Smoke/CO Alarm Testing & Battery Replacement,Quarterly,Host,Safety,[TBD],7/1/2026,Planned,[TBD],$20 ,5+ alarms total (3 bedrooms + hallway + great room)
+PM-003,Fire Extinguisher Inspection,Quarterly,Host,Safety,[TBD],7/1/2026,Planned,[TBD],$0 ,Verify pressure gauge in green zone
+PM-004,Smart Lock Battery & Connectivity Check,Monthly,Host,Smart Home,[TBD],5/1/2026,Planned,[TBD],$10 ,4 locks total - replace at <30% battery
+PM-005,Drain Flow Testing & Clog Prevention,Monthly,Turnover Team,Plumbing,[TBD],5/1/2026,Planned,[TBD],$15 ,3 bathrooms + kitchen - enzyme cleaner application
+PM-006,Dishwasher Cleaning & Descaling,Quarterly,Host,Appliances,[TBD],7/1/2026,Planned,[TBD],$10 ,Clean filter and spray arms; run descaler cycle
+PM-007,Water Heater Safety & Temperature Check,Quarterly,Host,Plumbing,[TBD],7/1/2026,Planned,[TBD],$0 ,Check for moisture/corrosion; verify 120°F setting

@@ -1,0 +1,5 @@
+task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
+TIM-004-01,Professional Media Capture (Twilight/3D),Critical,2026-04-22,2026-04-26,4,,Planned,TIM-003-02,Owner,Follow hero shot list
+TIM-004-02,Listing Description and Content Drafting,Medium,2026-04-24,2026-04-30,6,,Planned,TIM-004-01,Owner,Optimize for SEO Keywords
+TIM-004-03,Photo Selection and Post-Production,High,2026-04-27,2026-04-30,3,,Planned,TIM-004-01,Owner,Top 5 "Hero" shots focus
+TIM-004-04,Channel Setup (Airbnb/VRBO),High,2026-04-28,2026-05-02,4,,Planned,TIM-004-02,Owner,Draft listing creation

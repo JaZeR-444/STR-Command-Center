@@ -1,0 +1,5 @@
+tax_item_id,tax_type,jurisdiction,filing_frequency,registration_required,account_reference,next_filing_due_date,last_filed_date,status,owner,notes
+TAX-001,Hotel Occupancy Tax,State of Texas,Monthly,Yes,TBD,TBD,TBD,Researching,Owner,Confirm state filing portal and due-day rules
+TAX-002,Hotel Occupancy Tax,City of Austin,Monthly,Yes,TBD,TBD,TBD,Researching,Owner,Confirm local filing cadence and remittance process
+TAX-003,Federal Income Tax Reporting,IRS,Annual,Yes,TBD,2027-04-15,TBD,Planned,Owner,Track STR income and deductible expenses
+TAX-004,State Income or Franchise Tax,State of Texas,Annual,Verify,TBD,TBD,TBD,Researching,Owner,Confirm if any business-level reporting applies

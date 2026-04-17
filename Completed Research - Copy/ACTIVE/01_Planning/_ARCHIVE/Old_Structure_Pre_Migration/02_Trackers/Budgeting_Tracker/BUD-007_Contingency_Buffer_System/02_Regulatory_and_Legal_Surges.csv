@@ -1,0 +1,4 @@
+drawdown_id,risk_id,task_name,priority,est_impact,actual_spend,status,trigger_event,notes
+BUD-007-REG-01,RSK-001,Permit Expediting Fee,Critical,350.00,0.00,Open,COA portal processing backlog,Avoid 10-day launch slip
+BUD-007-REG-02,RSK-001,Compliance Hardware (Signage),High,150.00,0.00,Open,New Austin STR ord compliance,Address "Unexpected ord" risk
+BUD-007-REG-03,RSK-001,Legal Review (STR License),High,250.00,0.00,Open,Complex eligibility clarification,Neutralize "Eligibility" risk

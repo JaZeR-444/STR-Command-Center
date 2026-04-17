@@ -1,24 +1,27 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, IBM_Plex_Mono, Manrope } from 'next/font/google';
+import { DM_Sans, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { AppProvider } from '@/lib/context';
-import { Sidebar } from '@/components/sidebar';
-import { MobileNav } from '@/components/mobile-nav';
-import { CommandPaletteWrapper } from '@/components/command-palette-wrapper';
+import { Sidebar } from '@/components/layout/sidebar';
+import { MobileNav } from '@/components/layout/mobile-nav';
+import { CommandPaletteWrapper } from '@/components/search/command-palette-wrapper';
 
-const sans = Manrope({
+// Friendly, highly readable sans-serif for body text
+const sans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-sans',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700'],
 });
 
-const display = Cormorant_Garamond({
+// Modern, rounded sans for headings - approachable and friendly
+const display = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['500', '600', '700'],
+  weight: ['500', '600', '700', '800'],
 });
 
-const mono = IBM_Plex_Mono({
+// Clean monospace for data/numbers
+const mono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   weight: ['400', '500', '600'],

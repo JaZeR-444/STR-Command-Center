@@ -1,0 +1,5 @@
+task_id,task_name,priority,start_date,end_date,duration_days,actual_completion,status,dependency,owner,notes
+TIM-005-01,Pricing Engine Rules and Seasonality,High,2026-04-25,2026-04-28,3,,Planned,TIM-004-01,Owner,Anchor in 78744 benchmarks
+TIM-005-02,Promotion Stack and Discount Launch,Medium,2026-04-28,2026-05-02,4,,Planned,TIM-005-01,Owner,Enable 15% new listing promo
+TIM-005-03,Occupancy Target Calibration,Medium,2026-04-30,2026-05-03,3,,Planned,TIM-005-01,Owner,Set baseline for first 90 days
+TIM-005-04,Channel Sync and Availability Lock,High,2026-05-02,2026-05-04,2,,Planned,TIM-005-02,Owner,Verify calendar sync

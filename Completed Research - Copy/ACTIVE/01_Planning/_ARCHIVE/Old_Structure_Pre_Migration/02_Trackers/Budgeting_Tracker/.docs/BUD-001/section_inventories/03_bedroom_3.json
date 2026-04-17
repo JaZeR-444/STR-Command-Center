@@ -1,0 +1,114 @@
+{
+  "room_id": "bedroom_3",
+  "room_name": "Bedroom #3 (Family/Guest Room)",
+  "strategic_focus": "High-occupancy utility / Durable safety / Operational symmetry",
+  "sleeps": 3,
+  "tiered_strategy": "Safety-First New Buys / Sourced Storage / Identical to Bed #2",
+  "inventory": [
+    {
+      "item": "Bunk Bed (Twin over Full)",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 450.00,
+      "tiers": {
+        "budget": "Amolife Metal / Entry Metal Bunk ($180-$300)",
+        "value": "Harriet Bee Solid Wood / Euroco w/ Stairs ($300-$500)",
+        "premium": "Camaflexi Mission / Maxtrix Solid Wood ($500-$900)"
+      },
+      "notes": "Matches Bedroom #2 for operational efficiency; anchor to studs"
+    },
+    {
+      "item": "Full Mattress",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 300.00,
+      "tiers": {
+        "budget": "Fuxilai 12in / Kescas 10in Hybrid ($130-$190)",
+        "value": "Vantto 12in Deluxe / IKEA Full ($190-$300)",
+        "premium": "Nectar Classic / DreamCloud Full ($300-$450)"
+      },
+      "notes": "Hybrid preferred; 10-12\" profile required"
+    },
+    {
+      "item": "Twin Mattress",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 200.00,
+      "tiers": {
+        "budget": "10in pocket-spring / GUUKIN 12in ($100-$140)",
+        "value": "IKEA Twin / Warehouse Club Segment ($140-$230)",
+        "premium": "Nectar Twin / Helix / Brooklyn Bedding ($230-$360)"
+      },
+      "notes": "Matches comfort grade of Full mattress"
+    },
+    {
+      "item": "43\" 4K Smart TV",
+      "quantity": 1,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 225.00,
+      "tiers": {
+        "budget": "Toshiba Fire TV / Hisense R6 Roku ($150-$210)",
+        "value": "Westinghouse / Philips / Roku Select ($210-$300)",
+        "premium": "Samsung/LG / Sony 4K Segment ($300-$420)"
+      },
+      "notes": "Wall-mounted; Guest Mode enabled"
+    },
+    {
+      "item": "Hospitality Linens (Sets)",
+      "quantity": 2,
+      "priority": "High",
+      "buy_new": true,
+      "baseline_cost": 150.00,
+      "tiers": {
+        "budget": "Quince Percale / Target Threshold ($50-$80/set)",
+        "value": "Costco Hotel / Company Store Percale ($80-$130/set)",
+        "premium": "Brooklinen / Parachute ($130-$220/set)"
+      },
+      "notes": "White cotton standard; identical to Bed #2 for interchangeable turnover stock"
+    },
+    {
+      "item": "Solid Wood Dresser",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 200.00,
+      "tiers": {
+        "budget": "Local Marketplace / ReStore ($90-$170)",
+        "value": "IKEA KILBERGET / TARVA 5-drawer ($170-$260)",
+        "premium": "IKEA VIHALS / Mid-tier Wayfair ($260-$500)"
+      },
+      "notes": "Minimalist; source matching units for both secondary bedrooms if possible"
+    },
+    {
+      "item": "Nightstand (Slim)",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": false,
+      "baseline_cost": 75.00,
+      "tiers": {
+        "budget": "Local Wood / Basic Value Segment ($25-$55)",
+        "value": "IKEA STORKLINTA 1 or 2-drawer ($55-$90)",
+        "premium": "IKEA TARVA / Wood-forward ($90-$180)"
+      },
+      "notes": "Max 18\" wide; character wood preferred"
+    },
+    {
+      "item": "USB Charging Hub",
+      "quantity": 1,
+      "priority": "Med",
+      "buy_new": true,
+      "baseline_cost": 30.00,
+      "tiers": {
+        "budget": "Anker 45W / Basic Multi-port ($18-$25)",
+        "value": "Belkin BoostCharge / Philips Station ($25-$35)",
+        "premium": "GaN Multi-port (Anker/Belkin) ($35-$65)"
+      },
+      "notes": "Keep at least 1 USB-C + 1 USB-A port"
+    }
+  ],
+  "total_baseline_cost": 1630.00
+}

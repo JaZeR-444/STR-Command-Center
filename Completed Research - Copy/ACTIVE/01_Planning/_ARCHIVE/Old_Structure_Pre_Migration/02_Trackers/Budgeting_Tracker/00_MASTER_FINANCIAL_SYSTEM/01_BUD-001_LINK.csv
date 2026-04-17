@@ -1,0 +1,2 @@
+budget_id,source_rollup_path,linked_total,status,last_sync,notes
+BUD-001,..\BUD-001_Design_and_Furnishing_System\00_MASTER_BUDGET_ROLLUP.csv,19001,linked,4/3/2026,direct link to design and furnishing rollup

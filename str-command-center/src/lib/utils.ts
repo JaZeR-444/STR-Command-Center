@@ -34,47 +34,47 @@ export function formatTime(dateString: string): string {
 
 // Get color class based on percentage
 export function getProgressColor(percentage: number): string {
-  if (percentage >= 100) return 'text-emerald-300';
-  if (percentage >= 75) return 'text-emerald-300';
-  if (percentage >= 50) return 'text-amber-300';
-  if (percentage >= 25) return 'text-[#a8c7f5]';
+  if (percentage >= 100) return 'text-success-400';
+  if (percentage >= 75) return 'text-success-400';
+  if (percentage >= 50) return 'text-warm-400';
+  if (percentage >= 25) return 'text-accent-400';
   return 'text-slate-300';
 }
 
 // Get background color class based on percentage
 export function getProgressBgColor(percentage: number): string {
-  if (percentage >= 100) return 'bg-emerald-400';
-  if (percentage >= 75) return 'bg-emerald-400';
-  if (percentage >= 50) return 'bg-amber-300';
-  if (percentage >= 25) return 'bg-[#8ab4ff]';
+  if (percentage >= 100) return 'bg-success-400';
+  if (percentage >= 75) return 'bg-success-400';
+  if (percentage >= 50) return 'bg-warm-400';
+  if (percentage >= 25) return 'bg-accent-400';
   return 'bg-slate-400';
 }
 
-// Timing badge colors
+// Timing badge colors - warmer, friendlier palette
 export function getTimingStyles(timing: string): string {
   switch (timing) {
     case 'Pre-Listing':
-      return 'bg-[#8ab4ff]/10 text-[#bdd5ff] border-[#8ab4ff]/25';
+      return 'bg-accent-500/15 text-accent-300 border-accent-400/30';
     case 'Ongoing':
-      return 'bg-emerald-400/10 text-emerald-200 border-emerald-300/20';
+      return 'bg-success-500/15 text-success-300 border-success-400/30';
     case 'Post-Listing':
-      return 'bg-[#d9b36c]/10 text-[#f1d39a] border-[#d9b36c]/25';
+      return 'bg-warm-500/15 text-warm-300 border-warm-400/30';
     default:
-      return 'bg-slate-500/15 text-slate-300 border-slate-500/20';
+      return 'bg-slate-500/15 text-slate-300 border-slate-500/25';
   }
 }
 
-// Status badge colors
+// Status badge colors - softer, more approachable
 export function getStatusStyles(status: string): string {
   switch (status) {
     case 'blocked':
-      return 'bg-red-400/10 text-red-200 border-red-300/20';
+      return 'bg-red-400/15 text-red-300 border-red-400/30';
     case 'in-progress':
-      return 'bg-amber-300/10 text-amber-100 border-amber-200/20';
+      return 'bg-warm-400/15 text-warm-200 border-warm-300/30';
     case 'na':
-      return 'bg-slate-500/15 text-slate-300 border-slate-500/20';
+      return 'bg-slate-500/15 text-slate-300 border-slate-500/25';
     default:
-      return 'bg-[#8ab4ff]/10 text-[#bdd5ff] border-[#8ab4ff]/25';
+      return 'bg-accent-500/15 text-accent-300 border-accent-400/30';
   }
 }
 

@@ -14,11 +14,11 @@ import {
 } from '@/lib/selectors';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress';
-import { ProgressRing } from '@/components/progress-ring';
+import { ProgressRing } from '@/components/dashboard/progress-ring';
 import { Badge } from '@/components/ui/badge';
 import { CardSkeleton } from '@/components/ui/skeleton';
-import { CommandStation } from '@/components/command-station';
-import { VelocityTracker } from '@/components/velocity-tracker';
+import { CommandStation } from '@/components/dashboard/command-station';
+import { VelocityTracker } from '@/components/dashboard/velocity-tracker';
 import { cn, getProgressColor } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -318,7 +318,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── #1 HIGH IMPACT: Launch Runway Bar ── */}
-      <section>
+      <section className="col-span-full">
         <div className={cn(
           'rounded-xl border px-4 py-3',
           isLaunchUrgent
@@ -370,7 +370,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── #2 Launch Velocity Visualization ── */}
-      <section>
+      <section className="col-span-full">
         <div className="rounded-xl border bg-zinc-900/50 border-zinc-800 px-4 py-3 flex items-center justify-between shadow-inner">
           <div>
             <h3 className="text-sm font-display font-bold text-zinc-200">Velocity Heatmap</h3>
@@ -381,7 +381,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── #1 HIGH IMPACT: Pinned Tasks ── */}
-      <section>
+      <section className="col-span-full">
         <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
             <span className="section-eyebrow !text-[10px] !tracking-[0.2em]">Focus</span> Pinned Tasks
@@ -484,7 +484,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── Critical path + Win feed side-by-side ── */}
-      <section className="grid grid-cols-1 xl:grid-cols-5 gap-4">
+      <section className="col-span-full grid grid-cols-1 xl:grid-cols-5 gap-4">
 
         {/* Critical Path — 3/5 cols */}
         <div className="xl:col-span-3">

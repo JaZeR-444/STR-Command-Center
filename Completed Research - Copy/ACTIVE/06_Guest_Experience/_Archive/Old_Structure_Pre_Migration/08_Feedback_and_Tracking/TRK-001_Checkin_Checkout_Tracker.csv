@@ -1,0 +1,2 @@
+Experience_Asset_ID,Document_Name,Guest_Journey_Stage,Reservation_ID,Arrival_Date,Checkin_Time_Standard,Smart_Entry_Flow_Reference,Code_Sent_Status,Code_Sent_Timestamp,Checkout_Date,Departure_Message_Sent,Turnover_Fridge_Clear,Turnover_Lock_WipeDown,Turnover_Nest_Reset,Status,Notes
+EX-CHK-001,02_Checkin_Checkout_Tracker.csv,Pre-Arrival,[INSERT_HERE],[INSERT_HERE],4:00 PM,60in_smart_entry_flow,[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],[INSERT_HERE],FACTUAL DATA MISSING: Reservation-level operational data not yet linked.

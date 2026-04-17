@@ -19,22 +19,22 @@ export function Button({
   ...props
 }: ButtonProps) {
   const variants = {
-    primary: 'bg-[linear-gradient(135deg,#d7b36b_0%,#b78d45_100%)] text-slate-950 shadow-[0_16px_32px_rgba(183,141,69,0.28)] hover:-translate-y-0.5 hover:brightness-105',
-    secondary: 'glass border-white/10 text-zinc-100 hover:border-white/20 hover:bg-white/10 hover:-translate-y-0.5',
-    ghost: 'text-zinc-400 hover:bg-white/5 hover:text-white',
-    danger: 'bg-[linear-gradient(135deg,#ef6d6d_0%,#c14646_100%)] text-white shadow-[0_16px_32px_rgba(127,29,29,0.28)] hover:-translate-y-0.5',
+    primary: 'bg-gradient-to-br from-warm-400 to-warm-500 text-white shadow-glow-warm hover:shadow-glow-warm hover:scale-[1.02] hover:brightness-110 font-semibold',
+    secondary: 'glass border-white/[0.15] text-white hover:border-white/[0.25] hover:bg-white/[0.08] hover:scale-[1.02]',
+    ghost: 'text-slate-300 hover:bg-white/[0.06] hover:text-white',
+    danger: 'bg-gradient-to-br from-red-400 to-red-500 text-white shadow-glow-red hover:scale-[1.02] hover:brightness-110',
   };
 
   const sizes = {
-    sm: 'px-3 py-2 text-xs',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-6 py-3.5 text-base',
+    sm: 'px-3.5 py-2 text-sm',
+    md: 'px-5 py-2.5 text-base',
+    lg: 'px-7 py-3.5 text-lg',
   };
 
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[rgba(138,180,255,0.45)] disabled:opacity-50 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center gap-2.5 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-400/50 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100',
         variants[variant],
         sizes[size],
         className

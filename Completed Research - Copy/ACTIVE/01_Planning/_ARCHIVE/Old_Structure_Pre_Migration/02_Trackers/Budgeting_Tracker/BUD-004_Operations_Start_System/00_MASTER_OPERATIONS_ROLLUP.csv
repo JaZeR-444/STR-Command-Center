@@ -1,0 +1,7 @@
+category_id,category_name,strategic_focus,est_cost,actual_spend,variance,status,last_updated,roi_priority
+CAT-01,"Initial Stocking Consumables","PAR-Level Readiness (Bathroom/Kitchen/Cleaning)",489.90,0.00,489.90,pending,2026-04-03,operational_critical
+CAT-02,"Operational Software Subscriptions","Automation, Monitoring, and Pricing Intelligence",475.99,0.00,475.99,active,2026-04-03,operational_critical
+CAT-03,"Turnover Labor Reserve","Stabilization Throughput (First 4-6 Turns)",1630.00,0.00,1630.00,pending,2026-04-03,high
+CAT-04,"Safety and Compliance Operational","License, Insurance, and On-Site Communication",1410.00,0.00,1410.00,pending,2026-04-03,high
+CAT-05,"Incident Response Reserve","First-Month Friction and Rapid Recovery",1250.00,0.00,1250.00,active,2026-04-03,critical
+TOTAL,"Operations Start","Total Operational Engine Start Investment",5255.89,0.00,5255.89,ACTIVE,2026-04-03,CRITICAL

@@ -1,0 +1,12 @@
+check_id,category,requirement,status,owner,evidence_path,last_verified,next_action,notes
+F.1,Baseline,Safety baseline meets active standard,In Progress,Safety Lead,04_Safety_Accessibility/SAFETY_ACCESSIBILITY_STANDARD.md,2026-04-05,Finalize standard addendum and re-verify all dependent checks,Active baseline in place
+F.2,Egress,Egress paths are fully clear per layout constraints,In Progress,Design Lead,02B_Measurement_Validation_Report.md,2026-04-05,Re-verify physically after room setup completes,Current evidence is design-level not physical walk-through
+F.3,Fire Safety,Fire safety requirements complete (extinguishers detectors placement),Not Started,Safety Lead,,2026-04-05,Execute physical fire-safety audit and log device locations,Execution evidence missing
+F.4,CO/Air Quality,CO detection and air quality complete including MERV-13 requirement,In Progress,Safety Lead,04_Safety_Accessibility/SAFETY_ACCESSIBILITY_STANDARD.md,2026-04-05,Execute CO detector and HVAC filter verification log with dated evidence,Policy language now present; execution evidence pending
+F.5,Hazard Mitigation,Hazard mitigation checks complete,Not Started,Safety Lead,,2026-04-05,Run room-by-room hazard audit and log outcomes,Execution evidence missing
+F.6,Smart Safety,Smart safety systems tested and documented,Not Started,Operations Lead,,2026-04-05,Run lock leak noise and alarm test pass and capture evidence,Execution evidence missing
+F.7,Accessibility,Accessibility standards pass for mobility and bathroom usability,In Progress,Design Lead,02B_Measurement_Validation_Report.md,2026-04-05,Confirm physical staging does not violate path requirements,Current evidence is pre-staging
+F.8,Compliance,Compliance docs complete and linked,In Progress,Compliance Lead,,2026-04-05,Link local compliance artifacts and close documentation gaps,Partial evidence only
+F.9,Safety Comms,Safety communications prepared and published,In Progress,Operations Lead,,2026-04-05,Publish active emergency instruction evidence path within section,Currently referenced via external/archive path
+F.10,Insurance/Risk,Insurance and risk requirements documented,Not Started,Compliance Lead,,2026-04-05,Publish policy metadata evidence under compliance section,No active policy artifact linked
+F.11,Tracker Health,Safety accessibility tracker updated and current,In Progress,Safety Lead,04_Safety_Accessibility/Safety_Accessibility_Tracker_Active.csv,2026-04-05,Update status after each audit pass,Active tracker established

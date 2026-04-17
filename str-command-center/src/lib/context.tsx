@@ -15,6 +15,16 @@ interface AppContextType {
   setTaskEstimate: (taskId: number, minutes: number) => void;
   setTaskOwner: (taskId: number, owner: string) => void;
   togglePin: (taskId: number) => void;
+  // Enhanced task actions
+  addChecklistItem: (taskId: number, item: import('@/types').ChecklistItem) => void;
+  toggleChecklistItem: (taskId: number, itemId: string) => void;
+  removeChecklistItem: (taskId: number, itemId: string) => void;
+  generateChecklist: (taskId: number, items: import('@/types').ChecklistItem[]) => void;
+  linkDocument: (taskId: number, docId: string) => void;
+  unlinkDocument: (taskId: number, docId: string) => void;
+  attachFile: (taskId: number, file: import('@/types').AttachedFile) => void;
+  removeFile: (taskId: number, fileId: string) => void;
+  logActivity: (taskId: number, action: string, details?: string) => void;
   // Document actions
   toggleDoc: (docId: string) => void;
   setDocNote: (docId: string, note: string) => void;
@@ -579,6 +589,184 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return state.activityLog.slice(0, limit);
   }, [state.activityLog]);
 
+  // Enhanced task actions - Checklist management
+  const addChecklistItem = useCallback((taskId: number, item: import('@/types').ChecklistItem) => {
+    setState(prev => {
+      const currentItems = prev.taskMeta[taskId]?.checklistItems || [];
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          checklistItems: [...currentItems, item],
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const toggleChecklistItem = useCallback((taskId: number, itemId: string) => {
+    setState(prev => {
+      const currentItems = prev.taskMeta[taskId]?.checklistItems || [];
+      const updatedItems = currentItems.map(item =>
+        item.id === itemId ? { ...item, completed: !item.completed } : item
+      );
+      
+      // Check if all items are completed
+      const isVerified = updatedItems.length > 0 && updatedItems.every(item => item.completed);
+      
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          checklistItems: updatedItems,
+          isVerifiedComplete: isVerified,
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const removeChecklistItem = useCallback((taskId: number, itemId: string) => {
+    setState(prev => {
+      const currentItems = prev.taskMeta[taskId]?.checklistItems || [];
+      const updatedItems = currentItems.filter(item => item.id !== itemId);
+      
+      const isVerified = updatedItems.length > 0 && updatedItems.every(item => item.completed);
+      
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          checklistItems: updatedItems,
+          isVerifiedComplete: isVerified,
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const generateChecklist = useCallback((taskId: number, items: import('@/types').ChecklistItem[]) => {
+    setState(prev => {
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          checklistItems: items,
+          isVerifiedComplete: false,
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  // Document linking
+  const linkDocument = useCallback((taskId: number, docId: string) => {
+    setState(prev => {
+      const currentDocs = prev.taskMeta[taskId]?.linkedDocuments || [];
+      if (currentDocs.includes(docId)) return prev; // Already linked
+      
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          linkedDocuments: [...currentDocs, docId],
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const unlinkDocument = useCallback((taskId: number, docId: string) => {
+    setState(prev => {
+      const currentDocs = prev.taskMeta[taskId]?.linkedDocuments || [];
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          linkedDocuments: currentDocs.filter(id => id !== docId),
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  // File attachment
+  const attachFile = useCallback((taskId: number, file: import('@/types').AttachedFile) => {
+    setState(prev => {
+      const currentFiles = prev.taskMeta[taskId]?.attachedFiles || [];
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          attachedFiles: [...currentFiles, file],
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const removeFile = useCallback((taskId: number, fileId: string) => {
+    setState(prev => {
+      const currentFiles = prev.taskMeta[taskId]?.attachedFiles || [];
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          attachedFiles: currentFiles.filter(f => f.id !== fileId),
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  // Activity logging
+  const logActivity = useCallback((taskId: number, action: string, details?: string) => {
+    setState(prev => {
+      const currentLog = prev.taskMeta[taskId]?.activityLog || [];
+      const newEntry: import('@/types').TaskActivityEntry = {
+        id: crypto.randomUUID(),
+        action,
+        timestamp: new Date().toISOString(),
+        details,
+      };
+      const newTaskMeta = {
+        ...prev.taskMeta,
+        [taskId]: {
+          ...prev.taskMeta[taskId],
+          activityLog: [newEntry, ...currentLog], // Prepend newest first
+        },
+      };
+      const newState = { ...prev, taskMeta: newTaskMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
   const value: AppContextType = {
     state,
     toggleTask,
@@ -588,6 +776,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTaskEstimate,
     setTaskOwner,
     togglePin,
+    addChecklistItem,
+    toggleChecklistItem,
+    removeChecklistItem,
+    generateChecklist,
+    linkDocument,
+    unlinkDocument,
+    attachFile,
+    removeFile,
+    logActivity,
     toggleDoc,
     setDocNote,
     addDocAttachment,

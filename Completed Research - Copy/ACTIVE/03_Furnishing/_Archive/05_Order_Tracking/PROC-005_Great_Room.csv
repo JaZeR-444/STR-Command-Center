@@ -1,0 +1,14 @@
+Procurement_ID,Item_Name,Order_Status,Order_Date,Expected_Delivery,Actual_Delivery,Cost,Carrier,Tracking_Number,Notes
+PR-001,L-Sectional Sofa,Selected,,,,,,Negotiating pickup
+PR-006,Area Rug (10x14),Delivered,,,2026-04-04,UNKNOWN,Owner Pickup,N/A,Self-transport from Estate Sale
+PR-GRT-02,65in 4K Smart TV,Planned,,,,,,
+PR-GRT-04,Media Console (80in),Planned,,,,,,
+PR-GRT-05,Circular Coffee Table,Planned,,,,,,
+PR-GRT-06,Swivel Accent Chairs,Planned,,,,,,
+PR-GRT-07,Arched Floor Lamp,Planned,,,,,,
+PR-GRT-08,Smart Soundbar,Planned,,,,,,
+PR-GRT-09,Decorative Pillows + Throw,Planned,,,,,,
+PR-GRT-10,Wall Art Package,Planned,,,,,,
+PR-GRT-11,Bookshelf / Display,Planned,,,,,,
+PR-GRT-12,Indoor Plants (Large),Planned,,,,,,
+PR-GRT-13,Indoor Plants (Small),Planned,,,,,,
