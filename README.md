@@ -1,256 +1,130 @@
-<<<<<<< HEAD
-# STR Launch Command Center v2.1
+# STR Command Center
 
-A professional-grade operations dashboard for tracking short-term rental launch progress across 756 tasks and 115 documents.
+Private short-term rental operations dashboard for tracking launch readiness, task execution, and documentation in one place.
 
-## ✨ New in v2.1
+## Overview
 
-- **⌨️ Command Palette**: Press `CMD+K` (Mac) or `CTRL+K` (Windows) to instantly search and navigate
-- **📌 Collapsible Sidebar**: Icon-only rail mode to maximize screen space
-- **📊 Bento Dashboard**: Redesigned with circular progress, critical path, and blocked items
-- **✏️ Inline Editing**: Edit tasks in slide-in drawer without losing your place
-- **🎯 Critical Path**: Automatic prioritization of blocked and urgent tasks
-- **📄 Required Docs**: Clear distinction between required and optional documentation
-- **🎨 Enhanced Design**: Professional zinc-950 dark theme with blue-500 accents
+STR Command Center is a Next.js app used to manage:
 
-## Features
+- Roadmap execution across sections and categories
+- Document completion and file attachments
+- Blocked/in-progress task visibility
+- Focused review of critical items before launch
+- Optional cloud sync (Supabase) with local-first fallback
 
-- **Dashboard**: Global overview with key metrics, section progress, and focus items
-- **Roadmap**: Section-by-section task checklist with filtering and search
-- **Documents**: Artifact tracking for all documentation requirements
-- **Focus Mode**: Surface blocked, in-progress, and pinned items
-- **Settings**: Launch date configuration, data export/import, reset
-- **Optional Cloud Sync**: Free Supabase sync with localStorage fallback
+## Key Features
+
+- Dashboard with progress and priority signals
+- Roadmap view for task completion, notes, and status tracking
+- Documents repository with:
+  - Multi-file drag-and-drop upload
+  - Auto-tagging per uploaded file
+  - Master file directory grouped by section and artifact
+- Focus mode for blocked, active, and pinned work
+- Settings for export/import/reset and launch date controls
 
 ## Tech Stack
 
-- **Next.js 14** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Local Storage** for persistence
-- **Supabase (optional)** for shared cloud sync
+- Next.js `16.2.4` (App Router)
+- React `19`
+- TypeScript
+- Tailwind CSS
+- IndexedDB for local file blobs
+- localStorage for app state
+- Supabase (optional cloud sync)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17 or later
-- npm or yarn
+- Node.js 18+ (20+ recommended)
+- npm
 
-### Installation
+### Install
 
 ```bash
-# Clone or copy the project
-cd str-command-center
-
-# Install dependencies
 npm install
+```
 
-# Run development server
+### Run Development Server
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open `http://localhost:3000`.
 
-### Build for Production
+### Production Build
 
 ```bash
 npm run build
-npm start
+npm run start
 ```
 
-## Deployment to Vercel
+## Available Scripts
 
-### Option 1: Vercel CLI
+- `npm run dev` - Start development server
+- `npm run build` - Create production build
+- `npm run start` - Start production server
+- `npm run lint` - Run lint checks
+- `npm run extract-data` - Run data extraction script
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+## Environment Variables
 
-# Deploy
-vercel
-```
-
-### Option 2: Git Integration
-
-1. Push your code to GitHub/GitLab/Bitbucket
-2. Connect repository to Vercel at [vercel.com](https://vercel.com)
-3. Vercel will auto-deploy on push
-
-### Environment Variables
-
-No environment variables are required for local-only mode.
-
-To enable free Supabase sync across devices, create `.env.local`:
+Copy `.env.example` to `.env.local` and fill values only if cloud sync is needed.
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_SUPABASE_STATE_KEY=family
 ```
 
-`NEXT_PUBLIC_SUPABASE_STATE_KEY` lets you choose which single shared state record this app uses.
+If not configured, the app still works locally with offline-first persistence.
 
-### Supabase Setup (Free Tier)
+## Vercel Deployment
 
-1. Create a free Supabase project.
-2. Open SQL Editor and run:
+Use repository root as the project root.
 
-```sql
-create table if not exists public.app_state (
-  id text primary key,
-  payload jsonb not null,
-  updated_at timestamptz not null default now()
-);
+### Recommended Vercel Settings
 
-alter table public.app_state enable row level security;
+- Root Directory: `.` (repo root)
+- Install Command: `npm install`
+- Build Command: `npm run build`
+- Framework Preset: `Next.js`
 
-create policy "public_read_app_state"
-on public.app_state
-for select
-to anon
-using (true);
+### Deploy
 
-create policy "public_write_app_state"
-on public.app_state
-for insert
-to anon
-with check (true);
-
-create policy "public_update_app_state"
-on public.app_state
-for update
-to anon
-using (true)
-with check (true);
-
-create policy "public_delete_app_state"
-on public.app_state
-for delete
-to anon
-using (true);
-```
-
-3. Add the env vars above and redeploy.
-
-The app always keeps localStorage as fallback, so it still works if cloud sync is unavailable.
+1. Push to `master`
+2. Import/connect repo in Vercel
+3. Redeploy latest commit
 
 ## Project Structure
 
-```
-str-command-center/
+```text
+.
+├── public/
+├── scripts/
 ├── src/
-│   ├── app/                 # Next.js App Router pages
-│   │   ├── layout.tsx       # Root layout
-│   │   ├── page.tsx         # Dashboard
-│   │   ├── roadmap/         # Roadmap page
-│   │   ├── documents/       # Documents page
-│   │   ├── focus/           # Focus mode page
-│   │   └── settings/        # Settings page
-│   ├── components/          # React components
-│   │   ├── ui/              # Reusable UI primitives
-│   │   ├── sidebar.tsx      # Desktop navigation
-│   │   └── mobile-nav.tsx   # Mobile navigation
-│   ├── data/                # Static data (roadmap, documents)
-│   ├── lib/                 # Utilities and state management
-│   │   ├── context.tsx      # React context for app state
-│   │   ├── storage.ts       # LocalStorage persistence + timestamps
-│   │   ├── supabase.ts      # Optional cloud sync adapter
-│   │   ├── selectors.ts     # Computed values from state
-│   │   └── utils.ts         # Helper functions
-│   └── types/               # TypeScript types
-├── public/                  # Static assets
-├── tailwind.config.js       # Tailwind configuration
-└── package.json
+│   ├── app/
+│   ├── components/
+│   ├── data/
+│   ├── hooks/
+│   ├── lib/
+│   └── types/
+├── .env.example
+├── next.config.js
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── vercel.json
 ```
 
-## Data Architecture
+## Notes
 
-### State (Local + Optional Cloud)
-
-```typescript
-interface AppState {
-  completedIds: number[];      // Completed task IDs
-  completedDocIds: string[];   // Completed document IDs
-  taskMeta: Record<number, {   // Task metadata
-    note?: string;
-    status?: 'default' | 'in-progress' | 'blocked' | 'na';
-    completedAt?: string;
-  }>;
-  pinnedIds: number[];         // Pinned task IDs
-  launchDate: string;          // Target launch date
-  collapsedCategories: string[];
-}
-```
-
-### Future Database Migration
-
-The state architecture is designed to easily migrate to a database:
-
-1. Keep local state as offline fallback
-2. Sync state to `app_state.payload` in Supabase
-3. Resolve startup conflicts using `updated_at`
-
-## Preserved from Original
-
-- ✅ All 756 roadmap tasks with section/category structure
-- ✅ 115 documentation artifacts
-- ✅ Pre-listing / Ongoing / Post-listing timing
-- ✅ Task completion tracking
-- ✅ Status flags (blocked, in-progress, N/A)
-- ✅ Notes per task
-- ✅ Section progress percentages
-- ✅ Launch countdown
-- ✅ Import/export JSON backup
-- ✅ Focus mode for priority items
-- ✅ Dark theme aesthetic
-
-## What's Improved in v2.1
-
-### Command & Navigation
-- ⌨️ **CMD+K Command Palette**: Instant fuzzy search across all tasks, docs, and pages
-- 📌 **Collapsible Sidebar**: Toggle between full and icon-only rail mode
-- 🎯 **Smart Navigation**: Blocked task count badge, active state indicators
-
-### Dashboard Redesign
-- 📊 **Bento Grid Layout**: Action-oriented cards focused on what's at risk
-- 🔴 **Blocked Items Card**: High-visibility treatment for blockers
-- ⏱️ **Launch Countdown**: Urgency pulse animation when < 7 days
-- 🎯 **Critical Path**: Shows next 3 highest-priority tasks automatically
-
-### Roadmap Enhancements
-- 📍 **Sticky Headers**: Category headers stay visible while scrolling
-- ✏️ **Inline Editing**: Slide-in drawer for quick updates without navigation
-- 🎨 **Status Colors**: Red (blocked), Amber (in-progress), strikethrough (N/A)
-- 📝 **Note Indicators**: Visual badges for tasks with notes
-
-### Documents Repository
-- ⚠️ **Required/Optional**: Pre-Listing docs flagged as required for launch
-- 🔔 **Missing Docs Banner**: Warning when required docs are incomplete
-- 🏷️ **Type Grouping**: Documents organized by type for better scanning
-- 📊 **Three Stats Cards**: Overall, Required, and Optional completion
-
-### Design & Performance
-- 🎨 **Professional Dark Theme**: Zinc-950 background with blue-500 accents
-- ⚡ **Optimized for Scale**: Handles 756 tasks smoothly with sticky headers
-- 💀 **Skeleton Loaders**: Match actual layout for better perceived performance
-- 🎭 **Micro-interactions**: Smooth 300ms transitions, no layout jumps
-
-### Previous v2.0 Features
-- ✨ Clean, maintainable codebase (not a single 9000+ line file)
-- ✨ TypeScript for type safety
-- ✨ React state management instead of vanilla JS
-- ✨ Component-based architecture
-- ✨ Mobile-responsive design
-- ✨ Proper routing with Next.js
-- ✨ Simplified UI without visual clutter
-- ✨ Faster navigation between views
-- ✨ Better filter/search UX
+- `node_modules`, `.next`, local env files, and local research/archive folders should not be committed.
+- This repository is private and intended for internal/family operations.
 
 ## License
 
 Private use only.
-=======
-# STR-Command-Center
-Private STR command center for tracking launch readiness, completed work, outstanding tasks, documents, and key operational milestones. Built as a simple family-facing dashboard to keep everything organized, visible, and easy to review in one central place.
->>>>>>> main

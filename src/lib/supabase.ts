@@ -15,6 +15,7 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SUPABASE_STATE_KEY = process.env.NEXT_PUBLIC_SUPABASE_STATE_KEY || 'family';
 
 let client: SupabaseClient | null = null;
+const SUPABASE_STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'str-files';
 
 export function isCloudSyncConfigured(): boolean {
   return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
@@ -25,6 +26,14 @@ function getClient(): SupabaseClient | null {
   if (client) return client;
   client = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!);
   return client;
+}
+
+export function getSupabaseClient(): SupabaseClient | null {
+  return getClient();
+}
+
+export function getSupabaseStorageBucket(): string {
+  return SUPABASE_STORAGE_BUCKET;
 }
 
 export async function loadRemoteState(): Promise<{ state: AppState | null; updatedAt: string | null; error?: string }> {
@@ -96,4 +105,28 @@ export async function clearRemoteState(): Promise<{ success: boolean; error?: st
   }
 
   return { success: true };
+}
+
+export async function uploadFileToCloud(path: string, file: File): Promise<{ success: boolean; path?: string; error?: string }> {
+  const supabase = getClient();
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const { error } = await supabase.storage
+    .from(SUPABASE_STORAGE_BUCKET)
+    .upload(path, file, { upsert: false, cacheControl: '3600' });
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, path };
+}
+
+export async function getCloudFileSignedUrl(path: string, expiresIn = 3600): Promise<{ success: boolean; url?: string; error?: string }> {
+  const supabase = getClient();
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const { data, error } = await supabase.storage
+    .from(SUPABASE_STORAGE_BUCKET)
+    .createSignedUrl(path, expiresIn);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, url: data?.signedUrl };
 }

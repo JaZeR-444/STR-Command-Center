@@ -30,9 +30,15 @@ interface AppContextType {
   setDocNote: (docId: string, note: string) => void;
   addDocAttachment: (docId: string, attachment: { id: string; name: string; size: number; type: string }) => void;
   removeDocAttachment: (docId: string, attachmentId: string) => void;
+  patchDocAttachment: (
+    docId: string,
+    attachmentId: string,
+    patch: Partial<{ hash: string; storagePath: string; source: 'local' | 'cloud' | 'hybrid' }>
+  ) => void;
   updateDocStatus: (docId: string, status: DocumentStatus) => void;
   appendAuditLog: (docId: string, action: string, actor: string) => void;
   setSmartTags: (docId: string, tags: { key: string; value: string }[]) => void;
+  upsertFileRegistryRecord: (record: import('@/types').FileRegistryRecord) => void;
   setDocumentViewMode: (mode: 'list' | 'grid') => void;
   // Settings
   setLaunchDate: (date: string) => void;
@@ -284,6 +290,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, [syncRemoteState]);
 
+  const patchDocAttachment = useCallback((
+    docId: string,
+    attachmentId: string,
+    patch: Partial<{ hash: string; storagePath: string; source: 'local' | 'cloud' | 'hybrid' }>
+  ) => {
+    setState(prev => {
+      const currentAttachments = prev.docMeta[docId]?.attachments || [];
+      const patched = currentAttachments.map(attachment =>
+        attachment.id === attachmentId ? { ...attachment, ...patch } : attachment
+      );
+
+      const newDocMeta = {
+        ...prev.docMeta,
+        [docId]: {
+          ...prev.docMeta[docId],
+          attachments: patched,
+        },
+      };
+      const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
   const updateDocStatus = useCallback((docId: string, status: DocumentStatus) => {
     setState(prev => {
       const newDocMeta = {
@@ -342,6 +373,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         },
       };
       const newState = { ...prev, docMeta: newDocMeta };
+      saveState(newState);
+      void syncRemoteState(newState);
+      return newState;
+    });
+  }, [syncRemoteState]);
+
+  const upsertFileRegistryRecord = useCallback((record: import('@/types').FileRegistryRecord) => {
+    setState(prev => {
+      const existing = prev.fileRegistry?.[record.id];
+      const merged: import('@/types').FileRegistryRecord = existing
+        ? {
+            ...existing,
+            ...record,
+            linkedDocIds: Array.from(new Set([...(existing.linkedDocIds || []), ...(record.linkedDocIds || [])])),
+          }
+        : record;
+
+      const newState = {
+        ...prev,
+        fileRegistry: {
+          ...(prev.fileRegistry || {}),
+          [record.id]: merged,
+        },
+      };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -789,9 +844,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setDocNote,
     addDocAttachment,
     removeDocAttachment,
+    patchDocAttachment,
     updateDocStatus,
     appendAuditLog,
     setSmartTags,
+    upsertFileRegistryRecord,
     setDocumentViewMode,
     setLaunchDate,
     exportData,

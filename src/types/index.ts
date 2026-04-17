@@ -92,7 +92,22 @@ export interface DocMeta {
     size: number;
     type: string;
     attachedAt: string;
+    hash?: string;
+    storagePath?: string;
+    source?: 'local' | 'cloud' | 'hybrid';
   }[];
+}
+
+export interface FileRegistryRecord {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  hash: string;
+  storagePath?: string;
+  source: 'local' | 'cloud' | 'hybrid';
+  createdAt: string;
+  linkedDocIds: string[];
 }
 
 // Document/artifact types
@@ -175,6 +190,7 @@ export interface AppState {
   undoStack: UndoEntry[];
   redoStack: UndoEntry[];
   preferences: UserPreferences;
+  fileRegistry: Record<string, FileRegistryRecord>;
 }
 
 // Filter state (not persisted)

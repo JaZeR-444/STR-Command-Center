@@ -38,6 +38,7 @@ export const DEFAULT_STATE: AppState = {
     searchHistory: [],
     expandAllBySection: {},
   },
+  fileRegistry: {},
 };
 
 // Safe JSON parse
@@ -127,6 +128,10 @@ export function loadState(): AppState {
       undoStack: [], // Don't persist undo stack
       redoStack: [], // Don't persist redo stack
       preferences,
+      fileRegistry: safeJsonParse<Record<string, import('@/types').FileRegistryRecord>>(
+        localStorage.getItem(`${STORAGE_PREFIX}fileRegistry`),
+        {}
+      ),
     };
   } catch (error) {
     console.error('Failed to load state from localStorage:', error);
@@ -148,6 +153,7 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEYS.collapsedCategories, JSON.stringify(state.collapsedCategories));
     localStorage.setItem(`${STORAGE_PREFIX}activityLog`, JSON.stringify(state.activityLog.slice(0, 100)));
     localStorage.setItem(`${STORAGE_PREFIX}preferences`, JSON.stringify(state.preferences));
+    localStorage.setItem(`${STORAGE_PREFIX}fileRegistry`, JSON.stringify(state.fileRegistry || {}));
     localStorage.setItem(STORAGE_KEYS.updatedAt, new Date().toISOString());
   } catch (error) {
     console.error('Failed to save state to localStorage:', error);
@@ -239,6 +245,7 @@ export function importState(jsonString: string): { success: boolean; state?: App
         undoStack: [],
         redoStack: [],
         preferences,
+        fileRegistry: typeof parsed.fileRegistry === 'object' && parsed.fileRegistry ? parsed.fileRegistry : {},
       },
     };
   } catch (error) {
@@ -253,4 +260,7 @@ export function clearState(): void {
   Object.values(STORAGE_KEYS).forEach(key => {
     localStorage.removeItem(key);
   });
+  localStorage.removeItem(`${STORAGE_PREFIX}activityLog`);
+  localStorage.removeItem(`${STORAGE_PREFIX}preferences`);
+  localStorage.removeItem(`${STORAGE_PREFIX}fileRegistry`);
 }
