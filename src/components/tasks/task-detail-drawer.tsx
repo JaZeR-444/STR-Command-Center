@@ -166,7 +166,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose }: TaskDetailDrawerProp
                 {isPinned ? '📌 Pinned' : 'Pin'}
               </Button>
               <Button
-                variant={status === 'blocked' ? 'danger' : 'ghost'}
+                variant={(status === 'blocked' ? 'danger' : 'ghost') as 'danger' | 'ghost'}
                 size="sm"
                 onClick={() => setTaskStatus(task.id, status === 'blocked' ? 'default' : 'blocked')}
               >

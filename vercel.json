@@ -1,22 +1,6 @@
 {
-<<<<<<< HEAD
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install"
-=======
-  "version": 2,
-  "builds": [
-    {
-      "src": "str-command-center/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "str-command-center/$1"
-    }
-  ]
->>>>>>> main
 }
