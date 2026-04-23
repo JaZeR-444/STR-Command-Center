@@ -151,7 +151,10 @@ export interface UserPreferences {
   lockedCategories: string[]; // Categories that won't auto-collapse
   searchHistory: string[];
   expandAllBySection: Record<string, boolean>; // Remember expand all per section
-  theme: 'dark' | 'light';
+  theme: 'light' | 'dark' | 'system';
+  launchDateReminders: boolean;
+  showVelocityChart: boolean;
+  compactMode: boolean;
 }
 
 // Activity log entry for tracking changes
@@ -178,6 +181,7 @@ export interface UndoEntry {
 
 // Application state stored in localStorage
 export interface AppState {
+  // Legacy task/document tracking
   completedIds: number[];
   completedDocIds: string[];
   taskMeta: Record<number, TaskMeta>;
@@ -186,12 +190,32 @@ export interface AppState {
   launchDate: string;
   collapsedCategories: string[];
   documentViewMode?: 'list' | 'grid';
-  // New fields
   activityLog: ActivityEntry[];
   undoStack: UndoEntry[];
   redoStack: UndoEntry[];
   preferences: UserPreferences;
   fileRegistry: Record<string, FileRegistryRecord>;
+  
+  // New operations data
+  reservations: Reservation[];
+  guests: Record<string, GuestProfile>; // guestId -> GuestProfile
+  operationsTasks: OperationsTask[];
+  inboxThreads: InboxThread[];
+  pricingRecommendations: PricingRecommendation[];
+  dailyPricing: DailyPricing[];
+  pricingRules: PricingRule[];
+  maintenanceIssues: MaintenanceIssue[];
+  calendarEvents: CalendarEvent[];
+  // Property-level overrides (most data is in properties.ts)
+  propertyNotes: Record<string, string>; // propertyId -> notes
+  propertySettings: Record<string, PropertySettings>; // propertyId -> settings
+  // Market intelligence
+  marketCompetitors: MarketCompetitor[];
+  localEvents: LocalEvent[];
+  marketMetrics: MarketMetrics[];
+  // Automation
+  automationRules: AutomationRule[];
+  automationLogs: AutomationLog[];
 }
 
 // Filter state (not persisted)
@@ -200,6 +224,371 @@ export interface FilterState {
   completion: 'all' | 'incomplete' | 'complete';
   search: string;
   section: string | null;
+}
+
+// =====================================================
+// PROPERTIES & PORTFOLIO
+// =====================================================
+
+export type PropertyStatus = 'live' | 'draft' | 'paused';
+export type PropertyChannel = 'airbnb' | 'booking' | 'vrbo' | 'direct';
+
+export interface Property {
+  id: string;
+  name: string;
+  address: string;
+  neighborhood: string;
+  zipCode: string;
+  beds: number;
+  baths: number;
+  sleeps: number;
+  sqft: number;
+  status: PropertyStatus;
+  channels: PropertyChannel[];
+  // Stats
+  rating?: number;
+  reviewCount?: number;
+  // Colors for UI
+  color: string; // e.g., 'var(--p1)'
+  colorLight: string;
+  colorDark: string;
+  // Metadata
+  description?: string;
+  amenities?: string[];
+  checkInTime?: string;
+  checkOutTime?: string;
+}
+
+// Extended property settings (stored in AppState)
+export interface PropertySettings {
+  propertyId: string;
+  // Access Information
+  wifiNetwork?: string;
+  wifiPassword?: string;
+  doorCode?: string;
+  gateCode?: string;
+  // Instructions
+  checkInInstructions?: string;
+  checkOutInstructions?: string;
+  parkingInstructions?: string;
+  // House Rules
+  houseRules?: string[];
+  quietHours?: { start: string; end: string };
+  maxGuests?: number;
+  smokingAllowed?: boolean;
+  petsAllowed?: boolean;
+  eventsAllowed?: boolean;
+  // Emergency Contacts
+  emergencyContacts?: {
+    name: string;
+    role: string;
+    phone: string;
+  }[];
+  // Maintenance
+  maintenanceNotes?: string;
+  vendorContacts?: {
+    type: string; // e.g., 'HVAC', 'Plumber', 'Electrician'
+    name: string;
+    phone: string;
+    notes?: string;
+  }[];
+}
+
+// =====================================================
+// GUESTS & PROFILES
+// =====================================================
+
+export type GuestSource = 'airbnb' | 'booking' | 'vrbo' | 'direct';
+
+export type GuestFlag = 'vip' | 'repeat' | 'problematic' | 'blacklist';
+
+export interface GuestProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  source: GuestSource;
+  // Stats
+  rating?: number;
+  totalTrips: number;
+  totalSpent?: number;
+  verified: boolean;
+  joinDate?: string;
+  // Communication
+  language?: string;
+  timezone?: string;
+  // Preferences
+  notes?: string;
+  preferences?: {
+    bedding?: string;
+    temperature?: string;
+    checkInTime?: string;
+    checkOutTime?: string;
+    specialRequests?: string[];
+  };
+  // Flags
+  flags?: GuestFlag[];
+  // History
+  lastStayDate?: string;
+  favoriteProperty?: string;
+}
+
+// =====================================================
+// RESERVATIONS & BOOKINGS
+// =====================================================
+
+export type ReservationStatus = 'upcoming' | 'checked_in' | 'checked_out' | 'cancelled';
+export type ReservationSource = 'airbnb' | 'booking' | 'vrbo' | 'direct';
+
+export interface Reservation {
+  id: string;
+  propertyId: string;
+  guestId: string;
+  source: ReservationSource;
+  status: ReservationStatus;
+  // Dates
+  checkIn: string; // ISO date
+  checkOut: string; // ISO date
+  bookedAt: string; // ISO datetime
+  // Pricing
+  nightlyRate: number;
+  totalNights: number;
+  subtotal: number;
+  cleaningFee: number;
+  serviceFee: number;
+  taxes: number;
+  total: number;
+  // Guest info
+  guests: number;
+  adults?: number;
+  children?: number;
+  // Special requests
+  specialRequests?: string;
+  earlyCheckIn?: boolean;
+  lateCheckOut?: boolean;
+  // Metadata
+  confirmationCode?: string;
+  notes?: string;
+}
+
+// =====================================================
+// CALENDAR EVENTS
+// =====================================================
+
+export type CalendarEventType = 'reservation' | 'blocked' | 'maintenance';
+
+export interface CalendarEvent {
+  id: string;
+  propertyId: string;
+  type: CalendarEventType;
+  startDate: string; // ISO date
+  endDate: string; // ISO date
+  // For reservations
+  reservationId?: string;
+  guestName?: string;
+  // For blocked/maintenance
+  reason?: string;
+  notes?: string;
+}
+
+// =====================================================
+// OPERATIONS & TASKS
+// =====================================================
+
+export type OperationsTaskType = 'cleaning' | 'maintenance' | 'inspection';
+export type OperationsTaskStatus = 'queued' | 'in_progress' | 'completed' | 'cancelled';
+export type OperationsPriority = 'p0' | 'p1' | 'p2' | 'p3';
+
+export interface OperationsTask {
+  id: string;
+  type: OperationsTaskType;
+  propertyId: string;
+  status: OperationsTaskStatus;
+  priority: OperationsPriority;
+  // Scheduling
+  scheduledDate: string; // ISO date
+  scheduledTimeStart?: string; // HH:mm
+  scheduledTimeEnd?: string; // HH:mm
+  completedAt?: string; // ISO datetime
+  // Assignment
+  assigneeId?: string;
+  assigneeName?: string;
+  // Details
+  title: string;
+  description?: string;
+  checklist?: string[];
+  // Related bookings
+  relatedReservationId?: string;
+  nextGuestArrival?: string; // ISO datetime
+  // Metadata
+  estimatedDuration?: number; // minutes
+  actualDuration?: number; // minutes
+  notes?: string;
+}
+
+// =====================================================
+// MAINTENANCE & ISSUES
+// =====================================================
+
+export type IssuePriority = 'urgent' | 'high' | 'medium' | 'low';
+export type IssueStatus = 'reported' | 'assigned' | 'in_progress' | 'resolved' | 'closed';
+export type IssueSource = 'guest' | 'inspection' | 'preventive' | 'staff';
+
+export interface MaintenanceIssue {
+  id: string;
+  propertyId: string;
+  title: string;
+  description: string;
+  priority: IssuePriority;
+  status: IssueStatus;
+  source: IssueSource;
+  // Reporter
+  reportedBy?: string; // Guest name or staff name
+  reportedAt: string; // ISO datetime
+  guestId?: string; // If reported by guest
+  reservationId?: string; // Related reservation
+  // Assignment
+  assignedTo?: string; // Vendor/staff name
+  assignedAt?: string; // ISO datetime
+  // Resolution
+  resolvedAt?: string; // ISO datetime
+  closedAt?: string; // ISO datetime
+  resolution?: string; // Description of fix
+  // Cost tracking
+  estimatedCost?: number;
+  actualCost?: number;
+  // Photos
+  photos?: {
+    id: string;
+    url: string;
+    caption?: string;
+    uploadedAt: string;
+  }[];
+  // Category
+  category?: 'plumbing' | 'electrical' | 'hvac' | 'appliance' | 'structural' | 'cosmetic' | 'other';
+  // Metadata
+  tags?: string[];
+  notes?: string;
+}
+
+// =====================================================
+// INBOX & MESSAGING
+// =====================================================
+
+export type MessageSource = 'airbnb' | 'booking' | 'vrbo' | 'direct' | 'sms' | 'email';
+export type MessageSender = 'guest' | 'host';
+
+export interface Message {
+  id: string;
+  threadId: string;
+  sender: MessageSender;
+  source: MessageSource;
+  text: string;
+  timestamp: string; // ISO datetime
+  read: boolean;
+  // Attachments
+  attachments?: {
+    id: string;
+    name: string;
+    url: string;
+    type: string;
+  }[];
+}
+
+export interface InboxThread {
+  id: string;
+  guestId: string;
+  propertyId: string;
+  reservationId?: string;
+  source: MessageSource;
+  // Status
+  unread: number;
+  lastMessageAt: string; // ISO datetime
+  urgent: boolean;
+  resolved: boolean;
+  // Messages
+  messages: Message[];
+  // Metadata
+  subject?: string;
+  tags?: string[];
+}
+
+// =====================================================
+// PRICING & MARKET
+// =====================================================
+
+export type PricingEventType = 'festival' | 'sports' | 'conference' | 'holiday' | 'high_demand' | 'orphan_gap' | 'same_day';
+
+export interface PricingRecommendation {
+  id: string;
+  propertyId: string;
+  date: string; // ISO date
+  // Current pricing
+  currentPrice: number;
+  currentMinStay?: number;
+  // Recommended pricing
+  suggestedPrice: number;
+  suggestedMinStay?: number;
+  // Context
+  eventType?: PricingEventType;
+  eventName?: string;
+  marketOccupancy?: number; // percentage
+  changePercentage: number; // +/- percentage
+  // Metadata
+  confidence?: number; // 0-100
+  reason?: string;
+  applied: boolean;
+  appliedAt?: string; // ISO datetime
+}
+
+export type PricingStrategy = 'base' | 'weekend' | 'event' | 'orphan_gap' | 'last_minute' | 'seasonal' | 'custom';
+
+export interface DailyPricing {
+  date: string; // ISO date
+  propertyId: string;
+  basePrice: number;
+  finalPrice: number;
+  minStay: number;
+  maxStay?: number;
+  strategy?: PricingStrategy;
+  strategyLabel?: string;
+  // Channel-specific overrides
+  channelPricing?: {
+    airbnb?: number;
+    booking?: number;
+    vrbo?: number;
+    direct?: number;
+  };
+  // Availability
+  available: boolean;
+  booked: boolean;
+  blocked: boolean;
+  // Metadata
+  notes?: string;
+  lastUpdated?: string;
+}
+
+export interface PricingRule {
+  id: string;
+  propertyId: string;
+  name: string;
+  enabled: boolean;
+  priority: number; // Lower = higher priority
+  // Date range
+  startDate?: string; // ISO date (optional for recurring)
+  endDate?: string; // ISO date (optional for recurring)
+  // Recurrence
+  recurring?: 'weekends' | 'weekdays' | 'monthly' | 'custom';
+  daysOfWeek?: number[]; // 0-6 (Sunday-Saturday)
+  // Pricing adjustments
+  priceAdjustment: number; // Dollar amount or percentage
+  adjustmentType: 'fixed' | 'percentage';
+  minStay?: number;
+  maxStay?: number;
+  // Conditions
+  strategy: PricingStrategy;
+  description?: string;
 }
 
 // Section summary for dashboard
@@ -225,3 +614,158 @@ export interface ActivityLogEntry {
 
 // Search scope for enhanced search
 export type SearchScope = 'all' | 'tasks' | 'descriptions' | 'notes';
+
+// =====================================================
+// MARKET INTELLIGENCE & COMPETITORS
+// =====================================================
+
+export type EventImpact = 'low' | 'medium' | 'high' | 'extreme';
+
+export interface MarketCompetitor {
+  id: string;
+  name: string;
+  propertyType: string; // "2BR Condo", "3BR House", etc.
+  neighborhood: string;
+  beds: number;
+  baths: number;
+  sleeps: number;
+  // Pricing
+  currentPrice: number;
+  priceHistory: {
+    date: string;
+    price: number;
+  }[];
+  // Performance
+  rating?: number;
+  reviewCount?: number;
+  estimatedOccupancy?: number; // percentage
+  // Channels
+  airbnbUrl?: string;
+  vrboUrl?: string;
+  bookingUrl?: string;
+  // Distance from our properties
+  distanceFromP1?: number; // miles
+  distanceFromP2?: number;
+  distanceFromP3?: number;
+  // Metadata
+  lastUpdated: string;
+  notes?: string;
+}
+
+export interface LocalEvent {
+  id: string;
+  name: string;
+  startDate: string; // ISO date
+  endDate: string; // ISO date
+  category: 'festival' | 'sports' | 'conference' | 'concert' | 'holiday' | 'convention' | 'other';
+  impact: EventImpact;
+  expectedVisitors?: number;
+  venue?: string;
+  description?: string;
+  // Pricing impact
+  suggestedPriceIncrease?: number; // percentage
+  suggestedMinStay?: number;
+  // Metadata
+  url?: string;
+  notes?: string;
+}
+
+export interface MarketMetrics {
+  date: string; // ISO date
+  neighborhoodOccupancy: number; // percentage
+  cityOccupancy: number; // percentage
+  avgDailyRate: number; // neighborhood average
+  avgMinStay: number;
+  demandIndex: number; // 0-100 scale
+  competitorCount: number;
+  newListings: number; // new in past 30 days
+  // Trend data
+  occupancyTrend: 'up' | 'down' | 'stable';
+  priceTrend: 'up' | 'down' | 'stable';
+  demandTrend: 'up' | 'down' | 'stable';
+}
+
+export interface MarketSnapshot {
+  generatedAt: string; // ISO datetime
+  nextUpdateAt: string; // ISO datetime
+  metrics: MarketMetrics;
+  topCompetitors: MarketCompetitor[];
+  upcomingEvents: LocalEvent[];
+  insights: {
+    type: 'opportunity' | 'warning' | 'info';
+    title: string;
+    description: string;
+    actionable?: boolean;
+  }[];
+}
+
+// =====================================================
+// AUTOMATION & SMART TRIGGERS
+// =====================================================
+
+export type TriggerType =
+  | 'reservation_created'
+  | 'reservation_checkin'
+  | 'reservation_checkout'
+  | 'event_upcoming'
+  | 'occupancy_threshold'
+  | 'price_competitor'
+  | 'issue_urgent'
+  | 'message_received'
+  | 'task_overdue'
+  | 'review_received';
+
+export type ActionType =
+  | 'adjust_price'
+  | 'create_task'
+  | 'send_notification'
+  | 'send_message'
+  | 'block_calendar'
+  | 'update_min_stay'
+  | 'create_issue';
+
+export type ConditionOperator = 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains';
+
+export interface AutomationCondition {
+  field: string; // e.g., 'propertyId', 'priority', 'source'
+  operator: ConditionOperator;
+  value: string | number | boolean;
+}
+
+export interface AutomationAction {
+  type: ActionType;
+  params: Record<string, any>; // Action-specific parameters
+}
+
+export interface AutomationRule {
+  id: string;
+  name: string;
+  description?: string;
+  enabled: boolean;
+  trigger: TriggerType;
+  conditions?: AutomationCondition[]; // All must be true
+  actions: AutomationAction[];
+  // Metadata
+  createdAt: string;
+  lastTriggered?: string;
+  triggerCount: number;
+  // Limits
+  maxTriggersPerDay?: number;
+  cooldownMinutes?: number; // Min time between triggers
+}
+
+export interface AutomationLog {
+  id: string;
+  ruleId: string;
+  ruleName: string;
+  triggeredAt: string;
+  trigger: TriggerType;
+  success: boolean;
+  actions: {
+    type: ActionType;
+    success: boolean;
+    result?: string;
+    error?: string;
+  }[];
+  metadata?: Record<string, any>;
+}

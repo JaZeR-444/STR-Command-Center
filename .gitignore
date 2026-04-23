@@ -72,3 +72,17 @@ generate_11_run_orders.py
 generate_run_order.py
 inject_frontmatter_standard.py
 completed_research_file_list.txt
+
+# Archive formats
+*.7z
+*.bz2
+
+# Directory snapshots / data exports
+tree.json
+
+# Backup files
+*.bak
+*.backup
+
+# Frontmatter config (editor-only)
+frontmatter.json

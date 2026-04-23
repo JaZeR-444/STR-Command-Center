@@ -56,7 +56,7 @@ interface AppContextType {
   addSearchHistory: (term: string) => void;
   clearSearchHistory: () => void;
   setExpandAllForSection: (section: string, expanded: boolean) => void;
-  setTheme: (theme: 'dark' | 'light') => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
   // Undo/Redo
   undo: () => void;
   redo: () => void;
@@ -100,6 +100,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const loaded = loadState();
       setState(loaded);
       setIsLoaded(true);
+      
+      // Apply theme on initial load
+      const theme = loaded.preferences?.theme || 'light';
+      const root = document.documentElement;
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('dark-theme', prefersDark);
+      } else {
+        root.classList.toggle('dark-theme', theme === 'dark');
+      }
 
       if (!isCloudSyncConfigured()) {
         setCloudSyncStatus('disabled');
@@ -146,23 +156,45 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const isCompleted = prev.completedIds.includes(taskId);
       let newCompletedIds: number[];
       let newTaskMeta = { ...prev.taskMeta };
+      const now = new Date().toISOString();
 
       if (isCompleted) {
         // Uncomplete
         newCompletedIds = prev.completedIds.filter(id => id !== taskId);
-        if (newTaskMeta[taskId]) {
-          delete newTaskMeta[taskId].completedAt;
-        }
-      } else {
-        // Complete
-        newCompletedIds = [...prev.completedIds, taskId];
+        const existingMeta = newTaskMeta[taskId] || {};
+        const { completedAt: _removed, ...metaWithoutDate } = existingMeta;
+        const taskActivityLog = metaWithoutDate.activityLog || [];
         newTaskMeta[taskId] = {
-          ...newTaskMeta[taskId],
-          completedAt: new Date().toISOString(),
+          ...metaWithoutDate,
+          activityLog: [{ id: crypto.randomUUID(), action: 'Marked incomplete', timestamp: now }, ...taskActivityLog],
         };
+      } else {
+        // Complete — also clear blocked/in-progress status so it leaves those columns
+        const existingMeta = newTaskMeta[taskId] || {};
+        const currentStatus = existingMeta.status;
+        const taskActivityLog = existingMeta.activityLog || [];
+        newTaskMeta[taskId] = {
+          ...existingMeta,
+          completedAt: now,
+          // Auto-clear active statuses — completed tasks don't stay blocked/in-progress
+          status: (currentStatus === 'blocked' || currentStatus === 'in-progress') ? 'default' : currentStatus,
+          activityLog: [{ id: crypto.randomUUID(), action: 'Marked complete', timestamp: now }, ...taskActivityLog],
+        };
+        newCompletedIds = [...prev.completedIds, taskId];
       }
 
-      const newState = { ...prev, completedIds: newCompletedIds, taskMeta: newTaskMeta };
+      // Append to global activity log
+      const globalEntry: import('@/types').ActivityEntry = {
+        id: crypto.randomUUID(),
+        type: isCompleted ? 'task_uncomplete' : 'task_complete',
+        taskId,
+        label: isCompleted ? 'Task uncompleted' : 'Task completed',
+        section: '',
+        timestamp: now,
+      };
+      const newActivityLog = [globalEntry, ...(prev.activityLog || [])].slice(0, 200);
+
+      const newState = { ...prev, completedIds: newCompletedIds, taskMeta: newTaskMeta, activityLog: newActivityLog };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -171,14 +203,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setTaskStatus = useCallback((taskId: number, status: TaskStatus) => {
     setState(prev => {
+      const now = new Date().toISOString();
+      const existingMeta = prev.taskMeta[taskId] || {};
+      const taskActivityLog = existingMeta.activityLog || [];
       const newTaskMeta = {
         ...prev.taskMeta,
         [taskId]: {
-          ...prev.taskMeta[taskId],
+          ...existingMeta,
           status,
+          activityLog: [{ id: crypto.randomUUID(), action: `Status → ${status}`, timestamp: now }, ...taskActivityLog],
         },
       };
-      const newState = { ...prev, taskMeta: newTaskMeta };
+      // Append to global activity log
+      const globalEntry: import('@/types').ActivityEntry = {
+        id: crypto.randomUUID(),
+        type: 'task_status',
+        taskId,
+        label: `Status set to ${status}`,
+        section: '',
+        timestamp: now,
+        newValue: status,
+      };
+      const newActivityLog = [globalEntry, ...(prev.activityLog || [])].slice(0, 200);
+      const newState = { ...prev, taskMeta: newTaskMeta, activityLog: newActivityLog };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -187,14 +234,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setTaskNote = useCallback((taskId: number, note: string) => {
     setState(prev => {
+      const now = new Date().toISOString();
+      const existingMeta = prev.taskMeta[taskId] || {};
+      const taskActivityLog = existingMeta.activityLog || [];
       const newTaskMeta = {
         ...prev.taskMeta,
         [taskId]: {
-          ...prev.taskMeta[taskId],
+          ...existingMeta,
           note,
+          activityLog: note
+            ? [{ id: crypto.randomUUID(), action: 'Note updated', timestamp: now }, ...taskActivityLog]
+            : taskActivityLog,
         },
       };
-      const newState = { ...prev, taskMeta: newTaskMeta };
+      // Append to global activity log only if note is non-empty
+      const newActivityLog = note
+        ? [{ id: crypto.randomUUID(), type: 'task_note' as const, taskId, label: 'Note added', section: '', timestamp: now }, ...(prev.activityLog || [])].slice(0, 200)
+        : prev.activityLog;
+      const newState = { ...prev, taskMeta: newTaskMeta, activityLog: newActivityLog };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -601,7 +658,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const setTheme = useCallback((theme: 'dark' | 'light') => {
+  const setTheme = useCallback((theme: 'light' | 'dark' | 'system') => {
     setState(prev => {
       const newState = {
         ...prev,
@@ -613,6 +670,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       };
       saveState(newState);
       void syncRemoteState(newState);
+      
+      // Apply theme to HTML element
+      if (typeof window !== 'undefined') {
+        const root = document.documentElement;
+        if (theme === 'system') {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          root.classList.toggle('dark-theme', prefersDark);
+        } else {
+          root.classList.toggle('dark-theme', theme === 'dark');
+        }
+      }
+      
       return newState;
     });
   }, [syncRemoteState]);

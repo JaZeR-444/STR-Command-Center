@@ -2,19 +2,18 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useApp } from '@/lib/context';
-import { 
-  getBlockedTasks, 
-  getInProgressTasks, 
+import {
+  getBlockedTasks,
+  getInProgressTasks,
   getIncompletePreListingTasks,
   isTaskCompleted,
   getTaskStatus,
+  getRecentlyCompletedInHours,
 } from '@/lib/selectors';
-import { 
-  buildDependencyGraph, 
-  topologicalSort, 
+import {
+  buildDependencyGraph,
+  topologicalSort,
   getHighLeverageTasks,
-  getAvailableTasks,
-  getBlockedByDependencies,
 } from '@/lib/dependencies';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,14 +22,14 @@ import type { Task } from '@/types';
 import { TaskModal } from '../roadmap/task-modal';
 import { useSwipe } from '@/hooks/use-swipe';
 
-function ActionCard({ 
-  task, 
-  variant, 
-  onClick, 
-  onToggle 
-}: { 
-  task: Task; 
-  variant: 'blocked' | 'in-progress' | 'urgent'; 
+function ActionCard({
+  task,
+  variant,
+  onClick,
+  onToggle
+}: {
+  task: Task;
+  variant: 'blocked' | 'in-progress' | 'urgent' | 'done-today';
   onClick: () => void;
   onToggle: () => void;
 }) {
@@ -39,7 +38,6 @@ function ActionCard({
   const status = getTaskStatus(state, task.id);
   const [swiped, setSwiped] = useState(false);
 
-  // iOS-style simple swipe hook
   const { onTouchStart, onTouchMove, onTouchEnd } = useSwipe({
     threshold: 60,
     onSwipeLeft: () => {
@@ -55,6 +53,7 @@ function ActionCard({
     blocked: 'border-l-4 border-l-red-500 bg-zinc-900 border-zinc-800 hover:border-red-500/50',
     'in-progress': 'border-l-4 border-l-amber-500 bg-zinc-900 border-zinc-800 hover:border-amber-500/50',
     urgent: 'border-l-4 border-l-blue-500 bg-zinc-900 border-zinc-800 hover:border-blue-500/50',
+    'done-today': 'border-l-4 border-l-emerald-500 bg-emerald-500/5 border-zinc-800/50 opacity-75',
   };
 
   return (
@@ -67,7 +66,7 @@ function ActionCard({
       className={cn(
         'group flex flex-col p-4 border rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer select-none active:scale-[0.98]',
         variantStyles[variant],
-        isCompleted && 'opacity-50'
+        isCompleted && variant !== 'done-today' && 'opacity-50'
       )}
     >
       <div className="flex gap-3">
@@ -85,10 +84,15 @@ function ActionCard({
             <Badge variant="timing" timing={task.timing}>
               {task.timing}
             </Badge>
-            {status !== 'default' && (
+            {status !== 'default' && variant !== 'done-today' && (
               <Badge variant="status" status={status}>
                 {status.replace('-', ' ')}
               </Badge>
+            )}
+            {variant === 'done-today' && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-500/15 text-emerald-400 rounded-full uppercase tracking-wider">
+                Done ✓
+              </span>
             )}
             <span className="text-[10px] text-zinc-500 font-medium truncate max-w-[120px] ml-auto">
               {task.section.replace(' Master Checklist', '')}
@@ -106,7 +110,6 @@ export default function FocusPage() {
   const [zenMode, setZenMode] = useState(false);
 
   useEffect(() => {
-    // ESC key closes zen mode
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && zenMode && !selectedTask) {
         setZenMode(false);
@@ -118,7 +121,8 @@ export default function FocusPage() {
 
   const blockedTasks = useMemo(() => isLoaded ? getBlockedTasks(state) : [], [state, isLoaded]);
   const inProgressTasks = useMemo(() => isLoaded ? getInProgressTasks(state) : [], [state, isLoaded]);
-  
+  const completedToday = useMemo(() => isLoaded ? getRecentlyCompletedInHours(state, 24) : [], [state, isLoaded]);
+
   // Build dependency graph
   const dependencyGraph = useMemo(() => {
     if (!isLoaded) return null;
@@ -129,23 +133,22 @@ export default function FocusPage() {
     ];
     return buildDependencyGraph(allTasks, new Set(state.completedIds), state.taskMeta);
   }, [state, isLoaded, blockedTasks, inProgressTasks]);
-  
+
   // Sort tasks by dependencies (topological sort)
   const urgentPreListing = useMemo(() => {
     if (!isLoaded || !dependencyGraph) return [];
-    
+
     const preListing = getIncompletePreListingTasks(state)
       .filter(t => {
         const s = state.taskMeta[t.id]?.status;
         return s !== 'blocked' && s !== 'in-progress';
       });
-    
-    // Apply topological sort to show dependency-safe order
+
     const sorted = topologicalSort(preListing, dependencyGraph, new Set(state.completedIds));
     return sorted.slice(0, 15);
   }, [state, isLoaded, dependencyGraph]);
-  
-  // Get high-leverage tasks (completing them unblocks many others)
+
+  // Get high-leverage tasks
   const highLeverageTasks = useMemo(() => {
     if (!isLoaded || !dependencyGraph) return [];
     const taskIds = getHighLeverageTasks(dependencyGraph, new Set(state.completedIds), 3);
@@ -161,13 +164,13 @@ export default function FocusPage() {
     );
   }
 
-  const wrapperClasses = zenMode 
+  const wrapperClasses = zenMode
     ? "fixed inset-0 z-[100] bg-black overflow-y-auto overflow-x-hidden p-6 lg:p-12 animate-in fade-in duration-300"
     : "h-full w-full p-6 lg:p-8 flex flex-col";
 
   return (
     <div className={wrapperClasses}>
-      
+
       {/* Action Center Header */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 shrink-0">
         <div>
@@ -182,11 +185,11 @@ export default function FocusPage() {
           </p>
         </div>
 
-        <button 
+        <button
           onClick={() => setZenMode(!zenMode)}
           className={cn(
             "flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all",
-            zenMode 
+            zenMode
               ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white"
               : "bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 shadow-inner"
           )}
@@ -204,14 +207,13 @@ export default function FocusPage() {
       {zenMode ? (
         <div className="flex-1 flex items-center justify-center">
           {(() => {
-            // Get first incomplete task from priority order: blocked → in-progress → urgent
             const allFocusTasks = [
               ...blockedTasks,
               ...inProgressTasks,
               ...urgentPreListing
             ];
             const currentTask = allFocusTasks.find(t => !isTaskCompleted(state, t.id));
-            
+
             if (!currentTask) {
               return (
                 <div className="text-center max-w-2xl">
@@ -234,27 +236,24 @@ export default function FocusPage() {
 
             const remainingCount = allFocusTasks.filter(t => !isTaskCompleted(state, t.id)).length;
             const taskStatus = getTaskStatus(state, currentTask.id);
-            
+
             return (
               <div className="w-full max-w-4xl mx-auto">
-                {/* Progress indicator */}
                 <div className="mb-8 text-center">
                   <p className="text-sm text-zinc-500 uppercase tracking-widest font-bold mb-2">
                     {remainingCount} task{remainingCount !== 1 ? 's' : ''} remaining
                   </p>
                   <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-500"
-                      style={{ 
-                        width: `${((allFocusTasks.length - remainingCount) / allFocusTasks.length) * 100}%` 
+                      style={{
+                        width: `${((allFocusTasks.length - remainingCount) / allFocusTasks.length) * 100}%`
                       }}
                     />
                   </div>
                 </div>
 
-                {/* Main task card */}
                 <div className="glass rounded-3xl border-2 border-zinc-800 p-12 shadow-2xl">
-                  {/* Task type badge */}
                   <div className="flex items-center gap-3 mb-6">
                     {taskStatus === 'blocked' && (
                       <span className="px-3 py-1 bg-red-500/20 text-red-400 text-xs font-bold uppercase tracking-wider rounded-full border border-red-500/30">
@@ -273,12 +272,10 @@ export default function FocusPage() {
                     )}
                   </div>
 
-                  {/* Task title */}
                   <h2 className="text-5xl font-display font-black text-white leading-tight mb-6">
                     {currentTask.task}
                   </h2>
 
-                  {/* Task metadata */}
                   <div className="flex items-center gap-4 mb-8 text-zinc-500">
                     <span className="text-sm font-medium">
                       {currentTask.section.replace(' Master Checklist', '')}
@@ -289,35 +286,27 @@ export default function FocusPage() {
                     </span>
                   </div>
 
-                  {/* Description if exists */}
                   {currentTask.description && (
                     <p className="text-xl text-zinc-400 mb-8 leading-relaxed">
                       {currentTask.description}
                     </p>
                   )}
 
-                  {/* Action buttons */}
                   <div className="flex items-center gap-4 mt-12">
                     <button
-                      onClick={() => {
-                        toggleTask(currentTask.id);
-                        // Auto-advance to next task after brief delay
-                        setTimeout(() => {
-                          // Component will re-render and show next task
-                        }, 300);
-                      }}
+                      onClick={() => toggleTask(currentTask.id)}
                       className="flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
                     >
                       ✓ Complete
                     </button>
-                    
+
                     <button
                       onClick={() => setSelectedTask(currentTask)}
                       className="px-8 py-6 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white font-bold text-lg rounded-2xl transition-colors duration-200"
                     >
                       📝 Edit
                     </button>
-                    
+
                     <button
                       onClick={() => setZenMode(false)}
                       className="px-8 py-6 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-400 font-bold text-lg rounded-2xl transition-colors duration-200"
@@ -326,10 +315,9 @@ export default function FocusPage() {
                     </button>
                   </div>
 
-                  {/* Keyboard hint */}
                   <div className="mt-8 text-center">
                     <p className="text-xs text-zinc-600 uppercase tracking-widest">
-                      <span className="px-2 py-1 bg-zinc-900 rounded font-mono">Space</span> Complete · 
+                      <span className="px-2 py-1 bg-zinc-900 rounded font-mono">Space</span> Complete ·{' '}
                       <span className="px-2 py-1 bg-zinc-900 rounded font-mono ml-2">ESC</span> Exit
                     </p>
                   </div>
@@ -340,91 +328,122 @@ export default function FocusPage() {
         </div>
       ) : (
         <div className="flex-1 flex overflow-x-auto pb-4 gap-6 snap-x sidebar-scrollbar items-start">
-        {/* Kanban Board Layout */}
-        
-        {/* Column 1: Blocked */}
-        <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start">
-          <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
-            <h2 className="text-xs font-black uppercase tracking-widest text-red-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
-              Blocked
-            </h2>
-            <span className="text-[10px] font-bold text-red-400/50 bg-red-500/10 px-2 py-0.5 rounded-full">
-              {blockedTasks.length}
-            </span>
-          </div>
-          <div className="flex flex-col gap-3">
-            {blockedTasks.length === 0 ? (
-              <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">No blocked tasks</div>
-            ) : (
-              blockedTasks.map(task => (
-                <ActionCard 
-                  key={task.id} 
-                  task={task} 
-                  variant="blocked" 
-                  onClick={() => setSelectedTask(task)}
-                  onToggle={() => toggleTask(task.id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
+          {/* Kanban Board Layout */}
 
-        {/* Column 2: In Progress */}
-        <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start">
-          <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
-            <h2 className="text-xs font-black uppercase tracking-widest text-amber-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-              In Progress
-            </h2>
-            <span className="text-[10px] font-bold text-amber-400/50 bg-amber-500/10 px-2 py-0.5 rounded-full">
-              {inProgressTasks.length}
-            </span>
+          {/* Column 1: Blocked */}
+          <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start">
+            <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
+              <h2 className="text-xs font-black uppercase tracking-widest text-red-500 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
+                Blocked
+              </h2>
+              <span className="text-[10px] font-bold text-red-400/50 bg-red-500/10 px-2 py-0.5 rounded-full">
+                {blockedTasks.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {blockedTasks.length === 0 ? (
+                <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">No blocked tasks</div>
+              ) : (
+                blockedTasks.map(task => (
+                  <ActionCard
+                    key={task.id}
+                    task={task}
+                    variant="blocked"
+                    onClick={() => setSelectedTask(task)}
+                    onToggle={() => toggleTask(task.id)}
+                  />
+                ))
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-3">
-            {inProgressTasks.length === 0 ? (
-              <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">Ready for work</div>
-            ) : (
-              inProgressTasks.map(task => (
-                <ActionCard 
-                  key={task.id} 
-                  task={task} 
-                  variant="in-progress" 
-                  onClick={() => setSelectedTask(task)}
-                  onToggle={() => toggleTask(task.id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
 
-        {/* Column 3: Up Next (Critical Path) */}
-        <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start pr-4">
-          <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
-            <h2 className="text-xs font-black uppercase tracking-widest text-blue-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-500" />
-              Up Next
-            </h2>
-            <span className="text-[10px] font-bold text-blue-400/50 bg-blue-500/10 px-2 py-0.5 rounded-full">
-              {urgentPreListing.length}
-            </span>
+          {/* Column 2: In Progress */}
+          <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start">
+            <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
+              <h2 className="text-xs font-black uppercase tracking-widest text-amber-500 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-500" />
+                In Progress
+              </h2>
+              <span className="text-[10px] font-bold text-amber-400/50 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                {inProgressTasks.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {inProgressTasks.length === 0 ? (
+                <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">Ready for work</div>
+              ) : (
+                inProgressTasks.map(task => (
+                  <ActionCard
+                    key={task.id}
+                    task={task}
+                    variant="in-progress"
+                    onClick={() => setSelectedTask(task)}
+                    onToggle={() => toggleTask(task.id)}
+                  />
+                ))
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-3">
-             {urgentPreListing.length === 0 ? (
-              <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">Triage complete</div>
-            ) : (
-              urgentPreListing.map(task => (
-                <ActionCard 
-                  key={task.id} 
-                  task={task} 
-                  variant="urgent" 
-                  onClick={() => setSelectedTask(task)}
-                  onToggle={() => toggleTask(task.id)}
-                />
-              ))
-            )}
+
+          {/* Column 3: Up Next (Critical Path) */}
+          <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start">
+            <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
+              <h2 className="text-xs font-black uppercase tracking-widest text-blue-500 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                Up Next
+              </h2>
+              <span className="text-[10px] font-bold text-blue-400/50 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                {urgentPreListing.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {urgentPreListing.length === 0 ? (
+                <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">Triage complete</div>
+              ) : (
+                urgentPreListing.map(task => (
+                  <ActionCard
+                    key={task.id}
+                    task={task}
+                    variant="urgent"
+                    onClick={() => setSelectedTask(task)}
+                    onToggle={() => toggleTask(task.id)}
+                  />
+                ))
+              )}
+            </div>
           </div>
-        </div>
+
+          {/* Column 4: Completed Today */}
+          <div className="flex flex-col gap-3 min-w-[300px] w-[320px] max-w-[350px] shrink-0 snap-start pr-4">
+            <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 pb-2">
+              <h2 className="text-xs font-black uppercase tracking-widest text-emerald-500 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                Done Today
+              </h2>
+              <span className="text-[10px] font-bold text-emerald-400/50 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                {completedToday.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {completedToday.length === 0 ? (
+                <div className="border border-dashed border-zinc-800 rounded-xl p-6 text-center text-zinc-600 text-sm font-semibold">
+                  <p>No wins yet today</p>
+                  <p className="text-[10px] mt-1 text-zinc-700">Complete a task to see it here</p>
+                </div>
+              ) : (
+                completedToday.slice(0, 10).map(task => (
+                  <ActionCard
+                    key={task.id}
+                    task={task}
+                    variant="done-today"
+                    onClick={() => setSelectedTask(task)}
+                    onToggle={() => toggleTask(task.id)}
+                  />
+                ))
+              )}
+            </div>
+          </div>
 
         </div>
       )}

@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { CardSkeleton } from '@/components/ui/skeleton';
 import { CommandStation } from '@/components/dashboard/command-station';
 import { VelocityTracker } from '@/components/dashboard/velocity-tracker';
+import { OperationsOverview } from '@/components/dashboard/operations-overview';
 import { cn, getProgressColor } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -227,6 +228,9 @@ export default function DashboardPage() {
           <span className="text-[10px] text-zinc-300 font-medium uppercase tracking-[0.22em]">Live Sync Active</span>
         </div>
       </header>
+
+      {/* ── Operations Overview (shows when operational data exists) ── */}
+      <OperationsOverview state={state} />
 
       {/* ── PHASE 3: Command Station - Next Actions (HERO CARD) ── */}
       <section className="col-span-full">

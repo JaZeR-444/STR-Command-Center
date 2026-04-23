@@ -8,55 +8,130 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Warmer, friendlier background palette
-        'bg-dark': '#1a1625',
-        'bg-surface': '#2a2435',
-        'card-dark': '#2a2435',
-        'card-hover': '#3d3548',
-        'border-dark': '#453d52',
-        'border-light': '#5a5167',
+        // Core backgrounds (light theme)
+        'bg': '#F0F2F7',
+        'card': '#ffffff',
+        'sidebar': '#101828',
+        'topbar': '#ffffff',
         
-        // Extended friendly color palette
-        'warm': {
-          50: '#fef8f0',
-          100: '#fdefd9',
-          200: '#fbddb3',
-          300: '#f8c77d',
-          400: '#f5a945',
-          500: '#f28c1e',
-          600: '#e37214',
-          700: '#bd5712',
-          800: '#964517',
-          900: '#793a16',
+        // Borders
+        'border': '#E5E9F0',
+        'border-med': '#CBD5E1',
+        
+        // Text/Ink colors
+        'ink': {
+          DEFAULT: '#0D1117',
+          2: '#374151',
+          3: '#6B7280',
+          4: '#9CA3AF',
+          5: '#D1D5DB',
         },
-        'accent': {
-          50: '#f0f4fe',
-          100: '#dde6fc',
-          200: '#c2d4fa',
-          300: '#98b9f6',
-          400: '#6794f0',
-          500: '#4670ea',
-          600: '#3151de',
-          700: '#2841cd',
-          800: '#2637a6',
-          900: '#253383',
+        
+        // Status colors - Blue
+        'blue': {
+          DEFAULT: '#2563EB',
+          lt: '#EFF6FF',
+          med: '#DBEAFE',
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
         },
-        'success': {
-          50: '#f0fdf5',
-          100: '#dcfce8',
-          200: '#bbf7d1',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+        
+        // Green
+        'green': {
+          DEFAULT: '#059669',
+          lt: '#ECFDF5',
+          med: '#D1FAE5',
+          50: '#ECFDF5',
+          100: '#D1FAE5',
+          200: '#A7F3D0',
+          300: '#6EE7B7',
+          400: '#34D399',
+          500: '#10B981',
+          600: '#059669',
+          700: '#047857',
+          800: '#065F46',
+          900: '#064E3B',
+        },
+        
+        // Amber
+        'amber': {
+          DEFAULT: '#D97706',
+          lt: '#FFFBEB',
+          med: '#FEF3C7',
+          50: '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FDE68A',
+          300: '#FCD34D',
+          400: '#FBBF24',
+          500: '#F59E0B',
+          600: '#D97706',
+          700: '#B45309',
+          800: '#92400E',
+          900: '#78350F',
+        },
+        
+        // Red
+        'red': {
+          DEFAULT: '#DC2626',
+          lt: '#FEF2F2',
+          med: '#FEE2E2',
+          50: '#FEF2F2',
+          100: '#FEE2E2',
+          200: '#FECACA',
+          300: '#FCA5A5',
+          400: '#F87171',
+          500: '#EF4444',
+          600: '#DC2626',
+          700: '#B91C1C',
+          800: '#991B1B',
+          900: '#7F1D1D',
+        },
+        
+        // Purple
+        'purple': {
+          DEFAULT: '#7C3AED',
+          lt: '#F5F3FF',
+          med: '#EDE9FE',
+          50: '#F5F3FF',
+          100: '#EDE9FE',
+          200: '#DDD6FE',
+          300: '#C4B5FD',
+          400: '#A78BFA',
+          500: '#8B5CF6',
+          600: '#7C3AED',
+          700: '#6D28D9',
+          800: '#5B21B6',
+          900: '#4C1D95',
+        },
+        
+        // Property colors
+        'property': {
+          1: '#F59E0B',
+          '1-lt': '#FFFBEB',
+          '1-dark': '#92400E',
+          2: '#3B82F6',
+          '2-lt': '#EFF6FF',
+          '2-dark': '#1E40AF',
+          3: '#8B5CF6',
+          '3-lt': '#F5F3FF',
+          '3-dark': '#5B21B6',
+          4: '#10B981',
+          '4-lt': '#ECFDF5',
+          '4-dark': '#065F46',
         },
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['var(--font-display)', 'sans-serif'],
+        serif: ['var(--font-serif)', 'serif'],
         mono: ['var(--font-mono)', 'monospace'],
       },
       fontSize: {

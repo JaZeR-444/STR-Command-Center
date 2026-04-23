@@ -7,48 +7,48 @@ import { useApp } from '@/lib/context';
 import { getBlockedTasks, getOverallStats } from '@/lib/selectors';
 
 const navItems = [
-  { 
-    href: '/', 
-    label: 'Dash',
+  {
+    href: '/briefing',
+    label: 'Today',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
     )
   },
-  { 
-    href: '/roadmap', 
-    label: 'Roadmap',
+  {
+    href: '/operations',
+    label: 'Tasks',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
       </svg>
     )
   },
-  { 
-    href: '/documents', 
-    label: 'Docs',
+  {
+    href: '/reservations',
+    label: 'Stays',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
     )
   },
-  { 
-    href: '/focus', 
-    label: 'Focus',
+  {
+    href: '/inbox',
+    label: 'Inbox',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
       </svg>
     )
   },
-  { 
-    href: '/pipeline', 
-    label: 'Pipeline',
+  {
+    href: '/',
+    label: 'More',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     )
   },
@@ -124,8 +124,9 @@ export function MobileNav() {
       <nav className="lg:hidden fixed bottom-0 left-0 z-50 w-full h-[76px] glass-heavy border-t border-white/10 flex items-center justify-around pb-safe safe-area-bottom">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
-          const isFocus = item.label === 'Focus';
-          
+          const isInbox = item.label === 'Inbox';
+          const unreadCount = isInbox ? state.inboxThreads.filter(t => t.unread > 0).length : 0;
+
           return (
             <Link
               key={item.href}
@@ -135,23 +136,23 @@ export function MobileNav() {
               {isActive && (
                 <div className="absolute top-0 w-1/2 h-[3px] bg-[#d9b36c] rounded-b-full shadow-[0_0_10px_rgba(217,179,108,0.5)]" />
               )}
-              
+
               <div className={cn(
                 "relative flex items-center justify-center transition-transform active:scale-90",
-                isActive ? (isFocus ? "text-red-300" : "text-[#f1d39a]") : "text-zinc-500"
+                isActive ? "text-[#f1d39a]" : "text-zinc-500"
               )}>
                 {item.icon}
-                
-                {isFocus && blockedTasks.length > 0 && (
+
+                {isInbox && unreadCount > 0 && (
                   <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-zinc-950">
-                    {blockedTasks.length}
+                    {unreadCount}
                   </span>
                 )}
               </div>
-              
+
               <span className={cn(
                 "text-[10px] uppercase font-bold tracking-[0.2em]",
-                isActive ? (isFocus ? "text-red-300" : "text-zinc-100") : "text-zinc-500"
+                isActive ? "text-zinc-100" : "text-zinc-500"
               )}>
                 {item.label}
               </span>

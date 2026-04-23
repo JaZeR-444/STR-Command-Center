@@ -460,29 +460,6 @@ function DocumentsContent() {
     };
   }, [sectionDocs, state.completedDocIds]);
 
-  const masterFileDirectory = useMemo(() => {
-    const sections = documentSections
-      .map(section => {
-        const docsWithFiles = documentationData
-          .filter(doc => doc.section === section)
-          .map(doc => ({
-            doc,
-            attachments: state.docMeta[doc.id]?.attachments || [],
-          }))
-          .filter(item => item.attachments.length > 0);
-
-        return {
-          section,
-          docs: docsWithFiles,
-          fileCount: docsWithFiles.reduce((sum, item) => sum + item.attachments.length, 0),
-        };
-      })
-      .filter(section => section.fileCount > 0);
-
-    const totalFiles = sections.reduce((sum, section) => sum + section.fileCount, 0);
-    return { sections, totalFiles };
-  }, [state.docMeta]);
-
   // Auto-collapse logic when switching sections
   useEffect(() => {
     const groups = filteredDocs.reduce((acc, doc) => {
@@ -589,52 +566,6 @@ function DocumentsContent() {
             <p className="text-xs text-zinc-600 mt-2">
               {currentSectionStats.completed} of {currentSectionStats.total} documents complete
             </p>
-          </div>
-
-          <div className="mb-5 p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-zinc-200">Master File Directory</h3>
-              <span className="text-xs text-zinc-500">
-                {masterFileDirectory.totalFiles} file{masterFileDirectory.totalFiles === 1 ? '' : 's'}
-              </span>
-            </div>
-            {masterFileDirectory.sections.length === 0 ? (
-              <p className="text-xs text-zinc-600">
-                No uploads yet. Files added in a tracker item will appear here automatically.
-              </p>
-            ) : (
-              <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
-                {masterFileDirectory.sections.map(section => (
-                  <div key={section.section} className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-2.5">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs font-semibold text-zinc-300 truncate">
-                        {getDocShortSectionName(section.section)}
-                      </p>
-                      <span className="text-[10px] text-zinc-500">
-                        {section.fileCount} file{section.fileCount === 1 ? '' : 's'}
-                      </span>
-                    </div>
-                    <div className="space-y-1.5">
-                      {section.docs.map(({ doc, attachments }) => (
-                        <button
-                          key={doc.id}
-                          onClick={() => {
-                            setSelectedSection(doc.section);
-                            setSelectedDoc(doc);
-                          }}
-                          className="w-full text-left p-2 rounded-md border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 transition-colors"
-                        >
-                          <p className="text-[11px] font-semibold text-zinc-200 line-clamp-1">{doc.artifact}</p>
-                          <p className="text-[10px] text-zinc-500 line-clamp-1">
-                            {attachments.length} file{attachments.length === 1 ? '' : 's'}: {attachments.map(a => a.name).join(', ')}
-                          </p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Filter bar ── */}
