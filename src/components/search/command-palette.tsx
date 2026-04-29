@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context';
-import { allTasks } from '@/data/roadmap';
 import { documentationData } from '@/data/documents';
 import { cn } from '@/lib/utils';
 
@@ -23,9 +22,6 @@ type SearchResult = {
 
 const pages: SearchResult[] = [
   { id: 'dashboard', type: 'page', title: 'Dashboard', href: '/', icon: '📊' },
-  { id: 'roadmap', type: 'page', title: 'Roadmap', href: '/roadmap', icon: '🗺️' },
-  { id: 'documents', type: 'page', title: 'Documents', href: '/documents', icon: '📄' },
-  { id: 'focus', type: 'page', title: 'Focus Mode', href: '/focus', icon: '⚡' },
   { id: 'settings', type: 'page', title: 'Settings', href: '/settings', icon: '⚙️' },
 ];
 
@@ -40,18 +36,6 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const allResults = useMemo(() => {
     const results: SearchResult[] = [...pages];
 
-    // Add tasks (limit to first 100 for performance)
-    allTasks.slice(0, 100).forEach((task) => {
-      results.push({
-        id: `task-${task.id}`,
-        type: 'task',
-        title: task.task,
-        subtitle: `${task.section} · ${task.category}`,
-        href: `/roadmap?section=${encodeURIComponent(task.section)}`,
-        icon: state.completedIds.includes(task.id) ? '✓' : '○',
-      });
-    });
-
     // Add documents
     documentationData.forEach((doc) => {
       results.push({
@@ -65,7 +49,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     });
 
     return results;
-  }, [state.completedIds, state.completedDocIds]);
+  }, [state.completedDocIds]);
 
   // Filter results
   const filteredResults = useMemo(() => {

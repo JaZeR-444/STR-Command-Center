@@ -18,7 +18,7 @@ interface FilterPreset {
 const DEFAULT_PRESETS: FilterPreset[] = [
   {
     id: 'launch-critical',
-    name: 'Launch Critical',
+    name: 'Urgent Items',
     filters: { timing: 'Pre-Listing', completion: 'incomplete' },
     icon: '🚀',
   },

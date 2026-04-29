@@ -7,7 +7,7 @@ export type TaskStatus = 'default' | 'in-progress' | 'blocked' | 'na';
 // Task priority levels
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 
-// Single roadmap task
+// Single task (legacy data structure)
 export interface Task {
   id: number;
   section: string;
@@ -110,7 +110,7 @@ export interface FileRegistryRecord {
   linkedDocIds: string[];
 }
 
-// Document/artifact types
+// Document types
 export type DocumentType = 
   | 'Strategy Doc' 
   | 'Tracker' 
@@ -127,7 +127,7 @@ export type DocumentType =
   | 'Inventory Tracker'
   | 'Research Report';
 
-// Single documentation artifact
+// Single document record (legacy structure)
 export interface DocumentArtifact {
   id: string;
   section: string;
@@ -152,7 +152,6 @@ export interface UserPreferences {
   searchHistory: string[];
   expandAllBySection: Record<string, boolean>; // Remember expand all per section
   theme: 'light' | 'dark' | 'system';
-  launchDateReminders: boolean;
   showVelocityChart: boolean;
   compactMode: boolean;
 }
@@ -187,7 +186,6 @@ export interface AppState {
   taskMeta: Record<number, TaskMeta>;
   docMeta: Record<string, DocMeta>;
   pinnedIds: number[];
-  launchDate: string;
   collapsedCategories: string[];
   documentViewMode?: 'list' | 'grid';
   activityLog: ActivityEntry[];

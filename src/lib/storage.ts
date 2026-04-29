@@ -1,7 +1,6 @@
 // Storage utilities for persisting state to localStorage
 import type { AppState, TaskMeta } from '@/types';
-import { roadmapData } from '@/data/roadmap';
-import { documentationData } from '@/data/documents';
+// Deprecated imports removed
 import {
   initialOperationsTasks,
   initialReservations,
@@ -24,7 +23,6 @@ const STORAGE_KEYS = {
   taskMeta: `${STORAGE_PREFIX}taskMeta`,
   docMeta: `${STORAGE_PREFIX}docMeta`,
   pinnedIds: `${STORAGE_PREFIX}pinnedIds`,
-  launchDate: `${STORAGE_PREFIX}launchDate`,
   collapsedCategories: `${STORAGE_PREFIX}collapsedCats`,
   updatedAt: `${STORAGE_PREFIX}updatedAt`,
   activityLog: `${STORAGE_PREFIX}activityLog`,
@@ -33,18 +31,13 @@ const STORAGE_KEYS = {
   documentViewMode: `${STORAGE_PREFIX}documentViewMode`,
 } as const;
 
-// Valid ID sets for validation
-const TASK_ID_SET = new Set(roadmapData.map(t => t.id));
-const DOC_ID_SET = new Set(documentationData.map(d => d.id));
-
-// Default empty state
+// Legacy IDs for backward compatibility (no longer validated)
 export const DEFAULT_STATE: AppState = {
   completedIds: [],
   completedDocIds: [],
   taskMeta: {},
   docMeta: {},
   pinnedIds: [],
-  launchDate: '2026-05-15',
   collapsedCategories: [],
   activityLog: [],
   undoStack: [],
@@ -55,7 +48,6 @@ export const DEFAULT_STATE: AppState = {
     searchHistory: [],
     expandAllBySection: {},
     theme: 'light',
-    launchDateReminders: true,
     showVelocityChart: true,
     compactMode: false,
   },
@@ -120,33 +112,30 @@ export function loadState(): AppState {
     const completedIds = safeJsonParse<number[]>(
       localStorage.getItem(STORAGE_KEYS.completedIds),
       []
-    ).filter(id => TASK_ID_SET.has(id));
+    );
 
     const completedDocIds = safeJsonParse<string[]>(
       localStorage.getItem(STORAGE_KEYS.completedDocIds),
       []
-    ).filter(id => DOC_ID_SET.has(id));
+    );
 
     const rawMeta = safeJsonParse<Record<string, Record<string, unknown>>>(
       localStorage.getItem(STORAGE_KEYS.taskMeta),
       {}
     );
 
-    // Normalize taskMeta - keep ALL fields for valid task IDs
     const taskMeta: Record<number, TaskMeta> = {};
     Object.entries(rawMeta).forEach(([key, value]) => {
       const taskId = Number(key);
-      if (TASK_ID_SET.has(taskId) && value && typeof value === 'object') {
-        taskMeta[taskId] = sanitizeTaskMeta(value);
+      if (value && typeof value === 'object') {
+        taskMeta[taskId] = sanitizeTaskMeta(value as Record<string, unknown>);
       }
     });
 
     const pinnedIds = safeJsonParse<number[]>(
       localStorage.getItem(STORAGE_KEYS.pinnedIds),
       []
-    ).filter(id => TASK_ID_SET.has(id));
-
-    const launchDate = localStorage.getItem(STORAGE_KEYS.launchDate) || DEFAULT_STATE.launchDate;
+    );
 
     const collapsedCategories = safeJsonParse<string[]>(
       localStorage.getItem(STORAGE_KEYS.collapsedCategories),
@@ -177,7 +166,6 @@ export function loadState(): AppState {
       taskMeta,
       docMeta,
       pinnedIds,
-      launchDate,
       collapsedCategories,
       activityLog,
       undoStack: [], // Don't persist undo stack
@@ -224,7 +212,6 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEYS.taskMeta, JSON.stringify(state.taskMeta));
     localStorage.setItem(STORAGE_KEYS.docMeta, JSON.stringify(state.docMeta));
     localStorage.setItem(STORAGE_KEYS.pinnedIds, JSON.stringify(state.pinnedIds));
-    localStorage.setItem(STORAGE_KEYS.launchDate, state.launchDate);
     localStorage.setItem(STORAGE_KEYS.collapsedCategories, JSON.stringify(state.collapsedCategories));
     localStorage.setItem(STORAGE_KEYS.activityLog, JSON.stringify(state.activityLog.slice(0, 200)));
     localStorage.setItem(STORAGE_KEYS.preferences, JSON.stringify(state.preferences));
@@ -280,11 +267,11 @@ export function importState(jsonString: string): { success: boolean; state?: App
 
     // Validate and normalize imported data
     const completedIds = Array.isArray(parsed.completedIds)
-      ? parsed.completedIds.filter((id: unknown) => typeof id === 'number' && TASK_ID_SET.has(id))
+      ? parsed.completedIds.filter((id: unknown) => typeof id === 'number')
       : [];
 
     const completedDocIds = Array.isArray(parsed.completedDocIds)
-      ? parsed.completedDocIds.filter((id: unknown) => typeof id === 'string' && DOC_ID_SET.has(id))
+      ? parsed.completedDocIds.filter((id: unknown) => typeof id === 'string')
       : [];
 
     // Preserve ALL TaskMeta fields on import
@@ -292,19 +279,15 @@ export function importState(jsonString: string): { success: boolean; state?: App
     if (parsed.taskMeta && typeof parsed.taskMeta === 'object') {
       Object.entries(parsed.taskMeta).forEach(([key, value]) => {
         const taskId = Number(key);
-        if (TASK_ID_SET.has(taskId) && value && typeof value === 'object') {
+        if (value && typeof value === 'object') {
           taskMeta[taskId] = sanitizeTaskMeta(value as Record<string, unknown>);
         }
       });
     }
 
     const pinnedIds = Array.isArray(parsed.pinnedIds)
-      ? parsed.pinnedIds.filter((id: unknown) => typeof id === 'number' && TASK_ID_SET.has(id))
+      ? parsed.pinnedIds.filter((id: unknown) => typeof id === 'number')
       : [];
-
-    const launchDate = typeof parsed.launchDate === 'string' && parsed.launchDate
-      ? parsed.launchDate
-      : DEFAULT_STATE.launchDate;
 
     const collapsedCategories = Array.isArray(parsed.collapsedCategories)
       ? parsed.collapsedCategories.filter((cat: unknown) => typeof cat === 'string')
@@ -327,7 +310,6 @@ export function importState(jsonString: string): { success: boolean; state?: App
         taskMeta,
         docMeta: typeof parsed.docMeta === 'object' && parsed.docMeta ? parsed.docMeta : {},
         pinnedIds,
-        launchDate,
         collapsedCategories,
         activityLog,
         undoStack: [],

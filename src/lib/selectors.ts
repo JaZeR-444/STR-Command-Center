@@ -1,294 +1,345 @@
-// Selectors and computed values from state
-import type { AppState, SectionSummary, Task, TaskStatus } from '@/types';
-import { roadmapData, sections, tasksBySection, getShortSectionName, getSectionNumber } from '@/data/roadmap';
-import { documentationData, documentsBySection, documentSections } from '@/data/documents';
+// Operational selectors — computed values from state
+// Replaces legacy project-centric selectors (launch readiness, section progress, etc.)
 
-// Get overall completion stats
-export function getOverallStats(state: AppState) {
-  const total = roadmapData.length;
-  const completed = state.completedIds.length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+import type { AppState, Reservation, OperationsTask, MaintenanceIssue, InboxThread } from '@/types';
 
-  return { total, completed, percentage };
+/* ─── Date Helpers ─────────────────────────────────── */
+
+function todayStr(): string {
+  return new Date().toISOString().split('T')[0];
 }
 
-// Get pre-listing readiness (critical for launch)
-export function getPreListingStats(state: AppState) {
-  const preListingTasks = roadmapData.filter(t => t.timing === 'Pre-Listing');
-  const total = preListingTasks.length;
-  const completed = preListingTasks.filter(t => state.completedIds.includes(t.id)).length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-  const remaining = total - completed;
-
-  return { total, completed, percentage, remaining };
+function daysFromNow(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
 }
 
-// Get documentation stats
-export function getDocumentationStats(state: AppState) {
-  const total = documentationData.length;
-  const completed = state.completedDocIds.length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+/* ─── Reservation Selectors ────────────────────────── */
 
-  return { total, completed, percentage };
+/** Reservations checking in today */
+export function getTodayCheckIns(state: AppState): Reservation[] {
+  const today = todayStr();
+  return state.reservations.filter(r => r.checkIn.split('T')[0] === today);
 }
 
-// Get combined launch health score (tasks 70% weight, docs 30% weight)
-export function getCombinedLaunchHealth(state: AppState): {
-  score: number;
-  taskPct: number;
-  docPct: number;
-  grade: 'A' | 'B' | 'C' | 'D' | 'F';
-} {
-  const { percentage: taskPct } = getOverallStats(state);
-  const { percentage: docPct } = getDocumentationStats(state);
-  const score = Math.round(taskPct * 0.7 + docPct * 0.3);
-  const grade = score >= 90 ? 'A' : score >= 75 ? 'B' : score >= 60 ? 'C' : score >= 40 ? 'D' : 'F';
-  return { score, taskPct, docPct, grade };
+/** Reservations checking out today */
+export function getTodayCheckOuts(state: AppState): Reservation[] {
+  const today = todayStr();
+  return state.reservations.filter(r => r.checkOut.split('T')[0] === today);
 }
 
-// Get the most recent task completion timestamp
-export function getLastActivityTime(state: AppState): string | null {
-  let latest: string | null = null;
-  Object.values(state.taskMeta).forEach(meta => {
-    if (meta.completedAt) {
-      if (!latest || meta.completedAt > latest) latest = meta.completedAt;
-    }
-    // Also check task-level activity log
-    if (meta.activityLog && meta.activityLog.length > 0) {
-      const ts = meta.activityLog[0].timestamp; // prepended newest-first
-      if (!latest || ts > latest) latest = ts;
-    }
-  });
-  // Also check the global activity log
-  if (state.activityLog && state.activityLog.length > 0) {
-    const ts: string = state.activityLog[0].timestamp;
-    if (!latest) {
-      latest = ts;
-    } else {
-      if (ts > (latest as string)) latest = ts;
-    }
-  }
-  return latest;
+/** Reservations within the next N days */
+export function getUpcomingReservations(state: AppState, days: number = 7): Reservation[] {
+  const today = todayStr();
+  const end = daysFromNow(days);
+  return state.reservations
+    .filter(r => r.checkIn >= today && r.checkIn <= end && r.status !== 'cancelled')
+    .sort((a, b) => a.checkIn.localeCompare(b.checkIn));
 }
 
-// Get section summaries for dashboard
-export function getSectionSummaries(state: AppState): SectionSummary[] {
-  return sections.map(section => {
-    const tasks = tasksBySection[section] || [];
-    const total = tasks.length;
-    const completed = tasks.filter(t => state.completedIds.includes(t.id)).length;
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-    const preListingTasks = tasks.filter(t => t.timing === 'Pre-Listing');
-    const preListingCompleted = preListingTasks.filter(t => state.completedIds.includes(t.id)).length;
-
-    const blockedCount = tasks.filter(t => state.taskMeta[t.id]?.status === 'blocked').length;
-    const inProgressCount = tasks.filter(t => state.taskMeta[t.id]?.status === 'in-progress').length;
-
-    return {
-      name: section,
-      shortName: getShortSectionName(section),
-      total,
-      completed,
-      percentage,
-      preListingTotal: preListingTasks.length,
-      preListingCompleted,
-      blockedCount,
-      inProgressCount,
-    };
-  });
+/** Currently active (checked-in) reservations */
+export function getActiveReservations(state: AppState): Reservation[] {
+  return state.reservations.filter(r => r.status === 'checked_in');
 }
 
-// Get document section summaries
-export function getDocSectionSummaries(state: AppState) {
-  return documentSections.map(section => {
-    const docs = documentsBySection[section] || [];
-    const total = docs.length;
-    const completed = docs.filter(d => state.completedDocIds.includes(d.id)).length;
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+/** Is any guest currently occupying the property? */
+export function getOccupancyStatus(state: AppState): 'occupied' | 'vacant' | 'turnover' {
+  const today = todayStr();
+  const hasCheckedIn = state.reservations.some(r => r.status === 'checked_in');
+  if (hasCheckedIn) return 'occupied';
 
-    return {
-      name: section,
-      total,
-      completed,
-      percentage,
-    };
-  });
+  const hasTurnoverToday = state.operationsTasks.some(
+    t => t.type === 'cleaning' && t.scheduledDate === today && t.status !== 'completed'
+  );
+  if (hasTurnoverToday) return 'turnover';
+
+  return 'vacant';
 }
 
-// Get section summary with doc coverage for dashboard
-export function getSectionSummariesWithDocs(state: AppState): (SectionSummary & { docPct: number; docCompleted: number; docTotal: number })[] {
-  const base = getSectionSummaries(state);
-  return base.map(s => {
-    // Match document section by prefix (sections share numbering)
-    const sectionNum = getSectionNumber(s.name);
-    const matchedDocSection = documentSections.find(ds => {
-      const dsNum = ds.match(/^\d+/)?.[0] || '';
-      return dsNum === sectionNum;
+/* ─── Occupancy Metrics ────────────────────────────── */
+
+/** Calculate occupancy % for the next N days */
+export function getOccupancyPacing(state: AppState, days: number): { booked: number; total: number; pct: number } {
+  const today = todayStr();
+  const end = daysFromNow(days);
+  const totalNights = days;
+
+  // Count booked nights
+  let bookedNights = 0;
+  const dateSet = new Set<string>();
+
+  state.reservations
+    .filter(r => r.status !== 'cancelled')
+    .forEach(r => {
+      const checkIn = r.checkIn.split('T')[0];
+      const checkOut = r.checkOut.split('T')[0];
+
+      // Iterate each night of this reservation
+      const ci = new Date(checkIn);
+      const co = new Date(checkOut);
+      for (let d = new Date(ci); d < co; d.setDate(d.getDate() + 1)) {
+        const ds = d.toISOString().split('T')[0];
+        if (ds >= today && ds < end && !dateSet.has(ds)) {
+          dateSet.add(ds);
+          bookedNights++;
+        }
+      }
     });
-    const docs = matchedDocSection ? (documentsBySection[matchedDocSection] || []) : [];
-    const docCompleted = docs.filter(d => state.completedDocIds.includes(d.id)).length;
-    const docTotal = docs.length;
-    const docPct = docTotal > 0 ? Math.round((docCompleted / docTotal) * 100) : 0;
-    return { ...s, docPct, docCompleted, docTotal };
-  });
+
+  return {
+    booked: bookedNights,
+    total: totalNights,
+    pct: totalNights > 0 ? Math.round((bookedNights / totalNights) * 100) : 0,
+  };
 }
 
-// Get blocked tasks (for focus view)
-export function getBlockedTasks(state: AppState): Task[] {
-  return roadmapData.filter(t =>
-    state.taskMeta[t.id]?.status === 'blocked' &&
-    !state.completedIds.includes(t.id)
-  );
+/** Count empty (unbooked) nights in next N days */
+export function getEmptyNights(state: AppState, days: number = 7): number {
+  const occ = getOccupancyPacing(state, days);
+  return occ.total - occ.booked;
 }
 
-// Get in-progress tasks (for focus view)
-export function getInProgressTasks(state: AppState): Task[] {
-  return roadmapData.filter(t =>
-    state.taskMeta[t.id]?.status === 'in-progress' &&
-    !state.completedIds.includes(t.id)
-  );
+/* ─── Revenue Metrics ──────────────────────────────── */
+
+export interface RevenueSnapshot {
+  mtdRevenue: number;
+  mtdNights: number;
+  adr: number;        // Average Daily Rate
+  revPAN: number;     // Revenue per Available Night
+  prevMonthRevenue: number;
+  changePercent: number;
 }
 
-// Get incomplete pre-listing tasks (critical for launch)
-export function getIncompletePreListingTasks(state: AppState): Task[] {
-  return roadmapData.filter(t =>
-    t.timing === 'Pre-Listing' &&
-    !state.completedIds.includes(t.id)
-  );
-}
-
-// Get tasks completed in the last N hours
-export function getRecentlyCompletedInHours(state: AppState, hours: number = 24): Task[] {
-  const cutoff = Date.now() - hours * 60 * 60 * 1000;
-  return roadmapData.filter(t => {
-    const completedAt = state.taskMeta[t.id]?.completedAt;
-    if (!completedAt) return false;
-    return new Date(completedAt).getTime() >= cutoff;
-  });
-}
-
-// Get recently completed tasks (for dashboard)
-export function getRecentlyCompleted(state: AppState, limit: number = 5): Task[] {
-  const tasksWithMeta = state.completedIds
-    .map(id => ({
-      task: roadmapData.find(t => t.id === id),
-      completedAt: state.taskMeta[id]?.completedAt,
-    }))
-    .filter((item): item is { task: Task; completedAt: string | undefined } => item.task !== undefined);
-
-  // Sort by completion time (most recent first)
-  tasksWithMeta.sort((a, b) => {
-    if (!a.completedAt && !b.completedAt) return 0;
-    if (!a.completedAt) return 1;
-    if (!b.completedAt) return -1;
-    return new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime();
-  });
-
-  return tasksWithMeta.slice(0, limit).map(item => item.task);
-}
-
-// Get pinned tasks
-export function getPinnedTasks(state: AppState): Task[] {
-  return state.pinnedIds
-    .map(id => roadmapData.find(t => t.id === id))
-    .filter((t): t is Task => t !== undefined);
-}
-
-// Get task status
-export function getTaskStatus(state: AppState, taskId: number): TaskStatus {
-  return state.taskMeta[taskId]?.status || 'default';
-}
-
-// Check if task is completed
-export function isTaskCompleted(state: AppState, taskId: number): boolean {
-  return state.completedIds.includes(taskId);
-}
-
-// Check if document is completed
-export function isDocCompleted(state: AppState, docId: string): boolean {
-  return state.completedDocIds.includes(docId);
-}
-
-// Days until launch
-export function getDaysUntilLaunch(launchDate: string): number {
-  const launch = new Date(launchDate);
+/** Get revenue metrics for the current month (and comparison) */
+export function getRevenueStats(state: AppState): RevenueSnapshot {
   const now = new Date();
-  const diff = launch.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const dayOfMonth = now.getDate();
+
+  // Current month reservations (overlapping with this month)
+  const mtdReservations = state.reservations.filter(r => {
+    if (r.status === 'cancelled') return false;
+    const ci = new Date(r.checkIn);
+    const co = new Date(r.checkOut);
+    const monthStart = new Date(currentYear, currentMonth, 1);
+    const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+    return ci <= monthEnd && co >= monthStart;
+  });
+
+  const mtdRevenue = mtdReservations.reduce((sum, r) => sum + r.total, 0);
+  const mtdNights = mtdReservations.reduce((sum, r) => sum + r.totalNights, 0);
+  const adr = mtdNights > 0 ? Math.round(mtdRevenue / mtdNights) : 0;
+  const revPAN = daysInMonth > 0 ? Math.round(mtdRevenue / dayOfMonth) : 0;
+
+  // Previous month for comparison
+  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  const prevMonthRevenue = state.reservations
+    .filter(r => {
+      if (r.status === 'cancelled') return false;
+      const ci = new Date(r.checkIn);
+      return ci.getMonth() === prevMonth && ci.getFullYear() === prevYear;
+    })
+    .reduce((sum, r) => sum + r.total, 0);
+
+  const changePercent = prevMonthRevenue > 0
+    ? Math.round(((mtdRevenue - prevMonthRevenue) / prevMonthRevenue) * 100)
+    : 0;
+
+  return { mtdRevenue, mtdNights, adr, revPAN, prevMonthRevenue, changePercent };
 }
 
-// Get critical path tasks — prioritized by: blocked > in-progress > pre-listing incomplete
-// Tasks that appear first are those the user should act on NOW
-export function getCriticalPathTasks(state: AppState, limit: number = 3): Task[] {
-  const blocked = getBlockedTasks(state);
-  const inProgress = getInProgressTasks(state);
-  const preListingIncomplete = getIncompletePreListingTasks(state)
-    .filter(t => {
-      const status = state.taskMeta[t.id]?.status;
-      return status !== 'blocked' && status !== 'in-progress';
+/* ─── Operations Selectors ─────────────────────────── */
+
+/** Active turnovers (queued or in-progress cleaning tasks) */
+export function getActiveTurnovers(state: AppState): OperationsTask[] {
+  return state.operationsTasks.filter(
+    t => t.type === 'cleaning' && (t.status === 'queued' || t.status === 'in_progress')
+  );
+}
+
+/** Today's operations tasks */
+export function getTodayTasks(state: AppState): OperationsTask[] {
+  const today = todayStr();
+  return state.operationsTasks.filter(t => t.scheduledDate === today && t.status !== 'completed');
+}
+
+/** Overdue operations tasks */
+export function getOverdueTasks(state: AppState): OperationsTask[] {
+  const today = todayStr();
+  return state.operationsTasks.filter(
+    t => t.scheduledDate < today && t.status !== 'completed' && t.status !== 'cancelled'
+  );
+}
+
+/** Priority operations tasks (P0 or P1 that aren't completed) */
+export function getPriorityTasks(state: AppState): OperationsTask[] {
+  return state.operationsTasks
+    .filter(t => (t.priority === 'p0' || t.priority === 'p1') && t.status !== 'completed' && t.status !== 'cancelled')
+    .sort((a, b) => {
+      const pMap = { p0: 0, p1: 1, p2: 2, p3: 3 };
+      return (pMap[a.priority] - pMap[b.priority]) || a.scheduledDate.localeCompare(b.scheduledDate);
+    });
+}
+
+/* ─── Maintenance / Issues ─────────────────────────── */
+
+/** Open maintenance issues (not resolved/closed) */
+export function getOpenIssues(state: AppState): MaintenanceIssue[] {
+  return state.maintenanceIssues.filter(
+    i => i.status !== 'resolved' && i.status !== 'closed'
+  );
+}
+
+/** Issues by priority */
+export function getIssuesByPriority(state: AppState): { urgent: number; high: number; medium: number; low: number } {
+  const open = getOpenIssues(state);
+  return {
+    urgent: open.filter(i => i.priority === 'urgent').length,
+    high: open.filter(i => i.priority === 'high').length,
+    medium: open.filter(i => i.priority === 'medium').length,
+    low: open.filter(i => i.priority === 'low').length,
+  };
+}
+
+/* ─── Inbox / Messages ─────────────────────────────── */
+
+/** Threads with unread messages */
+export function getUnreadThreads(state: AppState): InboxThread[] {
+  return state.inboxThreads.filter(t => t.unread > 0);
+}
+
+/** Total unread message count */
+export function getUnreadCount(state: AppState): number {
+  return state.inboxThreads.reduce((sum, t) => sum + t.unread, 0);
+}
+
+/** Urgent unread threads */
+export function getUrgentMessages(state: AppState): InboxThread[] {
+  return state.inboxThreads.filter(t => t.urgent && t.unread > 0);
+}
+
+/* ─── Unified Urgent Items ─────────────────────────── */
+
+export interface UrgentSummary {
+  unreadMessages: number;
+  openIssues: number;
+  overdueTasks: number;
+  emptyNightsNext7: number;
+  urgentIssues: number;
+  total: number;
+}
+
+/** Combined urgent attention items for dashboard */
+export function getUrgentSummary(state: AppState): UrgentSummary {
+  const unreadMessages = getUnreadCount(state);
+  const issues = getOpenIssues(state);
+  const openIssues = issues.length;
+  const urgentIssues = issues.filter(i => i.priority === 'urgent').length;
+  const overdueTasks = getOverdueTasks(state).length;
+  const emptyNightsNext7 = getEmptyNights(state, 7);
+
+  return {
+    unreadMessages,
+    openIssues,
+    overdueTasks,
+    emptyNightsNext7,
+    urgentIssues,
+    total: unreadMessages + openIssues + overdueTasks,
+  };
+}
+
+/* ─── Recent Activity ──────────────────────────────── */
+
+export interface RecentEvent {
+  id: string;
+  type: 'booking' | 'message' | 'turnover' | 'issue' | 'pricing';
+  title: string;
+  detail: string;
+  timestamp: string;
+  href: string;
+}
+
+/** Get recent operational events (synthesized from state) */
+export function getRecentActivity(state: AppState, limit: number = 8): RecentEvent[] {
+  const events: RecentEvent[] = [];
+
+  // Recent reservations
+  state.reservations
+    .filter(r => r.bookedAt)
+    .forEach(r => {
+      const guest = state.guests[r.guestId];
+      const guestName = guest ? `${guest.firstName} ${guest.lastName}` : 'Guest';
+      events.push({
+        id: `res-${r.id}`,
+        type: 'booking',
+        title: `${r.status === 'cancelled' ? 'Cancelled' : 'Reservation'}: ${guestName}`,
+        detail: `${r.totalNights} nights · $${r.total}`,
+        timestamp: r.bookedAt,
+        href: '/reservations',
+      });
     });
 
-  const critical: Task[] = [];
+  // Recent messages
+  state.inboxThreads.forEach(t => {
+    if (t.messages.length > 0) {
+      const lastMsg = t.messages[t.messages.length - 1];
+      const guest = state.guests[t.guestId];
+      const guestName = guest ? `${guest.firstName} ${guest.lastName}` : 'Guest';
+      events.push({
+        id: `msg-${t.id}`,
+        type: 'message',
+        title: `Message from ${lastMsg.sender === 'guest' ? guestName : 'You'}`,
+        detail: lastMsg.text.substring(0, 60) + (lastMsg.text.length > 60 ? '…' : ''),
+        timestamp: lastMsg.timestamp,
+        href: '/inbox',
+      });
+    }
+  });
 
-  // Add blocked first
-  critical.push(...blocked.slice(0, limit));
+  // Completed turnovers
+  state.operationsTasks
+    .filter(t => t.status === 'completed' && t.completedAt)
+    .forEach(t => {
+      events.push({
+        id: `op-${t.id}`,
+        type: 'turnover',
+        title: `Completed: ${t.title}`,
+        detail: t.assigneeName || 'Self',
+        timestamp: t.completedAt!,
+        href: '/operations',
+      });
+    });
 
-  // Fill with in-progress if space
-  if (critical.length < limit) {
-    critical.push(...inProgress.slice(0, limit - critical.length));
-  }
+  // Resolved issues
+  state.maintenanceIssues
+    .filter(i => i.resolvedAt)
+    .forEach(i => {
+      events.push({
+        id: `issue-${i.id}`,
+        type: 'issue',
+        title: `Resolved: ${i.title}`,
+        detail: i.resolution || '',
+        timestamp: i.resolvedAt!,
+        href: '/issues',
+      });
+    });
 
-  // Fill with pre-listing if still space
-  if (critical.length < limit) {
-    critical.push(...preListingIncomplete.slice(0, limit - critical.length));
-  }
-
-  return critical.slice(0, limit);
+  // Sort by timestamp descending, return top N
+  return events
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+    .slice(0, limit);
 }
 
-// Filter tasks by criteria
-export function filterTasks(
-  tasks: Task[],
-  filters: {
-    timing?: 'All' | 'Pre-Listing' | 'Ongoing' | 'Post-Listing';
-    completion?: 'all' | 'incomplete' | 'complete';
-    search?: string;
-  },
-  state: AppState
-): Task[] {
-  let filtered = [...tasks];
+/* ─── Upcoming Events (Local events affecting pricing) ── */
 
-  // Filter by timing
-  if (filters.timing && filters.timing !== 'All') {
-    filtered = filtered.filter(t => t.timing === filters.timing);
-  }
-
-  // Filter by completion
-  if (filters.completion === 'complete') {
-    filtered = filtered.filter(t => state.completedIds.includes(t.id));
-  } else if (filters.completion === 'incomplete') {
-    filtered = filtered.filter(t => !state.completedIds.includes(t.id));
-  }
-
-  // Filter by search term
-  if (filters.search && filters.search.trim()) {
-    const term = filters.search.toLowerCase();
-    filtered = filtered.filter(t =>
-      t.task.toLowerCase().includes(term) ||
-      t.description.toLowerCase().includes(term) ||
-      t.category.toLowerCase().includes(term)
-    );
-  }
-
-  return filtered;
-}
-
-// Group tasks by category
-export function groupTasksByCategory(tasks: Task[]): Record<string, Task[]> {
-  return tasks.reduce((acc, task) => {
-    if (!acc[task.category]) acc[task.category] = [];
-    acc[task.category].push(task);
-    return acc;
-  }, {} as Record<string, Task[]>);
+export function getUpcomingEvents(state: AppState, days: number = 30) {
+  const today = todayStr();
+  const end = daysFromNow(days);
+  return state.localEvents
+    .filter(e => e.startDate >= today && e.startDate <= end)
+    .sort((a, b) => a.startDate.localeCompare(b.startDate));
 }

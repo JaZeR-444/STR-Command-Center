@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-STR Command Center is a Next.js 16 (App Router) application for managing short-term rental launch readiness. It tracks tasks, documents, and progress across multiple operational sections with local-first architecture and optional cloud sync.
+STR Command Center is a Next.js 16 (App Router) operational CRM for managing short-term rental operations. It manages reservations, guests, communications, pricing, and property performance with local-first architecture and optional cloud sync. This is a private, single-operator tool optimized for owner-operators running their STR business day-to-day.
 
 ## Development Commands
 
@@ -66,11 +66,14 @@ The application uses a **local-first architecture** with an optional cloud sync 
 
 ### Data Sources
 
-All tasks and documents are **static data** defined in:
-- `src/data/roadmap.ts` - Task definitions, sections, categories
-- `src/data/documents.ts` - Document artifact definitions
+**Operational data** is stored in state and managed through the context API:
+- Reservations, guests, messages, operations tasks, maintenance issues
+- Pricing calendar, market data, automation rules
+- Property profiles and settings
 
-**Critical**: Never add tasks or documents to state that don't exist in these static data files. The storage layer validates all IDs against these sources.
+**Legacy static data** (deprecated, for reference only):
+- `src/data/roadmap.ts` - Deprecated launch readiness tasks (archived)
+- `src/data/documents.ts` - Deprecated document artifacts (archived)
 
 ### Computed State (Selectors)
 

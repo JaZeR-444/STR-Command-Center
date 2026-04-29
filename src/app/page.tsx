@@ -2,643 +2,344 @@
 
 import { useApp } from '@/lib/context';
 import {
-  getOverallStats,
-  getPreListingStats,
-  getDocumentationStats,
-  getSectionSummaries,
-  getBlockedTasks,
-  getCriticalPathTasks,
-  getDaysUntilLaunch,
-  getPinnedTasks,
-  getRecentlyCompleted,
+  getTodayCheckIns,
+  getTodayCheckOuts,
+  getActiveTurnovers,
+  getUrgentSummary,
+  getRevenueStats,
+  getOccupancyPacing,
+  getRecentActivity,
+  getUpcomingReservations,
 } from '@/lib/selectors';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ProgressBar } from '@/components/ui/progress';
-import { ProgressRing } from '@/components/dashboard/progress-ring';
 import { Badge } from '@/components/ui/badge';
-import { CardSkeleton } from '@/components/ui/skeleton';
-import { CommandStation } from '@/components/dashboard/command-station';
-import { VelocityTracker } from '@/components/dashboard/velocity-tracker';
-import { OperationsOverview } from '@/components/dashboard/operations-overview';
-import { cn, getProgressColor } from '@/lib/utils';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { OperationsOverview } from '@/components/dashboard/operations-overview';
 
-/* ─── helpers ─────────────────────────────────────────── */
-
-function timeAgo(iso: string | undefined): string {
-  if (!iso) return '';
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60_000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
 }
-
-function getLaunchRunway(launchDate: string) {
-  // We define the "start" as the app's default origin = 2026-04-03 (first use)
-  const start = new Date('2026-04-03');
-  const end   = new Date(launchDate);
-  const now   = new Date();
-  const totalMs   = end.getTime() - start.getTime();
-  const elapsedMs = now.getTime() - start.getTime();
-  const elapsed   = Math.max(0, Math.floor(elapsedMs / 86_400_000));
-  const total     = Math.max(1, Math.floor(totalMs   / 86_400_000));
-  const pct       = Math.min(100, Math.round((elapsed / total) * 100));
-  return { elapsed, total, pct };
-}
-
-function getMomentumStats(state: any) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const days: { date: Date, dateStr: string, count: number }[] = [];
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    days.push({
-      date: d,
-      dateStr: d.toISOString().split('T')[0],
-      count: 0
-    });
-  }
-
-  if (state && state.taskMeta) {
-    Object.values(state.taskMeta).forEach((meta: any) => {
-      if (meta.completedAt) {
-        const dStr = meta.completedAt.split('T')[0];
-        const match = days.find(d => d.dateStr === dStr);
-        if (match) match.count++;
-      }
-    });
-  }
-  return days;
-}
-
-/* ─── sub-components ──────────────────────────────────── */
-
-function StatKPI({
-  value,
-  label,
-  sub,
-  color,
-  href,
-  pulse,
-}: {
-  value: string | number;
-  label: string;
-  sub?: string;
-  color?: string;
-  href?: string;
-  pulse?: boolean;
-}) {
-  const inner = (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center py-6 px-4 text-center h-full rounded-xl border-2 transition-all duration-200 glass',
-        href && 'hover:scale-[1.025] hover:border-zinc-600 cursor-pointer hover:shadow-medium',
-        pulse && 'animate-glow',
-        'border-zinc-800'
-      )}
-    >
-      <span className={cn('text-4xl lg:text-5xl font-mono font-extrabold tabular-nums leading-none', color ?? 'text-white')}>
-        {value}
-      </span>
-      <span className="mt-3 text-[11px] text-zinc-400 uppercase tracking-widest font-bold">{label}</span>
-      {sub && <span className="mt-1.5 text-[10px] text-zinc-600 font-medium">{sub}</span>}
-    </div>
-  );
-  return href ? <Link href={href} className="block h-full">{inner}</Link> : inner;
-}
-
-function MomentumHeatmap({ data }: { data: { date: Date, dateStr: string, count: number }[] }) {
-  const maxCount = Math.max(...data.map(d => d.count), 1); 
-  const totalCompleted = data.reduce((sum, d) => sum + d.count, 0);
-  
-  return (
-    <div className="flex flex-col items-end gap-1.5">
-      <div className="flex items-end gap-1 h-[40px]">
-        {data.map((day, i) => {
-          let bg = 'bg-zinc-800/40';
-          let border = 'border-zinc-800/50';
-          let h = 8;
-          if (day.count > 0) {
-            h = Math.max(12, (day.count / maxCount) * 40);
-            const intensity = day.count / maxCount;
-            if (intensity > 0.66) { bg = 'bg-blue-500'; border = 'border-blue-400'; }
-            else if (intensity > 0.33) { bg = 'bg-blue-500/70'; border = 'border-blue-400/70'; }
-            else { bg = 'bg-blue-500/40'; border = 'border-blue-400/40'; }
-          }
-          
-          return (
-            <div 
-              key={i} 
-              title={`${day.dateStr}: ${day.count} tasks`}
-              className={cn("w-[14px] rounded-[3px] border transition-all hover:scale-110", bg, border)}
-              style={{ height: `${h}px` }}
-            />
-          );
-        })}
-      </div>
-      <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">{totalCompleted} Wins (14D)</span>
-    </div>
-  );
-}
-
-function SectionCard({ idx, section }: {
-  idx: number;
-  section: { name: string; shortName: string; percentage: number; completed: number; total: number; blockedCount: number };
-}) {
-  return (
-    <Link href={`/roadmap?section=${encodeURIComponent(section.name)}`} className="block group">
-      <div className="p-3 bg-zinc-900/50 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-150 group-hover:bg-zinc-900">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-zinc-800 text-[9px] font-bold text-zinc-500 shrink-0">
-              {String(idx + 1).padStart(2, '0')}
-            </span>
-            <span className="text-xs font-semibold text-zinc-200 truncate">{section.shortName}</span>
-          </div>
-          <span className={cn('text-xs font-bold shrink-0 ml-2', getProgressColor(section.percentage))}>
-            {section.percentage}%
-          </span>
-        </div>
-        <ProgressBar value={section.percentage} size="sm" />
-        <div className="flex justify-between items-center mt-1.5 text-[10px] text-zinc-600">
-          <span>{section.completed}/{section.total}</span>
-          {section.blockedCount > 0 && (
-            <span className="text-red-400 font-semibold">{section.blockedCount} blocked</span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/* ─── main dashboard ──────────────────────────────────── */
 
 export default function DashboardPage() {
-  const { state, isLoaded, togglePin } = useApp();
+  const { state, isLoaded } = useApp();
 
   if (!isLoaded) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
-        </div>
+      <div className="flex-1 flex flex-col items-center justify-center p-8 min-h-screen">
+        <div className="w-10 h-10 rounded-full border-4 border-[#d9b36c]/20 border-t-[#d9b36c] animate-spin" />
+        <p className="mt-4 text-zinc-500 font-mono text-sm tracking-widest uppercase">Initializing Command Center</p>
       </div>
     );
   }
 
-  const overallStats     = getOverallStats(state);
-  const preListingStats  = getPreListingStats(state);
-  const docStats         = getDocumentationStats(state);
-  const sectionSummaries = getSectionSummaries(state);
-  const blockedTasks     = getBlockedTasks(state);
-  const criticalPath     = getCriticalPathTasks(state, 4);
-  const pinnedTasks      = getPinnedTasks(state);
-  const recentlyDone     = getRecentlyCompleted(state, 6);
-  const daysUntilLaunch  = getDaysUntilLaunch(state.launchDate);
-  const runway           = getLaunchRunway(state.launchDate);
-
-  const isLaunchUrgent = daysUntilLaunch <= 7 && daysUntilLaunch > 0;
-  const isLaunched     = daysUntilLaunch === 0;
-
-  const launchDateFormatted = new Date(state.launchDate).toLocaleDateString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric'
-  });
+  const todayStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  
+  const urgentSummary = getUrgentSummary(state);
+  const revenueStats = getRevenueStats(state);
+  const occupancy7 = getOccupancyPacing(state, 7);
+  const occupancy30 = getOccupancyPacing(state, 30);
+  const recentActivity = getRecentActivity(state, 5);
+  const upcomingRes = getUpcomingReservations(state, 7);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1440px] mx-auto">
-      <div className="grid grid-cols-12 gap-6">
-
-      {/* ── Page header (FULL WIDTH) ── */}
-      <header className="col-span-full flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-        <div>
-          <p className="section-eyebrow mb-2">Operations Command</p>
-          <h1 className="text-4xl sm:text-5xl font-display font-semibold text-white leading-[0.95]">
-            Mission Control
-          </h1>
-          <p className="text-zinc-400 text-sm mt-2 max-w-2xl">Austin STR launch workspace for 7513 Ballydawn Dr, designed around operational clarity, execution rhythm, and launch readiness.</p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full premium-pill self-start sm:self-auto">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] text-zinc-300 font-medium uppercase tracking-[0.22em]">Live Sync Active</span>
+    <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden min-h-screen pb-24 lg:pb-8">
+      {/* 1. Header Area */}
+      <header className="px-5 py-6 lg:px-10 lg:py-10 pb-0 shrink-0">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 max-w-[1400px] mx-auto">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Live
+              </span>
+              <span className="text-zinc-500 text-sm font-medium">Ballydawn Drive</span>
+            </div>
+            <h1 className="text-3xl lg:text-[2.5rem] font-display font-bold text-white tracking-tight leading-tight">
+              Morning Briefing
+            </h1>
+            <p className="text-zinc-400 mt-2 text-sm lg:text-base">{todayStr}</p>
+          </div>
         </div>
       </header>
 
-      {/* ── Operations Overview (shows when operational data exists) ── */}
-      <OperationsOverview state={state} />
-
-      {/* ── PHASE 3: Command Station - Next Actions (HERO CARD) ── */}
-      <section className="col-span-full">
-        <CommandStation state={state} daysUntilLaunch={daysUntilLaunch} />
-      </section>
-
-      {/* ── PHASE 3: Velocity & Burndown Tracker ── */}
-      <section className="col-span-full lg:col-span-8 xl:col-span-7">
-        <VelocityTracker
-          state={state}
-          totalTasks={overallStats.total}
-          completedTasks={overallStats.completed}
-          launchDate={state.launchDate}
-        />
-      </section>
+      {/* Main Content Area */}
+      <main className="flex-1 px-5 lg:px-10 py-8 lg:py-10 max-w-[1400px] w-full mx-auto space-y-8 lg:space-y-12">
         
-      {/* Momentum Heatmap - Companion card */}
-      <section className="col-span-full lg:col-span-4 xl:col-span-5">
-        <div className="glass rounded-2xl border-2 border-zinc-800 px-6 py-5 h-full">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-2xl premium-pill flex items-center justify-center">
-              <svg className="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <div>
-              <p className="section-eyebrow mb-1">Execution Rhythm</p>
-              <h3 className="text-2xl font-display font-semibold text-white">Momentum</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">14-day completion cadence</p>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <MomentumHeatmap data={getMomentumStats(state)} />
-          </div>
-        </div>
-      </section>
+        {/* 2. Today's Operations Overview Component (reusing and enhancing existing) */}
+        <OperationsOverview state={state} />
 
-      {/* ── KPI Stats Grid (SMALLER) ── */}
-      <section
-        className="col-span-full grid gap-3"
-        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}
-      >
-        {/* Progress ring */}
-        <div className="md:col-span-2 xl:col-span-1 xl:row-span-2">
-          <div className="h-full glass rounded-xl border border-blue-500/20 shadow-medium flex flex-col items-center justify-center py-8 px-4">
-            <ProgressRing value={overallStats.percentage} size="xl" label="COMPLETE" />
-            <div className="mt-5 text-center">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-[0.24em] font-semibold mb-1">Overall Launch Progress</p>
-              <p className="text-zinc-400 text-base font-semibold">
-                {overallStats.completed} <span className="text-zinc-600">/ {overallStats.total} tasks</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Blocked */}
-        <StatKPI
-          href="/focus"
-          value={blockedTasks.length}
-          label="Blocked Items"
-          sub={blockedTasks.length > 0 ? 'Needs attention' : 'All clear ✓'}
-          color={blockedTasks.length > 0 ? 'text-red-400' : 'text-emerald-400'}
-        />
-
-        {/* Days to launch */}
-        <StatKPI
-          value={daysUntilLaunch}
-          label="Days to Launch"
-          sub={isLaunchUrgent ? '🔥 Final sprint' : isLaunched ? '🚀 Launch day!' : launchDateFormatted}
-          color={isLaunchUrgent ? 'text-amber-400' : isLaunched ? 'text-emerald-400' : 'text-blue-400'}
-          pulse={isLaunchUrgent}
-        />
-
-        {/* Pre-listing */}
-        <StatKPI
-          value={`${preListingStats.percentage}%`}
-          label="Pre-Listing"
-          sub={`${preListingStats.remaining} remaining`}
-          color={getProgressColor(preListingStats.percentage)}
-        />
-
-        {/* Documentation */}
-        <StatKPI
-          value={`${docStats.percentage}%`}
-          label="Documentation"
-          sub={`${docStats.completed} / ${docStats.total} artifacts`}
-          color={getProgressColor(docStats.percentage)}
-        />
-      </section>
-
-      {/* ── #1 HIGH IMPACT: Launch Runway Bar ── */}
-      <section className="col-span-full">
-        <div className={cn(
-          'rounded-xl border px-4 py-3',
-          isLaunchUrgent
-            ? 'bg-amber-500/8 border-amber-500/25'
-            : 'bg-zinc-900/50 border-zinc-800'
-        )}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-zinc-200">Launch Runway</span>
-              {isLaunchUrgent && (
-                <span className="px-2 py-1 text-[9px] font-bold bg-amber-500/20 text-amber-200 rounded-full uppercase tracking-[0.2em]">
-                  Final Sprint
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 text-xs text-zinc-500">
-              <span>Day {runway.elapsed} of {runway.total}</span>
-              <span className="text-zinc-700">·</span>
-              <span className={cn('font-semibold', isLaunchUrgent ? 'text-amber-400' : 'text-blue-400')}>
-                Target: {launchDateFormatted}
-              </span>
-            </div>
-          </div>
-          {/* Runway progress bar */}
-          <div className="relative h-2.5 bg-zinc-800 rounded-full overflow-hidden">
-            <div
-              className={cn(
-                'h-full rounded-full transition-all duration-700',
-                runway.pct >= 90
-                  ? 'bg-gradient-to-r from-red-500 to-amber-500'
-                  : runway.pct >= 66
-                  ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
-                  : 'bg-gradient-to-r from-blue-500 to-indigo-400'
-              )}
-              style={{ width: `${runway.pct}%` }}
-            />
-            {/* Today marker */}
-            <div
-              className="absolute top-0 bottom-0 w-[2px] bg-white/60 rounded"
-              style={{ left: `${runway.pct}%` }}
-            />
-          </div>
-          <div className="flex justify-between mt-1 text-[9px] text-zinc-700 uppercase tracking-wider">
-            <span>Start</span>
-            <span>{runway.pct}% of runway used · {daysUntilLaunch}d remaining</span>
-            <span>Launch</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ── #2 Launch Velocity Visualization ── */}
-      <section className="col-span-full">
-        <div className="rounded-xl border bg-zinc-900/50 border-zinc-800 px-4 py-3 flex items-center justify-between shadow-inner">
-          <div>
-            <h3 className="text-sm font-display font-bold text-zinc-200">Velocity Heatmap</h3>
-            <p className="text-[10px] text-zinc-500 mt-0.5 uppercase tracking-widest font-semibold">Task completion momentum</p>
-          </div>
-          <MomentumHeatmap data={getMomentumStats(state)} />
-        </div>
-      </section>
-
-      {/* ── #1 HIGH IMPACT: Pinned Tasks ── */}
-      <section className="col-span-full">
-        <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-            <span className="section-eyebrow !text-[10px] !tracking-[0.2em]">Focus</span> Pinned Tasks
-            {pinnedTasks.length > 0 && (
-              <span className="text-[10px] font-normal text-zinc-600">({pinnedTasks.length})</span>
-            )}
-          </h2>
-          <Link href="/roadmap" className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors duration-200 flex items-center gap-1">
-            Pin from Roadmap
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-
-        {pinnedTasks.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/30 py-6 text-center">
-            <p className="text-sm text-zinc-500 font-medium">No pinned tasks yet</p>
-            <p className="text-xs text-zinc-700 mt-1">
-              Open any task in the{' '}
-              <Link href="/roadmap" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
-                Roadmap
-              </Link>{' '}
-              and pin it to see it here
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {pinnedTasks.map((task) => {
-              const status = state.taskMeta[task.id]?.status || 'default';
-              const isCompleted = state.completedIds.includes(task.id);
-              const note = state.taskMeta[task.id]?.note;
-              return (
-                <div
-                  key={task.id}
-                  className={cn(
-                    'relative flex flex-col gap-2 p-3 rounded-xl border transition-all duration-150',
-                    isCompleted
-                      ? 'bg-emerald-500/5 border-emerald-500/20'
-                      : status === 'blocked'
-                      ? 'bg-red-500/8 border-red-500/25'
-                      : status === 'in-progress'
-                      ? 'bg-blue-500/8 border-blue-500/20'
-                      : 'bg-zinc-900/60 border-zinc-800'
-                  )}
-                >
-                  {/* Unpin button */}
-                  <button
-                    onClick={() => togglePin(task.id)}
-                    className="absolute top-2 right-2 text-zinc-700 hover:text-amber-400 transition-colors duration-200"
-                    title="Unpin task"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M16 3a1 1 0 011 1v1l-2 4 1 1h3a1 1 0 010 2h-1l-1 1-1 5H8l-1-5-1-1H5a1 1 0 010-2h3l1-1-2-4V4a1 1 0 011-1h8zm-4 13a1 1 0 100 2 1 1 0 000-2z" />
-                    </svg>
-                  </button>
-
-                  <div className="pr-5">
-                    <p className={cn(
-                      'text-sm font-medium leading-snug',
-                      isCompleted ? 'line-through text-zinc-500' : 'text-zinc-200'
-                    )}>
-                      {task.task}
-                    </p>
-                    <p className="text-[10px] text-zinc-600 mt-1">
-                      {task.section.replace(' Master Checklist', '')} · {task.category}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      {isCompleted ? (
-                        <span className="px-1.5 py-0.5 text-[9px] font-bold bg-emerald-500/15 text-emerald-400 rounded-full uppercase tracking-wider">
-                          Done ✓
-                        </span>
-                      ) : (
-                        <Badge variant="status" status={status === 'blocked' ? 'blocked' : status === 'in-progress' ? 'in-progress' : 'default'}>
-                          {status === 'blocked' ? 'Blocked' : status === 'in-progress' ? 'In Progress' : task.timing}
-                        </Badge>
-                      )}
-                    </div>
-                    <Link
-                      href={`/roadmap?section=${encodeURIComponent(task.section)}`}
-                      className="text-[10px] text-zinc-600 hover:text-blue-400 transition-colors duration-200"
-                    >
-                      View →
-                    </Link>
-                  </div>
-
-                  {note && (
-                    <p className="text-[10px] text-zinc-500 bg-zinc-800/60 rounded-md px-2 py-1.5 italic leading-snug border-l-2 border-zinc-700">
-                      {note}
-                    </p>
-                  )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* LEFT COLUMN: Urgent & Revenue */}
+          <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+            
+            {/* 3. Urgent Attention */}
+            {urgentSummary.total > 0 && (
+              <section>
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-lg font-display font-bold text-zinc-200">Requires Attention</h2>
+                  <Badge className="bg-red-500/10 text-red-400 border-red-500/20 font-bold">
+                    {urgentSummary.total} Items
+                  </Badge>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* ── Critical path + Win feed side-by-side ── */}
-      <section className="col-span-full grid grid-cols-1 xl:grid-cols-5 gap-4">
-
-        {/* Critical Path — 3/5 cols */}
-        <div className="xl:col-span-3">
-          <Card className="h-full bg-amber-500/5 border-amber-500/20">
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-200">
-                Critical Path — Next Actions
-                <span className="ml-auto text-[10px] font-normal text-zinc-600">{criticalPath.length} active</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 space-y-2">
-              {criticalPath.length === 0 ? (
-                <p className="text-zinc-500 text-sm py-6 text-center">No critical tasks — keep the momentum going!</p>
-              ) : (
-                criticalPath.map((task) => {
-                  const status = state.taskMeta[task.id]?.status || 'default';
-                  return (
-                    <Link key={task.id} href={`/roadmap?section=${encodeURIComponent(task.section)}`} className="block group">
-                      <div className={cn(
-                        'flex items-start gap-2.5 p-3 rounded-lg border transition-all duration-150 group-hover:translate-x-0.5',
-                        status === 'blocked'
-                          ? 'bg-red-500/8 border-red-500/25 hover:border-red-500/45'
-                          : 'bg-amber-500/8 border-amber-500/18 hover:border-amber-500/35'
-                      )}>
-                        <Badge variant="status" status={status === 'blocked' ? 'blocked' : 'in-progress'}>
-                          {status === 'blocked' ? 'Blocked' : 'Active'}
-                        </Badge>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-zinc-200 font-medium mb-0.5 leading-snug">{task.task}</p>
-                          <p className="text-[10px] text-zinc-600">
-                            {task.section.replace(' Master Checklist', '')} · {task.category}
-                          </p>
-                        </div>
-                        <svg className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </Link>
-                  );
-                })
-              )}
-              <Link href="/focus" className="flex items-center justify-center gap-1 text-xs text-blue-400 hover:text-blue-300 pt-2 transition-colors duration-200">
-                View all focus items
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* #2 HIGH IMPACT: Recently Completed Win Feed — 2/5 cols */}
-        <div className="xl:col-span-2 flex flex-col gap-4">
-          <Card className="flex-1 bg-zinc-900/60 border-zinc-800">
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-200">
-                Recent Wins
-                {recentlyDone.length > 0 && (
-                  <span className="ml-auto text-[10px] font-normal text-zinc-600">
-                    {overallStats.completed} total
-                  </span>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3">
-              {recentlyDone.length === 0 ? (
-                <div className="py-6 text-center">
-                  <p className="text-sm text-zinc-500 font-medium">No completions yet</p>
-                  <p className="text-xs text-zinc-700 mt-1">Complete your first task to start building momentum</p>
-                </div>
-              ) : (
-                <ul className="space-y-1">
-                  {recentlyDone.map((task, i) => {
-                    const completedAt = state.taskMeta[task.id]?.completedAt;
-                    return (
-                      <li key={task.id}>
-                        <Link
-                          href={`/roadmap?section=${encodeURIComponent(task.section)}`}
-                          className="flex items-start gap-2.5 px-2 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors duration-200 group"
-                        >
-                          {/* Staggered glow dot */}
-                          <span className={cn(
-                            'w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5',
-                            i === 0
-                              ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40'
-                              : 'bg-zinc-800 text-zinc-500'
-                          )}>
-                            ✓
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-zinc-300 font-medium leading-snug truncate group-hover:text-white transition-colors">
-                              {task.task}
-                            </p>
-                            <p className="text-[10px] text-zinc-600 mt-0.5 flex items-center gap-1">
-                              <span className="truncate">{task.section.replace(' Master Checklist', '')}</span>
-                              {completedAt && (
-                                <>
-                                  <span className="text-zinc-700">·</span>
-                                  <span className="shrink-0 text-zinc-600">{timeAgo(completedAt)}</span>
-                                </>
-                              )}
-                            </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {urgentSummary.unreadMessages > 0 && (
+                    <Link href="/inbox">
+                      <Card className="bg-red-500/5 border-red-500/20 hover:border-red-500/40 transition-colors">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <span className="font-medium text-red-200">Unread Messages</span>
                           </div>
-                        </Link>
-                        {i < recentlyDone.length - 1 && (
-                          <div className="ml-6 border-b border-zinc-800/60" />
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+                          <span className="text-xl font-bold text-red-400">{urgentSummary.unreadMessages}</span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )}
+                  
+                  {urgentSummary.openIssues > 0 && (
+                    <Link href="/issues">
+                      <Card className={cn(
+                        "transition-colors",
+                        urgentSummary.urgentIssues > 0 ? "bg-red-500/5 border-red-500/20 hover:border-red-500/40" : "bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40"
+                      )}>
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center",
+                              urgentSummary.urgentIssues > 0 ? "bg-red-500/10 text-red-400" : "bg-amber-500/10 text-amber-400"
+                            )}>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <span className={cn("font-medium", urgentSummary.urgentIssues > 0 ? "text-red-200" : "text-amber-200")}>Open Issues</span>
+                          </div>
+                          <span className={cn("text-xl font-bold", urgentSummary.urgentIssues > 0 ? "text-red-400" : "text-amber-400")}>{urgentSummary.openIssues}</span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )}
 
-      {/* ── Section progress grid ── */}
-      <section className="col-span-full">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-display font-bold text-zinc-300 flex items-center gap-2">
-            Section Progress
-          </h2>
-          <Link
-            href="/roadmap"
-            className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors duration-200 flex items-center gap-1"
-          >
-            Full roadmap
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
-          {sectionSummaries.map((section, idx) => (
-            <SectionCard key={section.name} idx={idx} section={section} />
-          ))}
-        </div>
-      </section>
+                  {urgentSummary.emptyNightsNext7 > 0 && (
+                    <Link href="/pricing">
+                      <Card className="bg-indigo-500/5 border-indigo-500/20 hover:border-indigo-500/40 transition-colors">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <span className="font-medium text-indigo-200">Empty Nights (Next 7)</span>
+                          </div>
+                          <span className="text-xl font-bold text-indigo-400">{urgentSummary.emptyNightsNext7}</span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )}
+                  
+                  {urgentSummary.overdueTasks > 0 && (
+                    <Link href="/operations">
+                      <Card className="bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40 transition-colors">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span className="font-medium text-amber-200">Overdue Tasks</span>
+                          </div>
+                          <span className="text-xl font-bold text-amber-400">{urgentSummary.overdueTasks}</span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )}
+                </div>
+              </section>
+            )}
 
-      {/* ── Footer ── */}
-      <footer className="col-span-full pb-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] text-zinc-700 uppercase tracking-[0.22em] border-t border-zinc-800/60 pt-4">
-        <span>7513 Ballydawn Dr · Austin TX</span>
-        <span className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          STR Operations Command · 2026
-        </span>
+            {/* 4. Revenue & Occupancy Snapshot */}
+            <section>
+              <h2 className="text-lg font-display font-bold text-zinc-200 mb-4">Performance Snapshot</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="glass border-white/5">
+                  <CardContent className="p-5">
+                    <p className="text-xs text-zinc-500 mb-1">MTD Revenue</p>
+                    <p className="text-2xl font-bold text-emerald-400">${revenueStats.mtdRevenue.toLocaleString()}</p>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <span className={cn(
+                        "text-[10px] font-bold px-1.5 py-0.5 rounded",
+                        revenueStats.changePercent >= 0 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+                      )}>
+                        {revenueStats.changePercent >= 0 ? '+' : ''}{revenueStats.changePercent}%
+                      </span>
+                      <span className="text-[10px] text-zinc-500">vs last month</span>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="glass border-white/5">
+                  <CardContent className="p-5">
+                    <p className="text-xs text-zinc-500 mb-1">Avg ADR</p>
+                    <p className="text-2xl font-bold text-blue-400">${revenueStats.adr}</p>
+                    <p className="mt-2 text-[10px] text-zinc-500">MTD Average</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass border-white/5">
+                  <CardContent className="p-5">
+                    <p className="text-xs text-zinc-500 mb-1">7-Day Occupancy</p>
+                    <p className="text-2xl font-bold text-indigo-400">{occupancy7.pct}%</p>
+                    <div className="w-full h-1 bg-zinc-800 rounded-full mt-2 overflow-hidden">
+                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${occupancy7.pct}%` }} />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass border-white/5">
+                  <CardContent className="p-5">
+                    <p className="text-xs text-zinc-500 mb-1">30-Day Occupancy</p>
+                    <p className="text-2xl font-bold text-[#d9b36c]">{occupancy30.pct}%</p>
+                    <div className="w-full h-1 bg-zinc-800 rounded-full mt-2 overflow-hidden">
+                      <div className="h-full bg-[#d9b36c] rounded-full" style={{ width: `${occupancy30.pct}%` }} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* 6. Recent Activity */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-display font-bold text-zinc-200">Recent Activity</h2>
+                <Link href="/reports" className="text-xs text-blue-400 hover:text-blue-300">View All</Link>
+              </div>
+              <Card className="glass border-white/5">
+                <div className="divide-y divide-white/5">
+                  {recentActivity.length > 0 ? (
+                    recentActivity.map((event) => (
+                      <Link key={event.id} href={event.href} className="block p-4 hover:bg-white/[0.02] transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5",
+                            event.type === 'booking' ? "bg-emerald-500/10 text-emerald-400" :
+                            event.type === 'message' ? "bg-blue-500/10 text-blue-400" :
+                            event.type === 'turnover' ? "bg-amber-500/10 text-amber-400" :
+                            event.type === 'issue' ? "bg-red-500/10 text-red-400" :
+                            "bg-zinc-800 text-zinc-400"
+                          )}>
+                            {event.type === 'booking' && <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>}
+                            {event.type === 'message' && <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>}
+                            {event.type === 'turnover' && <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>}
+                            {event.type === 'issue' && <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-medium text-zinc-200 truncate">{event.title}</p>
+                              <span className="text-xs text-zinc-500 whitespace-nowrap">{formatDate(event.timestamp)}</span>
+                            </div>
+                            <p className="text-sm text-zinc-400 truncate">{event.detail}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="p-8 text-center text-zinc-500 text-sm">
+                      No recent activity.
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </section>
+          </div>
+
+          {/* RIGHT COLUMN: Upcoming & Actions */}
+          <div className="space-y-6 lg:space-y-8">
+            
+            {/* 5. Quick Actions */}
+            <section>
+              <h2 className="text-lg font-display font-bold text-zinc-200 mb-4">Quick Actions</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <Link href="/calendar" className="flex flex-col items-center justify-center p-4 rounded-xl glass border border-white/5 hover:border-white/20 transition-all group">
+                  <div className="w-10 h-10 rounded-full bg-[#8ab4ff]/10 flex items-center justify-center text-[#8ab4ff] mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                  </div>
+                  <span className="text-xs font-medium text-zinc-300">Add Block</span>
+                </Link>
+                <Link href="/operations" className="flex flex-col items-center justify-center p-4 rounded-xl glass border border-white/5 hover:border-white/20 transition-all group">
+                  <div className="w-10 h-10 rounded-full bg-[#d9b36c]/10 flex items-center justify-center text-[#d9b36c] mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                  </div>
+                  <span className="text-xs font-medium text-zinc-300">New Task</span>
+                </Link>
+                <Link href="/issues" className="flex flex-col items-center justify-center p-4 rounded-xl glass border border-white/5 hover:border-white/20 transition-all group">
+                  <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  </div>
+                  <span className="text-xs font-medium text-zinc-300">Log Issue</span>
+                </Link>
+                <Link href="/pricing" className="flex flex-col items-center justify-center p-4 rounded-xl glass border border-white/5 hover:border-white/20 transition-all group">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <span className="text-xs font-medium text-zinc-300">Update Rate</span>
+                </Link>
+              </div>
+            </section>
+
+            {/* 7. Upcoming Reservations */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-display font-bold text-zinc-200">Next 7 Days</h2>
+                <Link href="/calendar" className="text-xs text-blue-400 hover:text-blue-300">Calendar</Link>
+              </div>
+              <Card className="glass border-white/5">
+                <div className="divide-y divide-white/5">
+                  {upcomingRes.length > 0 ? (
+                    upcomingRes.map(res => {
+                      const guest = state.guests[res.guestId];
+                      const guestName = guest ? `${guest.firstName} ${guest.lastName}` : 'Guest';
+                      return (
+                        <div key={res.id} className="p-4 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-zinc-200">{guestName}</p>
+                            <p className="text-xs text-zinc-500 mt-0.5">{formatDate(res.checkIn)} – {formatDate(res.checkOut)}</p>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={cn(
+                              "text-[10px] font-bold uppercase tracking-wider",
+                              res.source === 'airbnb' ? "text-[#FF5A5F] border-[#FF5A5F]/30" :
+                              res.source === 'vrbo' ? "text-[#00529B] border-[#00529B]/30" :
+                              "text-zinc-300 border-zinc-600"
+                            )}>
+                              {res.source}
+                            </Badge>
+                            <p className="text-xs text-zinc-400 mt-1">{res.totalNights} nights</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="p-8 text-center text-zinc-500 text-sm">
+                      No upcoming reservations in the next 7 days.
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </section>
+
+          </div>
+        </div>
+      </main>
+      
+      {/* Footer */}
+      <footer className="mt-auto px-10 py-6 border-t border-white/5 text-center shrink-0">
+        <p className="text-xs text-zinc-600 font-mono">
+          7513 Ballydawn Dr · Live since 2026
+        </p>
       </footer>
-
-      </div> {/* End grid container */}
     </div>
   );
 }

@@ -4,8 +4,6 @@ import { useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import type { AppState, Task } from '@/types';
-import { allTasks } from '@/data/roadmap';
-import { getBlockedTasks, getInProgressTasks } from '@/lib/selectors';
 
 interface ActionItem {
   id: number;
@@ -22,13 +20,11 @@ interface ActionItem {
  * - Blocked tasks get highest priority
  * - Number of tasks depending on this one
  * - Time since marked in-progress
- * - Pre-Listing tasks get bonus near launch date
+ * - Time-sensitive tasks get priority boost
  */
 function calculatePriority(
   task: Task,
   state: AppState,
-  blockedTasks: Task[],
-  inProgressTasks: Task[],
   daysUntilLaunch: number
 ): ActionItem | null {
   // Skip completed tasks
@@ -46,11 +42,7 @@ function calculatePriority(
     type = 'blocked';
     
     // Count how many other tasks are blocked by this
-    const taskIds = allTasks.map(t => t.id);
-    dependentCount = taskIds.filter(id => {
-      const otherMeta = state.taskMeta[id];
-      return otherMeta?.status === 'blocked' && id !== task.id;
-    }).length;
+    dependentCount = 0;
     
     reason = dependentCount > 0 
       ? `Blocking ${dependentCount} other task${dependentCount > 1 ? 's' : ''}`
@@ -75,7 +67,7 @@ function calculatePriority(
       reason = 'In progress';
     }
   }
-  // PRE-LISTING CRITICAL: High priority if launch is soon
+  // TIME-SENSITIVE: High priority if deadline approaching
   else if (task.timing === 'Pre-Listing' && daysUntilLaunch <= 14) {
     priority = 300;
     type = 'critical';
@@ -112,22 +104,8 @@ interface CommandStationProps {
 
 export function CommandStation({ state, daysUntilLaunch }: CommandStationProps) {
   const topActions = useMemo(() => {
-    const blockedTasks = getBlockedTasks(state);
-    const inProgressTasks = getInProgressTasks(state);
-    
-    const scoredActions: ActionItem[] = [];
-    
-    for (const task of allTasks) {
-      const action = calculatePriority(task, state, blockedTasks, inProgressTasks, daysUntilLaunch);
-      if (action) {
-        scoredActions.push(action);
-      }
-    }
-    
-    // Sort by priority (highest first) and take top 3
-    return scoredActions
-      .sort((a, b) => b.priority - a.priority)
-      .slice(0, 3);
+    // Legacy component - roadmap data no longer available
+    return [] as ActionItem[];
   }, [state, daysUntilLaunch]);
 
   if (topActions.length === 0) {
@@ -156,7 +134,7 @@ export function CommandStation({ state, daysUntilLaunch }: CommandStationProps) 
           <div>
             <p className="section-eyebrow mb-1">Priority Queue</p>
             <h3 className="text-[2rem] font-display font-semibold text-white">Executive Next Actions</h3>
-            <p className="text-sm text-zinc-400 mt-0.5">Highest-impact tasks to protect launch readiness.</p>
+            <p className="text-sm text-zinc-400 mt-0.5">Highest-impact tasks to maintain operational readiness.</p>
           </div>
         </div>
       </div>

@@ -57,22 +57,6 @@ export function Topbar() {
 
       {/* Right Side */}
       <div className="flex items-center gap-2">
-        {/* Launch Date */}
-        <div 
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold"
-          style={{
-            color: 'var(--ink2)',
-            border: '1px solid var(--border)',
-            background: '#fff',
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <path d="M16 2v4M8 2v4M3 10h18"/>
-          </svg>
-          <span>{state.launchDate || '2026-05-15'}</span>
-        </div>
-
         {/* Theme Toggle */}
         <button
           onClick={() => {

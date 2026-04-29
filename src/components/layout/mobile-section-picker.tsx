@@ -1,6 +1,5 @@
 'use client';
 
-import { getSectionNumber, getShortSectionName } from '@/data/roadmap';
 import { cn, getProgressColor } from '@/lib/utils';
 
 interface MobileSectionPickerProps {
@@ -10,6 +9,7 @@ interface MobileSectionPickerProps {
   sectionStats: Record<string, { pct: number; blocked: number; total: number; completed: number }>;
 }
 
+// Legacy component - roadmap data no longer available
 export function MobileSectionPicker({
   sections,
   selectedSection,
@@ -31,13 +31,11 @@ export function MobileSectionPicker({
           onChange={handleChange}
           className="w-full px-4 py-3 pr-10 bg-zinc-900 border-2 border-zinc-800 rounded-xl text-white font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
         >
-          {sections.map((section) => {
-            const num = getSectionNumber(section);
-            const name = getShortSectionName(section);
+          {sections.map((section, idx) => {
             const sStats = sectionStats[section] || { pct: 0, blocked: 0, total: 0, completed: 0 };
             return (
               <option key={section} value={section}>
-                {num.padStart(2, '0')} • {name} ({sStats.completed}/{sStats.total})
+                {String(idx + 1).padStart(2, '0')} • {section} ({sStats.completed}/{sStats.total})
               </option>
             );
           })}

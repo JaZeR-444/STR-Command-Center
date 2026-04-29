@@ -2,7 +2,7 @@
 
 # 🏠 STR Command Center
 
-**Private short-term rental operations dashboard for tracking launch readiness, task execution, and documentation in one place.**
+**Private operational CRM for managing short-term rental operations—reservations, guests, pricing, and performance in one unified platform.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
@@ -31,17 +31,17 @@
 
 ## 🎯 Overview
 
-**STR Command Center** is a Next.js application designed to streamline short-term rental operations from pre-launch planning through daily operations. Built with a **local-first architecture** and optional cloud sync, it provides comprehensive task management, document tracking, guest relations, pricing automation, and market intelligence—all in one unified dashboard.
+**STR Command Center** is a private operational CRM for short-term rental owner-operators. Built with a **local-first architecture** and optional cloud sync, it unifies reservations, guest communications, turnover management, pricing intelligence, and performance monitoring into a single decisive command center optimized for solo operation.
 
 ### Core Capabilities
 
 | Feature Category | Description |
 |-----------------|-------------|
-| 🗺️ **Launch Planning** | Roadmap execution, document completion, progress tracking |
-| 🔄 **Operations Management** | Turnover tasks, maintenance issues, guest communications |
-| 💰 **Revenue Optimization** | Dynamic pricing, performance reports, market intelligence |
-| 🤖 **Intelligent Automation** | Smart triggers, daily briefings, automated insights |
-| 📱 **Mobile-First Design** | Touch gestures, haptic feedback, responsive UI |
+| 🏨 **Guest Operations** | Reservations, communication threads, guest profiles |
+| 🔄 **Property Operations** | Turnover queue, maintenance tracking, operational tasks |
+| 💰 **Revenue Intelligence** | Dynamic pricing, market awareness, performance analytics |
+| 📊 **Operational Visibility** | Real-time dashboards, daily briefings, action priorities |
+| 📱 **Mobile-Optimized** | Touch gestures, haptic feedback, responsive workflows |
 
 ---
 

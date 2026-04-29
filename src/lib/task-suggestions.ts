@@ -85,7 +85,7 @@ export function suggestRelatedDocuments(task: Task): Array<{ id: string; name: s
       relevance += 20;
     }
 
-    // Keyword matching in artifact name and task title
+    // Keyword matching in document name and task title
     const docLower = doc.artifact.toLowerCase();
     const taskLower = task.task.toLowerCase();
     const categoryLower = task.category.toLowerCase();

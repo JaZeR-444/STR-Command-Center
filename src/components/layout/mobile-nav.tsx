@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/lib/context';
-import { getBlockedTasks, getOverallStats } from '@/lib/selectors';
+import { getOccupancyStatus } from '@/lib/selectors';
 
 const navItems = [
   {
@@ -17,11 +17,11 @@ const navItems = [
     )
   },
   {
-    href: '/operations',
-    label: 'Tasks',
+    href: '/inbox',
+    label: 'Inbox',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
       </svg>
     )
   },
@@ -35,11 +35,11 @@ const navItems = [
     )
   },
   {
-    href: '/inbox',
-    label: 'Inbox',
+    href: '/operations',
+    label: 'Tasks',
     icon: (
       <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
       </svg>
     )
   },
@@ -58,8 +58,7 @@ export function MobileNav() {
   const pathname = usePathname();
   const { state, isLoaded } = useApp();
   
-  const blockedTasks = isLoaded ? getBlockedTasks(state) : [];
-  const overallStats = isLoaded ? getOverallStats(state) : { percentage: 0 };
+  const occupancyStatus = isLoaded ? getOccupancyStatus(state) : 'vacant';
 
   return (
     <>
@@ -81,9 +80,13 @@ export function MobileNav() {
           <div className="flex items-center gap-3">
             {/* Rapid Context Block */}
             <div className="text-right flex flex-col items-end">
-              <span className="text-[9px] uppercase tracking-[0.24em] text-zinc-500 font-bold">Readiness</span>
-              <span className={cn("text-xs font-bold", overallStats.percentage === 100 ? 'text-emerald-300' : 'text-[#f1d39a]')}>
-                {overallStats.percentage}%
+              <span className="text-[9px] uppercase tracking-[0.24em] text-zinc-500 font-bold">Status</span>
+              <span className={cn(
+                "text-xs font-bold uppercase",
+                occupancyStatus === 'occupied' ? 'text-emerald-400' :
+                occupancyStatus === 'turnover' ? 'text-amber-400' : 'text-blue-400'
+              )}>
+                {occupancyStatus}
               </span>
             </div>
 
@@ -114,10 +117,8 @@ export function MobileNav() {
             </Link>
           </div>
         </div>
-        {/* Progress Bar Ribbon */}
-        <div className="w-full h-0.5 bg-white/5 absolute bottom-0 left-0">
-          <div className="h-full bg-gradient-to-r from-[#8ab4ff] to-[#d9b36c] transition-all duration-500" style={{ width: `${overallStats.percentage}%` }} />
-        </div>
+        {/* Optional: subtle border bottom if not using ribbon */}
+        <div className="w-full h-[1px] bg-white/5 absolute bottom-0 left-0" />
       </header>
 
       {/* Mobile Bottom Tab Bar (iOS style) */}

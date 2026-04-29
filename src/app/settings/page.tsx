@@ -4,14 +4,12 @@ import { useState, useRef } from 'react';
 import { useApp } from '@/lib/context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 
 export default function SettingsPage() {
   const {
     state,
     isLoaded,
-    setLaunchDate,
     exportData,
     importData,
     resetAll,
@@ -22,6 +20,7 @@ export default function SettingsPage() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState(false);
+  const [showArchive, setShowArchive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -67,6 +66,23 @@ export default function SettingsPage() {
     setShowResetConfirm(false);
   };
 
+  const handleExportArchive = () => {
+    const archiveData = localStorage.getItem('str_cc_legacy_archive');
+    if (!archiveData) return;
+
+    const blob = new Blob([archiveData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `str-cc-legacy-archive-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const hasLegacyArchive = typeof window !== 'undefined' && localStorage.getItem('str_cc_legacy_archive') !== null;
+
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -81,29 +97,12 @@ export default function SettingsPage() {
       <header className="mb-8 glass shimmer-border rounded-[2rem] p-6 lg:p-8">
         <p className="section-eyebrow mb-2">Control Room</p>
         <h1 className="text-4xl lg:text-5xl font-display font-semibold text-white mb-3">Settings</h1>
-        <p className="text-zinc-400 max-w-2xl">Tune the launch timeline, protect operational data, and monitor sync posture from one executive control panel.</p>
+        <p className="text-zinc-400 max-w-2xl">Manage system preferences, data backups, and property integrations.</p>
       </header>
 
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-6">
-          {/* Launch Date */}
-          <Card className="mb-0">
-            <CardHeader>
-              <CardTitle>Launch Date</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-zinc-400 mb-4">
-                Set the target launch date that powers the countdown and readiness runway.
-              </p>
-              <Input
-                type="date"
-                value={state.launchDate}
-                onChange={(e) => setLaunchDate(e.target.value)}
-                className="max-w-xs"
-              />
-            </CardContent>
-          </Card>
-
+          {/* Appearance */}
           <Card className="mb-0">
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
@@ -138,7 +137,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-zinc-400">
-                Export a full backup of progress, or restore the workspace from a previous snapshot.
+                Export a full backup of your operational data, or restore from a previous snapshot.
               </p>
 
               {importError && (
@@ -149,7 +148,7 @@ export default function SettingsPage() {
 
               {importSuccess && (
                 <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-sm text-emerald-300">
-                  Progress imported successfully
+                  Data imported successfully
                 </div>
               )}
 
@@ -167,6 +166,7 @@ export default function SettingsPage() {
                   </svg>
                   Import Backup
                 </Button>
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -178,6 +178,38 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
+          {/* Reference / Archive */}
+          {hasLegacyArchive && (
+            <Card className="mb-0">
+              <CardHeader className="cursor-pointer" onClick={() => setShowArchive(!showArchive)}>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Reference / Archive</CardTitle>
+                  <svg
+                    className={`w-5 h-5 text-zinc-400 transition-transform ${showArchive ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </CardHeader>
+              {showArchive && (
+                <CardContent>
+                  <p className="text-sm text-zinc-400 mb-4">
+                    Legacy launch-tracker data from the original app version is preserved here for recovery.
+                  </p>
+                  <Button onClick={handleExportArchive} variant="secondary">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                    Export Legacy Archive
+                  </Button>
+                </CardContent>
+              )}
+            </Card>
+          )}
+
           {/* Danger Zone */}
           <Card className="border-red-500/20">
             <CardHeader>
@@ -185,10 +217,10 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-400 mb-4">
-                Reset all progress. This clears completed tasks, notes, and settings and cannot be undone.
+                Reset all operational data. This clears reservations, issues, and settings and cannot be undone.
               </p>
               <Button variant="danger" onClick={() => setShowResetConfirm(true)}>
-                Reset All Progress
+                Reset All Data
               </Button>
             </CardContent>
           </Card>
@@ -202,7 +234,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-zinc-400">
-                Optional Supabase sync keeps progress available across devices while local backup remains intact.
+                Optional Supabase sync keeps operational data available across devices while local backup remains intact.
               </p>
               <div className="premium-pill rounded-[1.4rem] p-4">
                 <div className="flex items-center gap-2">
@@ -227,35 +259,6 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Statistics */}
-          <Card className="mb-0">
-            <CardHeader>
-              <CardTitle>Current Statistics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="premium-pill rounded-[1.35rem] p-4">
-                  <p className="text-zinc-500">Completed Tasks</p>
-                  <p className="text-2xl font-semibold text-white mt-1">{state.completedIds.length}</p>
-                </div>
-                <div className="premium-pill rounded-[1.35rem] p-4">
-                  <p className="text-zinc-500">Completed Docs</p>
-                  <p className="text-2xl font-semibold text-white mt-1">{state.completedDocIds.length}</p>
-                </div>
-                <div className="premium-pill rounded-[1.35rem] p-4">
-                  <p className="text-zinc-500">Pinned Items</p>
-                  <p className="text-2xl font-semibold text-white mt-1">{state.pinnedIds.length}</p>
-                </div>
-                <div className="premium-pill rounded-[1.35rem] p-4">
-                  <p className="text-zinc-500">Tasks with Notes</p>
-                  <p className="text-2xl font-semibold text-white mt-1">
-                    {Object.values(state.taskMeta).filter(m => m.note).length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
@@ -263,14 +266,14 @@ export default function SettingsPage() {
       <Modal
         isOpen={showResetConfirm}
         onClose={() => setShowResetConfirm(false)}
-        title="Reset All Progress?"
+        title="Reset All Data?"
         size="sm"
       >
         <div className="text-center">
           <p className="text-4xl mb-4">⚠️</p>
           <p className="text-zinc-300 mb-6">
-            This will permanently delete all your progress, including completed tasks,
-            notes, and settings. This action cannot be undone.
+            This will permanently delete all your operational data, including reservations,
+            issues, and settings. This action cannot be undone.
           </p>
           <div className="flex gap-3 justify-center">
             <Button variant="secondary" onClick={() => setShowResetConfirm(false)}>
@@ -285,7 +288,7 @@ export default function SettingsPage() {
 
       {/* Footer Info */}
       <div className="mt-12 text-center text-xs text-zinc-600">
-        <p>STR Launch Command Center v2.0</p>
+        <p>STR Command Center v2.0</p>
         <p className="mt-1">
           {cloudSyncStatus === 'online'
             ? 'Cloud sync active with local backup'

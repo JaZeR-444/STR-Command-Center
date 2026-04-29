@@ -6,7 +6,7 @@ export const initialOperationsTasks: OperationsTask[] = [
   {
     id: 'ot-001',
     type: 'cleaning',
-    propertyId: 'p1',
+    propertyId: '1',
     status: 'queued',
     priority: 'p0',
     scheduledDate: '2026-04-24',
@@ -30,7 +30,7 @@ export const initialOperationsTasks: OperationsTask[] = [
   {
     id: 'ot-002',
     type: 'cleaning',
-    propertyId: 'p2',
+    propertyId: '1',
     status: 'in_progress',
     priority: 'p1',
     scheduledDate: '2026-04-22',
@@ -56,7 +56,7 @@ export const initialOperationsTasks: OperationsTask[] = [
   {
     id: 'ot-003',
     type: 'maintenance',
-    propertyId: 'p1',
+    propertyId: '1',
     status: 'queued',
     priority: 'p2',
     scheduledDate: '2026-04-25',
@@ -72,7 +72,7 @@ export const initialOperationsTasks: OperationsTask[] = [
   {
     id: 'ot-004',
     type: 'cleaning',
-    propertyId: 'p3',
+    propertyId: '1',
     status: 'completed',
     priority: 'p1',
     scheduledDate: '2026-04-21',
@@ -100,7 +100,7 @@ export const initialOperationsTasks: OperationsTask[] = [
   {
     id: 'ot-005',
     type: 'inspection',
-    propertyId: 'p2',
+    propertyId: '1',
     status: 'queued',
     priority: 'p3',
     scheduledDate: '2026-04-28',
@@ -117,7 +117,7 @@ export const initialOperationsTasks: OperationsTask[] = [
 export const initialReservations: Reservation[] = [
   {
     id: 'res-001',
-    propertyId: 'p3',
+    propertyId: '1',
     guestId: 'guest-001',
     source: 'airbnb',
     status: 'checked_out',
@@ -139,7 +139,7 @@ export const initialReservations: Reservation[] = [
   },
   {
     id: 'res-002',
-    propertyId: 'p1',
+    propertyId: '1',
     guestId: 'guest-002',
     source: 'booking',
     status: 'checked_in',
@@ -159,7 +159,7 @@ export const initialReservations: Reservation[] = [
   },
   {
     id: 'res-003',
-    propertyId: 'p1',
+    propertyId: '1',
     guestId: 'guest-003',
     source: 'vrbo',
     status: 'upcoming',
@@ -181,7 +181,7 @@ export const initialReservations: Reservation[] = [
   },
   {
     id: 'res-004',
-    propertyId: 'p2',
+    propertyId: '1',
     guestId: 'guest-004',
     source: 'airbnb',
     status: 'checked_out',
@@ -201,7 +201,7 @@ export const initialReservations: Reservation[] = [
   },
   {
     id: 'res-005',
-    propertyId: 'p2',
+    propertyId: '1',
     guestId: 'guest-005',
     source: 'direct',
     status: 'upcoming',
@@ -325,7 +325,7 @@ export const initialInboxThreads: InboxThread[] = [
   {
     id: 'thread-001',
     guestId: 'guest-003',
-    propertyId: 'p1',
+    propertyId: '1',
     reservationId: 'res-003',
     source: 'vrbo',
     unread: 1,
@@ -356,7 +356,7 @@ export const initialInboxThreads: InboxThread[] = [
   {
     id: 'thread-002',
     guestId: 'guest-002',
-    propertyId: 'p1',
+    propertyId: '1',
     reservationId: 'res-002',
     source: 'booking',
     unread: 0,

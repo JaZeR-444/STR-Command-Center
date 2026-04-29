@@ -354,7 +354,7 @@ export function DocumentViewerPane({ doc }: DocumentViewerPaneProps) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
         <p className="text-lg font-medium text-zinc-400">No Document Selected</p>
-        <p className="text-sm mt-1">Select an artifact from the list to view and edit details.</p>
+        <p className="text-sm mt-1">Select a document from the list to view and edit details.</p>
       </div>
     );
   }

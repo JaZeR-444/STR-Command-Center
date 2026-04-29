@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import type { AppState, TaskStatus, DocumentStatus } from '@/types';
 import { loadState, saveState, DEFAULT_STATE, exportState, importState, clearState, getLocalUpdatedAt } from './storage';
 import { clearRemoteState, isCloudSyncConfigured, loadRemoteState, saveRemoteState } from './supabase';
+import { archiveLegacyLaunchData } from './migrations/archive-legacy-launch-data';
 
 interface AppContextType {
   state: AppState;
@@ -40,8 +41,6 @@ interface AppContextType {
   setSmartTags: (docId: string, tags: { key: string; value: string }[]) => void;
   upsertFileRegistryRecord: (record: import('@/types').FileRegistryRecord) => void;
   setDocumentViewMode: (mode: 'list' | 'grid') => void;
-  // Settings
-  setLaunchDate: (date: string) => void;
   // Data management
   exportData: () => string;
   importData: (json: string) => { success: boolean; error?: string };
@@ -97,6 +96,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load state from localStorage on mount (client-side only)
   useEffect(() => {
     const bootstrap = async () => {
+      // Run migration before loading state
+      archiveLegacyLaunchData();
+
       const loaded = loadState();
       setState(loaded);
       setIsLoaded(true);
@@ -471,16 +473,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setDocumentViewMode = useCallback((mode: 'list' | 'grid') => {
     setState(prev => {
       const newState = { ...prev, documentViewMode: mode };
-      saveState(newState);
-      void syncRemoteState(newState);
-      return newState;
-    });
-  }, [syncRemoteState]);
-
-  // Settings
-  const setLaunchDate = useCallback((date: string) => {
-    setState(prev => {
-      const newState = { ...prev, launchDate: date };
       saveState(newState);
       void syncRemoteState(newState);
       return newState;
@@ -943,7 +935,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setSmartTags,
     upsertFileRegistryRecord,
     setDocumentViewMode,
-    setLaunchDate,
     exportData,
     importData,
     resetAll,

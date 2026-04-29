@@ -46,7 +46,7 @@ export function getTasksByTiming(timing: 'Pre-Listing' | 'Ongoing' | 'Post-Listi
   return roadmapData.filter(t => t.timing === timing);
 }
 
-// Pre-listing tasks are critical for launch readiness
+// Legacy data - pre-launch tasks (deprecated)
 export const preListingTasks = roadmapData.filter(t => t.timing === 'Pre-Listing');
 export const ongoingTasks = roadmapData.filter(t => t.timing === 'Ongoing');
 export const postListingTasks = roadmapData.filter(t => t.timing === 'Post-Listing');
