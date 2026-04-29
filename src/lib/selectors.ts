@@ -1,7 +1,24 @@
 // Operational selectors — computed values from state
 // Replaces legacy project-centric selectors (launch readiness, section progress, etc.)
 
-import type { AppState, Reservation, OperationsTask, MaintenanceIssue, InboxThread } from '@/types';
+import type { AppState, Reservation, OperationsTask, MaintenanceIssue, InboxThread, TaskStatus } from '@/types';
+
+/* ─── Legacy Task System Helpers ───────────────────── */
+
+/** Check if a legacy roadmap task is completed */
+export function isTaskCompleted(state: AppState, taskId: number): boolean {
+  return state.completedIds.includes(taskId);
+}
+
+/** Get the status of a legacy roadmap task */
+export function getTaskStatus(state: AppState, taskId: number): TaskStatus {
+  return state.taskMeta[taskId]?.status || 'default';
+}
+
+/** Check if a document is completed */
+export function isDocCompleted(state: AppState, docId: string): boolean {
+  return state.completedDocIds.includes(docId);
+}
 
 /* ─── Date Helpers ─────────────────────────────────── */
 

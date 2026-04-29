@@ -181,19 +181,21 @@ export default function SettingsPage() {
           {/* Reference / Archive */}
           {hasLegacyArchive && (
             <Card className="mb-0">
-              <CardHeader className="cursor-pointer" onClick={() => setShowArchive(!showArchive)}>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Reference / Archive</CardTitle>
-                  <svg
-                    className={`w-5 h-5 text-zinc-400 transition-transform ${showArchive ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </CardHeader>
+              <div className="cursor-pointer" onClick={() => setShowArchive(!showArchive)}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Reference / Archive</CardTitle>
+                    <svg
+                      className={`w-5 h-5 text-zinc-400 transition-transform ${showArchive ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </CardHeader>
+              </div>
               {showArchive && (
                 <CardContent>
                   <p className="text-sm text-zinc-400 mb-4">
